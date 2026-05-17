@@ -271,7 +271,7 @@ const Home = () => {
               </div>
             </a>
           </div>
-          <p className="contact-note">Usually reply within 24 hours.</p>
+          <p className="contact-note">Usually reply within 2 hours.</p>
         </section>
       </FadeIn>
     </>
