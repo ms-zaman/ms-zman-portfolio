@@ -183,10 +183,12 @@ svg {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.35;
   }
@@ -401,7 +403,7 @@ svg {
 }
 
 .tl-desc {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text-2);
   line-height: 1.65;
 }
@@ -725,7 +727,7 @@ svg {
   background: var(--bg-3);
 }
 
-.contact-item > svg {
+.contact-item>svg {
   font-size: 16px;
   color: var(--text-3);
   flex-shrink: 0;
@@ -856,7 +858,8 @@ svg {
 
 /* ===== BLOG STYLES ===== */
 
-.blog-page, .blog-post-page {
+.blog-page,
+.blog-post-page {
   padding-top: var(--nav-height);
   padding-bottom: 4rem;
   max-width: 900px;
@@ -1105,7 +1108,7 @@ svg {
   text-decoration-color: var(--primary);
 }
 
-.markdown-content ul, 
+.markdown-content ul,
 .markdown-content ol {
   margin-bottom: 1.5rem;
   padding-left: 1.5rem;
@@ -1163,8 +1166,13 @@ svg {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .no-results {
