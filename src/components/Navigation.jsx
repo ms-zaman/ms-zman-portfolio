@@ -11,7 +11,7 @@ const Navigation = () => {
     <nav className="nav">
       <div className="nav-inner">
         <Link to="/" className="nav-logo">
-          <span>ms</span>.zaman
+          <span>MS</span>.Zaman
         </Link>
 
         {/* Desktop Navigation */}
