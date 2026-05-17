@@ -1,4 +1,11 @@
-# Cutting Bundle Size: Migrating from Swiper to Splide.js
+---
+title: "Cutting Bundle Size: Migrating from Swiper to Splide.js"
+description: "Swiper is great, but sometimes it is overkill. Here is why I migrated a recent client project to Splide for better performance."
+date: 2026-03-22
+tags: ["Performance", "JavaScript", "Optimization"]
+readTime: "3 min read"
+slug: "migrating-swiper-to-splide"
+---
 
 Performance optimization is an ongoing journey. In a recent project, I had to take a hard look at my dependency graph, and one culprit stood out: **Swiper.js**.
 

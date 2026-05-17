@@ -1,0 +1,35 @@
+---
+import ThemeToggle from './ThemeToggle.jsx';
+import MobileMenu from './MobileMenu.jsx';
+
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === '/';
+---
+
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="MS Zaman — Home">
+      <span>MS</span>.Zaman
+    </a>
+
+    <!-- Desktop Navigation -->
+    <ul class="nav-links">
+      <li><a href={isHome ? '#work' : '/#work'}>Work</a></li>
+      <li><a href={isHome ? '#experience' : '/#experience'}>Experience</a></li>
+      <li><a href={isHome ? '#contact' : '/#contact'}>Contact</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li style="display: flex; align-items: center;">
+        <ThemeToggle client:load />
+      </li>
+      <li>
+        <span class="status-badge">
+          <span class="status-dot" aria-hidden="true"></span>
+          Available
+        </span>
+      </li>
+    </ul>
+
+    <!-- Mobile menu — React island for toggle interactivity -->
+    <MobileMenu client:load isHome={isHome} />
+  </div>
+</nav>

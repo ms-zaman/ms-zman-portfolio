@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+// Generate a static page for every blog post at build time
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.data.slug || post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const formattedDate = post.data.date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+const slug = post.data.slug || post.id;
+---
+
+<BaseLayout
+  title={`${post.data.title} — MS Zaman`}
+  description={post.data.description}
+  ogTitle={post.data.title}
+  ogDescription={post.data.description}
+  canonicalPath={`/blog/${slug}`}
+>
+  <article class="page-container blog-post-page">
+    <a href="/blog" class="back-link">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Back to articles
+    </a>
+
+    <header class="post-header">
+      <div class="post-meta-top">
+        <time datetime={post.data.date.toISOString()}>{formattedDate}</time>
+        <span class="dot-separator">•</span>
+        <span>{post.data.readTime}</span>
+      </div>
+
+      <h1 class="post-title-main">{post.data.title}</h1>
+
+      <div class="post-tags">
+        {post.data.tags.map((tag) => (
+          <span class="post-tag-chip">#{tag}</span>
+        ))}
+      </div>
+    </header>
+
+    <div class="post-content-wrapper markdown-content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

@@ -1,4 +1,11 @@
-# Why I Prefer Native CSS Scroll-Snap Over Heavy JS Libraries
+---
+title: "Why I Prefer Native CSS Scroll-Snap Over Heavy JS Libraries"
+description: "How I dropped heavy JavaScript slider dependencies in favor of native, performant CSS scroll-snap."
+date: 2026-02-14
+tags: ["CSS", "Performance", "UI"]
+readTime: "3 min read"
+slug: "native-css-scroll-snap"
+---
 
 If you've ever tried to build a "Browse By Category" slider or an image carousel, your first instinct was probably to reach for a massive JavaScript library. I used to do exactly the same thing. But recently, while developing the BloggerZen landing page template, I decided to try something different.
 

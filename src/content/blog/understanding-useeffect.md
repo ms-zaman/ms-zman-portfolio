@@ -1,4 +1,11 @@
-# Understanding the React useEffect Hook Once and For All
+---
+title: "Understanding the React useEffect Hook Once and For All"
+description: "Reframing useEffect as a synchronization tool rather than a lifecycle method to avoid memory leaks and infinite loops."
+date: 2026-04-18
+tags: ["React", "JavaScript", "Best Practices"]
+readTime: "4 min read"
+slug: "understanding-react-useeffect"
+---
 
 The `useEffect` hook is arguably the most powerful, yet most misunderstood, hook in React. When I first transitioned from class components to functional components, I treated `useEffect` like `componentDidMount` and `componentDidUpdate`. This was a huge mistake.
 

@@ -1,4 +1,11 @@
-# The Art of Clean React Architecture
+---
+title: "The Art of Clean React Architecture"
+description: "How separating the UI from the data layer makes your application scalable and future-proof. A deep dive into abstraction."
+date: 2026-04-10
+tags: ["React", "Architecture", "Best Practices"]
+readTime: "4 min read"
+slug: "clean-react-architecture"
+---
 
 When I first started building React applications, I shoved everything into `App.jsx`. State, UI, API calls—it was all one giant, tangled mess. Over the years, and specifically while building large-scale applications at Startise, I learned the incredible value of clean architecture.
 

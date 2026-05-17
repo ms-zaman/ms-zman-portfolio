@@ -1,4 +1,11 @@
-# Designing a Dark Theme Portfolio with Full WCAG AA Compliance
+---
+title: "Designing a Dark Theme Portfolio with Full WCAG AA Compliance"
+description: "Why pure black and white is a mistake, and how to automate contrast checking in your React applications."
+date: 2026-04-28
+tags: ["Accessibility", "CSS", "Design"]
+readTime: "5 min read"
+slug: "wcag-aa-dark-mode-compliance"
+---
 
 When I set out to redesign my portfolio, I knew I wanted a sleek, premium dark theme. Dark mode isn't just an aesthetic choice anymore; it's an expectation. However, creating a dark theme that looks good is only half the battle. Making it accessible is where the real engineering happens.
 

@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogSearch from '../../components/BlogSearch.jsx';
+import { getCollection } from 'astro:content';
+
+// Fetch all blog posts at build time
+const allPosts = await getCollection('blog');
+
+// Sort by date (newest first)
+const sortedPosts = allPosts.sort(
+  (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf()
+);
+
+// Serialize post metadata for the React island (no body content — keep payload small)
+const postsForSearch = sortedPosts.map((post) => ({
+  slug: post.data.slug || post.id,
+  title: post.data.title,
+  description: post.data.description,
+  date: post.data.date.toISOString(),
+  tags: post.data.tags,
+  readTime: post.data.readTime,
+}));
+---
+
+<BaseLayout
+  title="Blog — MS Zaman"
+  description="Writing about React, Architecture, Performance, and the things I learn along the way."
+  ogTitle="Blog — MS Zaman"
+  ogDescription="Writing about React, Architecture, Performance, and the things I learn along the way."
+  canonicalPath="/blog"
+>
+  <div class="page-container blog-page">
+    <header class="page-header">
+      <h1 class="page-title">Thoughts & Engineering</h1>
+      <p class="page-subtitle">
+        Writing about React, Architecture, Performance, and the things I learn along the way.
+      </p>
+    </header>
+
+    <BlogSearch client:load posts={postsForSearch} />
+  </div>
+</BaseLayout>

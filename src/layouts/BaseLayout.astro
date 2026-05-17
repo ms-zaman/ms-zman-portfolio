@@ -1,3 +1,27 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  canonicalPath?: string;
+}
+
+const {
+  title = 'MS Zaman — Frontend Developer',
+  description = 'MS Zaman — Frontend Developer based in Dhaka, Bangladesh. 5+ years building web interfaces across React, Tailwind CSS, WordPress, and Shopify.',
+  ogTitle = 'MS Zaman — Frontend Developer',
+  ogDescription = '5+ years building web interfaces across React, Tailwind CSS, WordPress, Shopify Liquid, and page builder ecosystems.',
+  canonicalPath = '/',
+} = Astro.props;
+
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const canonicalURL = new URL(canonicalPath, Astro.site);
+---
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -5,35 +29,34 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='12' fill='%230b0b0b'/><text x='50' y='68' font-family='system-ui' font-size='42' font-weight='500' fill='%233d8ee8' text-anchor='middle'>MZ</text></svg>" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0b0b0b" />
-    <meta name="description" content="MS Zaman — Frontend Developer based in Dhaka, Bangladesh. 5+ years building web interfaces across React, Tailwind CSS, WordPress, and Shopify." />
-    <link rel="canonical" href="https://sharfuzzaman.com/" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="MS Zaman — Frontend Developer" />
-    <meta property="og:description" content="5+ years building web interfaces across React, Tailwind CSS, WordPress, Shopify Liquid, and page builder ecosystems." />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://sharfuzzaman.com" />
+    <meta property="og:url" content={canonicalURL} />
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="MS Zaman Portfolio" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content="MS Zaman — Frontend Developer" />
-    <meta name="twitter:description" content="5+ years building web interfaces across React, Tailwind CSS, WordPress, Shopify Liquid, and page builder ecosystems." />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
 
-    <title>MS Zaman — Frontend Developer</title>
+    <title>{title}</title>
 
     <!-- Theme Initialization: Prevents flash of unstyled content (FOUC) -->
-    <script>
+    <script is:inline>
       (function() {
         try {
           var savedTheme = localStorage.getItem('theme');
           if (savedTheme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');
           } else if (savedTheme === 'dark') {
-            document.documentElement.removeAttribute('data-theme'); // default is dark
+            document.documentElement.removeAttribute('data-theme');
           } else {
-            // Fallback to system preference
             if (window.matchMedia('(prefers-color-scheme: light)').matches) {
               document.documentElement.setAttribute('data-theme', 'light');
             }
@@ -44,9 +67,8 @@
 
     <!--
       PERFORMANCE: Non-render-blocking font loading strategy.
-      1. Preconnect to font origins (already fast — just DNS+TLS handshake).
-      2. Load fonts with media="print" + onload swap — browser downloads them
-         without blocking paint, then swaps to screen media once loaded.
+      1. Preconnect to font origins.
+      2. Load fonts with media="print" + onload swap.
       3. <noscript> fallback for non-JS crawlers.
     -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -65,13 +87,31 @@
     <noscript>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
     </noscript>
-
-    <!-- REMOVED: @tabler/icons-webfont — replaced with inline SVG components.
-         This eliminates ~400KB+ of render-blocking CSS + webfont downloads
-         for only 7 icons used across the entire site. -->
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <Navigation />
+    <main id="main-content" class="main-content">
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- FadeIn scroll animation — vanilla JS, no React needed -->
+    <script is:inline>
+      (function() {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.08 });
+
+        document.querySelectorAll('.fade-in').forEach(function(el) {
+          observer.observe(el);
+        });
+      })();
+    </script>
   </body>
 </html>

@@ -1,4 +1,11 @@
-# Why I Chose Vite Over Create React App for My Portfolio
+---
+title: "Why I Chose Vite Over Create React App for My Portfolio"
+description: "A breakdown of why Vite is the new standard for React development and how it improved my developer experience."
+date: 2026-05-02
+tags: ["React", "Performance", "Tooling"]
+readTime: "3 min read"
+slug: "why-i-chose-vite-over-cra"
+---
 
 For years, `create-react-app` (CRA) was the undisputed king of React scaffolding. It was the tool I reached for every time I started a new project. However, when building this portfolio, I made the deliberate choice to use **Vite** instead.
 

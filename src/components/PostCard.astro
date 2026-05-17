@@ -1,0 +1,38 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  date: Date;
+  readTime: string;
+  excerpt: string;
+  tags: string[];
+}
+
+const { slug, title, date, readTime, excerpt, tags } = Astro.props;
+
+const formattedDate = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="post-card">
+  <a href={`/blog/${slug}`} class="post-card-link">
+    <div class="post-card-content">
+      <div class="post-meta">
+        <span class="post-date">{formattedDate}</span>
+        <span class="post-read-time">{readTime}</span>
+      </div>
+
+      <h3 class="post-title">{title}</h3>
+      <p class="post-excerpt">{excerpt}</p>
+
+      <div class="post-tags">
+        {tags.map((tag) => (
+          <span class="post-tag-chip">#{tag}</span>
+        ))}
+      </div>
+    </div>
+  </a>
+</article>

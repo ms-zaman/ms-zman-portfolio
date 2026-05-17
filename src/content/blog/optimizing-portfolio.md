@@ -1,4 +1,11 @@
-# How I Optimized My React Portfolio to Stand Out to Technical Recruiters
+---
+title: "How I Optimized My React Portfolio to Stand Out to Technical Recruiters"
+description: "A look into how I audited my portfolio to focus on clear communication, eliminating friction, and highlighting professional impact."
+date: 2026-05-15
+tags: ["Career", "Portfolio", "UX"]
+readTime: "4 min read"
+slug: "optimizing-react-portfolio-for-recruiters"
+---
 
 As developers, we often build portfolios for ourselves. We add complex animations, convoluted routing, and hidden Easter eggs. But I recently took a step back and asked myself a crucial question: *Who is this actually for?*
 
