@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import ThemeToggle from './ThemeToggle';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,6 +46,9 @@ const Navigation = () => {
           <li><a href={isHome ? '#experience' : '/#experience'}>Experience</a></li>
           <li><a href={isHome ? '#contact' : '/#contact'}>Contact</a></li>
           <li><Link to="/blog">Blog</Link></li>
+          <li style={{ display: 'flex', alignItems: 'center' }}>
+            <ThemeToggle />
+          </li>
           <li>
             <span className="status-badge">
               <span className="status-dot" aria-hidden="true"></span>
@@ -72,7 +76,6 @@ const Navigation = () => {
         </button>
       </div>
 
-      {/* Mobile Navigation */}
       <div
         ref={menuRef}
         id={menuId}
@@ -83,10 +86,13 @@ const Navigation = () => {
         <a href={isHome ? '#experience' : '/#experience'} onClick={closeMenu} role="menuitem">Experience</a>
         <a href={isHome ? '#contact' : '/#contact'} onClick={closeMenu} role="menuitem">Contact</a>
         <Link to="/blog" onClick={closeMenu} role="menuitem">Blog</Link>
-        <span className="status-badge" style={{ padding: '0.5rem 0' }}>
-          <span className="status-dot" aria-hidden="true"></span>
-          Available
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0' }}>
+          <span className="status-badge">
+            <span className="status-dot" aria-hidden="true"></span>
+            Available
+          </span>
+          <ThemeToggle />
+        </div>
       </div>
     </nav>
   );

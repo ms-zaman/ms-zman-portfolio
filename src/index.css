@@ -16,6 +16,63 @@
   --r-md: 8px;
   --font: 'DM Sans', sans-serif;
   --mono: 'DM Mono', monospace;
+
+  /* Theme-specific tokens (Defaults to Dark) */
+  --nav-bg: rgba(11, 11, 11, 0.85);
+  --mobile-nav-bg: rgba(11, 11, 11, 0.95);
+  --ghost-bg: rgba(255, 255, 255, 0.04);
+  --ghost-bg-hover: rgba(255, 255, 255, 0.08);
+  --ghost-border-hover: rgba(255, 255, 255, 0.35);
+  --selection-bg: rgba(61, 142, 232, 0.3);
+  --accent-border: rgba(61, 142, 232, 0.3);
+  --accent-hover: rgba(61, 142, 232, 0.2);
+  --accent-status-border: rgba(61, 142, 232, 0.25);
+  --green-status-border: rgba(61, 186, 127, 0.25);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --code-color: #ff7b72;
+  --surface: #111111; /* Fallback mapping for blog */
+  --text-muted: var(--text-2); /* Fallback mapping for blog */
+  --primary: var(--accent); /* Fallback mapping for blog */
+  --radius-md: var(--r-md);
+  --radius-lg: 12px;
+}
+
+/* ===== LIGHT THEME ===== */
+[data-theme="light"] {
+  --bg: #f8f8f6;
+  --bg-2: #f0efed;
+  --bg-3: #e8e7e5;
+  --text: #1a1a1a;
+  --text-2: #555250;
+  --text-3: #787572;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-2: rgba(0, 0, 0, 0.18);
+  --accent: #2b6cb0;
+  --accent-dim: rgba(43, 108, 176, 0.10);
+  --green: #27875e;
+  --green-dim: rgba(39, 135, 94, 0.10);
+  
+  --nav-bg: rgba(248, 248, 246, 0.85);
+  --mobile-nav-bg: rgba(248, 248, 246, 0.95);
+  --ghost-bg: rgba(0, 0, 0, 0.03);
+  --ghost-bg-hover: rgba(0, 0, 0, 0.06);
+  --ghost-border-hover: rgba(0, 0, 0, 0.15);
+  --selection-bg: rgba(43, 108, 176, 0.2);
+  --accent-border: rgba(43, 108, 176, 0.2);
+  --accent-hover: rgba(43, 108, 176, 0.15);
+  --accent-status-border: rgba(43, 108, 176, 0.2);
+  --green-status-border: rgba(39, 135, 94, 0.2);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --code-color: #cf222e;
+  --surface: #f0efed;
+}
+
+/* Theme Transition Class */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
 }
 
 /* ===== BASE ===== */
@@ -43,7 +100,7 @@ body {
 }
 
 ::selection {
-  background: rgba(61, 142, 232, 0.3);
+  background: var(--selection-bg);
   color: var(--text);
 }
 
@@ -79,7 +136,7 @@ svg {
   z-index: 999;
   padding: 8px 16px;
   background: var(--accent);
-  color: #fff;
+  color: var(--bg);
   font-size: 13px;
   font-family: var(--mono);
   border-radius: var(--r-md);
@@ -114,7 +171,7 @@ svg {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(11, 11, 11, 0.85);
+  background: var(--nav-bg);
   backdrop-filter: blur(12px);
   border-bottom: 0.5px solid var(--border);
 }
@@ -214,7 +271,7 @@ svg {
   flex-direction: column;
   padding: 0.75rem 1.5rem 1rem;
   border-top: 0.5px solid var(--border);
-  background: rgba(11, 11, 11, 0.95);
+  background: var(--mobile-nav-bg);
   backdrop-filter: blur(12px);
 }
 
@@ -320,23 +377,23 @@ svg {
 
 .btn-primary {
   background: var(--accent-dim);
-  border-color: rgba(61, 142, 232, 0.3);
+  border-color: var(--accent-border);
   color: var(--accent);
 }
 
 .btn-primary:hover {
-  background: rgba(61, 142, 232, 0.2);
+  background: var(--accent-hover);
 }
 
 .btn-ghost {
-  background: rgba(255, 255, 255, 0.04);
+  background: var(--ghost-bg);
   border-color: var(--border-2);
   color: var(--text-2);
 }
 
 .btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.35);
+  background: var(--ghost-bg-hover);
+  border-color: var(--ghost-border-hover);
   color: var(--text);
 }
 
@@ -686,13 +743,13 @@ svg {
 .build-card-status.planned {
   color: var(--accent);
   background: var(--accent-dim);
-  border: 0.5px solid rgba(61, 142, 232, 0.25);
+  border: 0.5px solid var(--accent-status-border);
 }
 
 .build-card-status.in-progress {
   color: var(--green);
   background: var(--green-dim);
-  border: 0.5px solid rgba(61, 186, 127, 0.25);
+  border: 0.5px solid var(--green-status-border);
 }
 
 .build-card-desc {
@@ -930,7 +987,7 @@ svg {
 .search-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 2px var(--accent-dim);
 }
 
 .tags-container {
@@ -979,7 +1036,7 @@ svg {
 .post-card:hover {
   transform: translateY(-4px);
   border-color: var(--primary);
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-card);
 }
 
 .post-card-link {
@@ -1023,7 +1080,7 @@ svg {
 .post-tag-chip {
   font-size: 0.75rem;
   color: var(--primary);
-  background: rgba(99, 102, 241, 0.1);
+  background: var(--accent-dim);
   padding: 0.25rem 0.75rem;
   border-radius: 100px;
   font-weight: 600;
@@ -1100,7 +1157,7 @@ svg {
   color: var(--primary);
   text-decoration: underline;
   text-underline-offset: 4px;
-  text-decoration-color: rgba(99, 102, 241, 0.3);
+  text-decoration-color: var(--accent-border);
   transition: all 0.2s ease;
 }
 
@@ -1135,7 +1192,7 @@ svg {
   border-radius: 0.25rem;
   font-family: monospace;
   font-size: 0.9em;
-  color: #ff7b72;
+  color: var(--code-color);
 }
 
 .markdown-content .code-block {
@@ -1215,7 +1272,7 @@ svg {
 .load-more-btn:hover {
   background: var(--primary);
   border-color: var(--primary);
-  color: white;
+  color: var(--bg);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 12px var(--accent-dim);
 }
