@@ -89,7 +89,7 @@ const Home = () => {
           Frontend Developer <span>·</span> Dhaka, Bangladesh
         </p>
         <p className="hero-bio">
-          3+ years building web interfaces across <strong>React</strong>, <strong>Tailwind CSS</strong>,{' '}
+          5+ years building web interfaces across <strong>React</strong>, <strong>Tailwind CSS</strong>,{' '}
           <strong>WordPress</strong>, <strong>Shopify Liquid</strong>, and page builder ecosystems.
           Currently at Startise and contributing to the Templately template library —
           templates I've built are live and used by thousands of WordPress users globally.
@@ -190,7 +190,7 @@ const Home = () => {
                 </div>
               </div>
               <div className="project-right">
-                <span className="project-tag">Frontend</span>
+                <span className="project-tag">Web Development</span>
                 <span className="project-link">
                   Ask me <i className="ti ti-arrow-up-right"></i>
                 </span>
