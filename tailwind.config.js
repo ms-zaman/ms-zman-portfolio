@@ -7,34 +7,40 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'sans': ['DM Sans', 'system-ui', 'sans-serif'],
+        'mono': ['DM Mono', 'monospace'],
       },
       colors: {
-        primary: {
-          50: '#f0f9ff',
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',
-          500: '#0ea5e9',
-          600: '#0284c7',
-          700: '#0369a1',
-          800: '#075985',
-          900: '#0c4a6e',
+        surface: {
+          DEFAULT: '#0b0b0b',
+          2: '#111111',
+          3: '#181818',
         },
-        gray: {
-          50: '#f9fafb',
-          100: '#f3f4f6',
-          200: '#e5e7eb',
-          300: '#d1d5db',
-          400: '#9ca3af',
-          500: '#6b7280',
-          600: '#4b5563',
-          700: '#374151',
-          800: '#1f2937',
-          900: '#111827',
-        }
-      }
+        text: {
+          DEFAULT: '#e4e2dc',
+          2: '#686663',
+          3: '#484644',
+        },
+        accent: {
+          DEFAULT: '#3d8ee8',
+          dim: 'rgba(61,142,232,0.12)',
+        },
+        green: {
+          DEFAULT: '#3dba7f',
+          dim: 'rgba(61,186,127,0.12)',
+        },
+        border: {
+          DEFAULT: 'rgba(255,255,255,0.06)',
+          2: 'rgba(255,255,255,0.11)',
+        },
+      },
+      maxWidth: {
+        'content': '680px',
+      },
+      borderRadius: {
+        'sm': '6px',
+        'md': '8px',
+      },
     },
   },
   plugins: [],

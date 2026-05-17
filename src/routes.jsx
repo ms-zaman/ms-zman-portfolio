@@ -1,10 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
-import About from './pages/About';
-import Work from './pages/Work';
-import BeyondCode from './pages/BeyondCode';
-import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
 
 export const router = createBrowserRouter([
   {
@@ -16,20 +13,8 @@ export const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: 'about',
-        element: <About />,
-      },
-      {
-        path: 'work',
-        element: <Work />,
-      },
-      {
-        path: 'beyond-code',
-        element: <BeyondCode />,
-      },
-      {
-        path: 'contact',
-        element: <Contact />,
+        path: '*',
+        element: <NotFound />,
       },
     ],
   },
