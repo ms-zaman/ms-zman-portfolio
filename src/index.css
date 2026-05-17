@@ -1,13 +1,11 @@
-@import "tailwindcss";
-
 /* ===== DESIGN TOKENS ===== */
 :root {
   --bg: #0b0b0b;
   --bg-2: #111111;
   --bg-3: #181818;
   --text: #e4e2dc;
-  --text-2: #908d8a;
-  --text-3: #858280;
+  --text-2: #a09d9a;
+  --text-3: #908d8a;
   --border: rgba(255, 255, 255, 0.10);
   --border-2: rgba(255, 255, 255, 0.38);
   --accent: #3d8ee8;
@@ -31,6 +29,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 60px;
 }
 
 body {
@@ -40,6 +39,7 @@ body {
   font-size: 14px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
@@ -50,6 +50,45 @@ body {
 :focus-visible {
   outline: 1.5px solid var(--accent);
   outline-offset: 2px;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* ===== SR-ONLY (Accessibility) ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ===== SKIP LINK ===== */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 999;
+  padding: 8px 16px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-family: var(--mono);
+  border-radius: var(--r-md);
+  text-decoration: none;
+  transition: top 0.2s;
+}
+
+.skip-link:focus {
+  top: 8px;
 }
 
 /* Scrollbar */
@@ -170,6 +209,7 @@ body {
 
 .mobile-nav {
   display: none;
+  flex-direction: column;
   padding: 0.75rem 1.5rem 1rem;
   border-top: 0.5px solid var(--border);
   background: rgba(11, 11, 11, 0.95);
@@ -177,7 +217,7 @@ body {
 }
 
 .mobile-nav.open {
-  display: block;
+  display: flex;
 }
 
 .mobile-nav a {
@@ -213,6 +253,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: 1.25rem;
+  font-weight: 400;
 }
 
 /* ===== HERO ===== */
@@ -589,6 +630,73 @@ body {
   padding: 4px 10px;
 }
 
+/* ===== REACT PROJECTS (Build Queue) ===== */
+.build-queue-intro {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.65;
+  margin-bottom: 1.25rem;
+}
+
+.build-queue-intro strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.build-card {
+  padding: 16px 18px;
+  background: var(--bg-2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-md);
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+}
+
+.build-card:hover {
+  border-color: var(--border-2);
+}
+
+.build-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.build-card-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.build-card-status {
+  font-size: 11px;
+  font-family: var(--mono);
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.build-card-status.planned {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 0.5px solid rgba(61, 142, 232, 0.25);
+}
+
+.build-card-status.in-progress {
+  color: var(--green);
+  background: var(--green-dim);
+  border: 0.5px solid rgba(61, 186, 127, 0.25);
+}
+
+.build-card-desc {
+  font-size: 13px;
+  color: var(--text-2);
+  line-height: 1.55;
+  margin-bottom: 8px;
+}
+
 /* ===== CONTACT ===== */
 .contact-grid {
   display: grid;
@@ -642,15 +750,53 @@ body {
   margin: 0 auto;
   padding: 1.5rem 1.5rem 3rem;
   border-top: 0.5px solid var(--border);
+}
+
+.footer-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.site-footer p {
+.footer-left p {
   font-size: 12px;
   color: var(--text-3);
   font-family: var(--mono);
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-links a {
+  font-size: 15px;
+  color: var(--text-3);
+  text-decoration: none;
+  transition: color 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.footer-links a:hover {
+  color: var(--text);
+}
+
+.back-to-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-family: var(--mono);
+  color: var(--text-3);
+  text-decoration: none;
+  margin-top: 1rem;
+  transition: color 0.15s;
+}
+
+.back-to-top:hover {
+  color: var(--text);
 }
 
 /* ===== FADE-IN ANIMATION ===== */

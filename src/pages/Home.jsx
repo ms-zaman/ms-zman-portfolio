@@ -2,31 +2,35 @@ import FadeIn from '../components/FadeIn';
 
 const EXPERIENCE = [
   {
+    id: 'startise-sr',
     role: 'Frontend Developer',
     company: 'Startise',
     period: 'Sep 2025 – Present · Dhaka',
-    desc: '',
+    desc: 'Building production-grade Elementor and Gutenberg templates for Templately — a template marketplace serving 700K+ WordPress users. Responsibilities include template creation, template review, issue resolution across existing templates, and launching marketing campaigns for Startise.',
     current: true,
   },
   {
+    id: 'startise-jr',
     role: 'Jr. Frontend Developer',
     company: 'Startise',
     period: 'Nov 2022 – Sep 2025 · 2 yrs 11 mos · Dhaka',
-    desc: '',
+    desc: 'Designed and shipped 40+ production templates for the Templately library, built custom WordPress themes with responsive layouts, and collaborated with designers to translate Figma mockups into pixel-perfect implementations.',
     current: false,
   },
   {
-    role: 'Frontend Developer',
+    id: 'abit',
+    role: 'Jr. Frontend Developer',
     company: 'American Best IT — Digital Marketing Agency',
     period: 'Jan 2022 – Oct 2022 · 10 mos · Dhaka',
-    desc: '',
+    desc: 'Built lead-generation websites for US and Canada-based service companies using Jupiter — an internal CMS. Focused on clean code, SEO-friendly architecture, fast page load times, Google PageSpeed optimization, and UX-focused design across 15+ client projects.',
     current: false,
   },
   {
-    role: 'Frontend Web Developer',
+    id: 'technofelia',
+    role: 'Jr. Web Developer',
     company: 'Technofelia',
     period: 'Jan 2021 – Oct 2021 · 10 mos · Dhaka',
-    desc: 'Contributed to Hisabee — a collaborative web application. Built responsive interfaces and delivered clean, user-friendly solutions across frontend and backend tasks.',
+    desc: 'Worked across multiple projects including Yoda — an online learning platform, and Hisabee (NDA) — a collaborative web application. Also handled Fiverr client orders involving bug fixes for Envato applications, website updates, and end-to-end server configuration and deployment.',
     current: false,
   },
 ];
@@ -48,12 +52,36 @@ const ELEMENTOR_TEMPLATES = [
   { name: 'SaaStrive', cat: 'SaaS', url: 'https://templately.com/pack/saastrive-elementor-saas-template' },
 ];
 
+const REACT_PROJECTS = [
+  {
+    id: 'devdash',
+    name: 'DevDash — Developer Dashboard',
+    status: 'planned',
+    desc: 'A real-time developer productivity dashboard that aggregates GitHub activity, Wakatime stats, and coding streaks into a single clean interface. Features dark mode, responsive charts, and GitHub OAuth.',
+    tech: ['React', 'React Query', 'Chart.js', 'GitHub API', 'Tailwind CSS'],
+  },
+  {
+    id: 'quickcart',
+    name: 'QuickCart — E-commerce Storefront',
+    status: 'planned',
+    desc: 'A performant headless e-commerce storefront with product filtering, cart management, Stripe checkout, and optimistic UI updates. Demonstrates state management, API integration, and complex UI patterns.',
+    tech: ['React', 'React Router', 'Context API', 'Stripe', 'CSS Modules'],
+  },
+  {
+    id: 'markdownlive',
+    name: 'MarkdownLive — Collaborative Editor',
+    status: 'planned',
+    desc: 'A real-time collaborative Markdown editor with live preview, syntax highlighting, export to PDF/HTML, and shareable links. Showcases WebSocket integration, custom hooks, and accessible keyboard shortcuts.',
+    tech: ['React', 'WebSocket', 'CodeMirror', 'Custom Hooks', 'Vite'],
+  },
+];
+
 const CORE_SKILLS = [
   'React & JavaScript',
   'Tailwind CSS',
   'WordPress (Custom Themes)',
   'Shopify Liquid',
-  'Elementor / Gutenberg',
+  'Elementor / Gutenberg / Framer / Webflow',
 ];
 
 const ALSO_SKILLS = [
@@ -75,7 +103,7 @@ const TemplateRow = ({ name, cat, url }) => (
   <a className="template-row" href={url} target="_blank" rel="noopener noreferrer">
     <span className="template-name">{name}</span>
     <span className="template-cat">{cat}</span>
-    <i className="ti ti-arrow-up-right template-arrow"></i>
+    <i className="ti ti-arrow-up-right template-arrow" aria-hidden="true"></i>
   </a>
 );
 
@@ -86,17 +114,18 @@ const Home = () => {
       <FadeIn className="hero" delay={0.05}>
         <h1>MS Zaman</h1>
         <p className="hero-role">
-          Frontend Developer <span>·</span> Dhaka, Bangladesh
+          Frontend Developer <span aria-hidden="true">·</span> Dhaka, Bangladesh
         </p>
         <p className="hero-bio">
           5+ years building web interfaces across <strong>React</strong>, <strong>Tailwind CSS</strong>,{' '}
-          <strong>WordPress</strong>, <strong>Shopify Liquid</strong>, and page builder ecosystems.
+          <strong>WordPress</strong>, <strong>Shopify Liquid</strong>, and page builder ecosystems
+          including <strong>Elementor</strong>, <strong>Gutenberg</strong>, <strong>Framer</strong>, and <strong>Webflow</strong>.
           Currently at Startise and contributing to the Templately template library —
-          templates I've built are live and used by thousands of WordPress users globally.
+          templates I&apos;ve built are live and used by thousands of WordPress users globally.
         </p>
         <div className="hero-ctas">
           <a href="#work" className="btn btn-primary">
-            View Work <i className="ti ti-arrow-right"></i>
+            View Work <i className="ti ti-arrow-right" aria-hidden="true"></i>
           </a>
           <a href="#contact" className="btn btn-ghost">
             Get in Touch
@@ -106,12 +135,12 @@ const Home = () => {
 
       {/* ===== EXPERIENCE ===== */}
       <FadeIn>
-        <section id="experience" className="section">
-          <p className="section-label">Experience</p>
+        <section id="experience" className="section" aria-labelledby="experience-heading">
+          <h2 id="experience-heading" className="section-label">Experience</h2>
           <div className="timeline">
-            {EXPERIENCE.map((exp, i) => (
-              <div className="tl-item" key={i}>
-                <div className={`tl-dot ${exp.current ? 'current' : ''}`}></div>
+            {EXPERIENCE.map((exp) => (
+              <div className="tl-item" key={exp.id}>
+                <div className={`tl-dot ${exp.current ? 'current' : ''}`} aria-hidden="true"></div>
                 <div className="tl-body">
                   <div className="tl-role">{exp.role}</div>
                   <div className="tl-company">{exp.company}</div>
@@ -126,12 +155,12 @@ const Home = () => {
 
       {/* ===== WORK ===== */}
       <FadeIn>
-        <section id="work" className="section">
-          <p className="section-label">Work</p>
+        <section id="work" className="section" aria-labelledby="work-heading">
+          <h2 id="work-heading" className="section-label">Work</h2>
 
           {/* Templately intro */}
           <p className="template-note">
-            I'm part of the <strong>Templately</strong> team where I design and build production-ready
+            I&apos;m part of the <strong>Templately</strong> team where I design and build production-ready
             templates for Elementor and Gutenberg — publicly available on templately.com.
           </p>
 
@@ -159,10 +188,10 @@ const Home = () => {
           <div className="project-list">
             <div className="project-item" style={{ cursor: 'default' }}>
               <div className="project-left">
-                <div className="project-name">Hisabee — Web Application</div>
+                <div className="project-name">Yoda — Online Learning Platform</div>
                 <div className="project-desc">
-                  Frontend implementation for a collaborative web app. Responsive UI, smooth
-                  functionality, and clean architecture.
+                  Frontend development for an online learning platform. Built responsive layouts,
+                  interactive UI components, and a clean learning experience.
                 </div>
                 <div className="tech-pills">
                   <span className="tech-pill">HTML</span>
@@ -192,7 +221,7 @@ const Home = () => {
               <div className="project-right">
                 <span className="project-tag">Web Development</span>
                 <span className="project-link">
-                  Ask me <i className="ti ti-arrow-up-right"></i>
+                  Ask me <i className="ti ti-arrow-up-right" aria-hidden="true"></i>
                 </span>
               </div>
             </a>
@@ -200,10 +229,39 @@ const Home = () => {
         </section>
       </FadeIn>
 
+      {/* ===== REACT PROJECTS — BUILD QUEUE ===== */}
+      <FadeIn>
+        <section id="react-projects" className="section" aria-labelledby="react-heading">
+          <h2 id="react-heading" className="section-label">React Projects — Build Queue</h2>
+          <p className="build-queue-intro">
+            Personal React projects I&apos;m building to sharpen my skills in
+            <strong> state management</strong>, <strong>API integration</strong>,
+            and <strong>complex UI patterns</strong>. Each project is designed to solve a
+            real problem and demonstrate production-quality code.
+          </p>
+          {REACT_PROJECTS.map((project) => (
+            <div className="build-card" key={project.id}>
+              <div className="build-card-header">
+                <span className="build-card-name">{project.name}</span>
+                <span className={`build-card-status ${project.status}`}>
+                  {project.status === 'in-progress' ? 'In Progress' : 'Planned'}
+                </span>
+              </div>
+              <div className="build-card-desc">{project.desc}</div>
+              <div className="tech-pills">
+                {project.tech.map((t) => (
+                  <span className="tech-pill" key={t}>{t}</span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+      </FadeIn>
+
       {/* ===== SKILLS ===== */}
       <FadeIn>
-        <section id="skills" className="section">
-          <p className="section-label">Skills</p>
+        <section id="skills" className="section" aria-labelledby="skills-heading">
+          <h2 id="skills-heading" className="section-label">Skills</h2>
           <div className="skills-cols">
             <div>
               <div className="skill-group-title">Core</div>
@@ -227,8 +285,8 @@ const Home = () => {
 
       {/* ===== CURRENTLY LEARNING ===== */}
       <FadeIn>
-        <section className="section">
-          <p className="section-label">Currently learning</p>
+        <section className="section" aria-labelledby="learning-heading">
+          <h2 id="learning-heading" className="section-label">Currently learning</h2>
           <div className="learning-tags">
             {LEARNING.map((tag) => (
               <span className="learn-tag" key={tag}>{tag}</span>
@@ -239,32 +297,32 @@ const Home = () => {
 
       {/* ===== CONTACT ===== */}
       <FadeIn>
-        <section id="contact" className="section">
-          <p className="section-label">Contact</p>
+        <section id="contact" className="section" aria-labelledby="contact-heading">
+          <h2 id="contact-heading" className="section-label">Contact</h2>
           <div className="contact-grid">
             <a className="contact-item" href="mailto:dev.mszaman@gmail.com">
-              <i className="ti ti-mail"></i>
+              <i className="ti ti-mail" aria-hidden="true"></i>
               <div>
                 <div className="contact-label">Email</div>
                 <div className="contact-val">dev.mszaman@gmail.com</div>
               </div>
             </a>
             <a className="contact-item" href="https://www.linkedin.com/in/sharfuzzaman/" target="_blank" rel="noopener noreferrer">
-              <i className="ti ti-brand-linkedin"></i>
+              <i className="ti ti-brand-linkedin" aria-hidden="true"></i>
               <div>
                 <div className="contact-label">LinkedIn</div>
                 <div className="contact-val">sharfuzzaman</div>
               </div>
             </a>
             <a className="contact-item" href="tel:+8801764121252">
-              <i className="ti ti-brand-whatsapp"></i>
+              <i className="ti ti-brand-whatsapp" aria-hidden="true"></i>
               <div>
                 <div className="contact-label">WhatsApp</div>
                 <div className="contact-val">+880 1764 121252</div>
               </div>
             </a>
             <a className="contact-item" href="https://github.com/ms-zaman" target="_blank" rel="noopener noreferrer">
-              <i className="ti ti-brand-github"></i>
+              <i className="ti ti-brand-github" aria-hidden="true"></i>
               <div>
                 <div className="contact-label">GitHub</div>
                 <div className="contact-val">ms-zaman</div>

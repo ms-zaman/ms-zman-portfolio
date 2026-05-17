@@ -19,10 +19,10 @@ const NotFound = () => {
         marginBottom: '2rem',
         lineHeight: 1.6,
       }}>
-        The page you're looking for doesn't exist or has been moved.
+        The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
       <Link to="/" className="btn btn-primary">
-        Back to Home <i className="ti ti-arrow-right"></i>
+        Back to Home <i className="ti ti-arrow-right" aria-hidden="true"></i>
       </Link>
     </div>
   );
