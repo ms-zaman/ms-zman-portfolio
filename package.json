@@ -9,11 +9,11 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "^5.8.0",
-    "@astrojs/react": "^4.3.0",
-    "@astrojs/sitemap": "^3.3.0",
+    "@astrojs/react": "^5.0.5",
+    "@astrojs/sitemap": "^3.7.2",
+    "astro": "^6.3.3",
+    "fuse.js": "^7.3.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "fuse.js": "^7.3.0"
+    "react-dom": "^18.2.0"
   }
 }
