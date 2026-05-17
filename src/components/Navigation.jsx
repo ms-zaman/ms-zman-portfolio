@@ -53,7 +53,7 @@ const Navigation = () => {
           </li>
         </ul>
 
-        {/* Mobile menu button */}
+        {/* Mobile menu button — inline SVG, no icon library needed */}
         <button
           ref={toggleRef}
           className="mobile-menu-btn"

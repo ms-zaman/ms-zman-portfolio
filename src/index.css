@@ -568,6 +568,9 @@ svg {
   font-size: 13px;
   color: var(--text-3);
   transition: color 0.15s;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
 }
 
 .template-row:hover .template-arrow {
@@ -722,9 +725,12 @@ svg {
   background: var(--bg-3);
 }
 
-.contact-item i {
+.contact-item > svg {
   font-size: 16px;
   color: var(--text-3);
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
 }
 
 .contact-label {
@@ -777,6 +783,11 @@ svg {
   transition: color 0.15s;
   display: flex;
   align-items: center;
+}
+
+.footer-links a svg {
+  width: 18px;
+  height: 18px;
 }
 
 .footer-links a:hover {

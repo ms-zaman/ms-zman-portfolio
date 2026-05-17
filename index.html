@@ -22,10 +22,34 @@
     <meta name="twitter:description" content="5+ years building web interfaces across React, Tailwind CSS, WordPress, Shopify Liquid, and page builder ecosystems." />
 
     <title>MS Zaman — Frontend Developer</title>
+
+    <!--
+      PERFORMANCE: Non-render-blocking font loading strategy.
+      1. Preconnect to font origins (already fast — just DNS+TLS handshake).
+      2. Load fonts with media="print" + onload swap — browser downloads them
+         without blocking paint, then swaps to screen media once loaded.
+      3. <noscript> fallback for non-JS crawlers.
+    -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css" crossorigin="anonymous" />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    </noscript>
+
+    <!-- REMOVED: @tabler/icons-webfont — replaced with inline SVG components.
+         This eliminates ~400KB+ of render-blocking CSS + webfont downloads
+         for only 7 icons used across the entire site. -->
   </head>
   <body>
     <div id="root"></div>

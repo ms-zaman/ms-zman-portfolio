@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { IconArrowRight } from '../components/Icons';
 
 const NotFound = () => {
   return (
@@ -22,7 +23,7 @@ const NotFound = () => {
         The page you&apos;re looking for doesn&apos;t exist or has been moved.
       </p>
       <Link to="/" className="btn btn-primary">
-        Back to Home <i className="ti ti-arrow-right" aria-hidden="true"></i>
+        Back to Home <IconArrowRight />
       </Link>
     </div>
   );

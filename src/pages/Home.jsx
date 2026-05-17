@@ -1,4 +1,12 @@
 import FadeIn from '../components/FadeIn';
+import {
+  IconArrowRight,
+  IconArrowUpRight,
+  IconMail,
+  IconBrandLinkedin,
+  IconBrandWhatsapp,
+  IconBrandGithub,
+} from '../components/Icons';
 
 const EXPERIENCE = [
   {
@@ -103,7 +111,7 @@ const TemplateRow = ({ name, cat, url }) => (
   <a className="template-row" href={url} target="_blank" rel="noopener noreferrer">
     <span className="template-name">{name}</span>
     <span className="template-cat">{cat}</span>
-    <i className="ti ti-arrow-up-right template-arrow" aria-hidden="true"></i>
+    <IconArrowUpRight className="template-arrow" />
   </a>
 );
 
@@ -125,7 +133,7 @@ const Home = () => {
         </p>
         <div className="hero-ctas">
           <a href="#work" className="btn btn-primary">
-            View Work <i className="ti ti-arrow-right" aria-hidden="true"></i>
+            View Work <IconArrowRight />
           </a>
           <a href="#contact" className="btn btn-ghost">
             Get in Touch
@@ -221,7 +229,7 @@ const Home = () => {
               <div className="project-right">
                 <span className="project-tag">Web Development</span>
                 <span className="project-link">
-                  Ask me <i className="ti ti-arrow-up-right" aria-hidden="true"></i>
+                  Ask me <IconArrowUpRight />
                 </span>
               </div>
             </a>
@@ -301,28 +309,28 @@ const Home = () => {
           <h2 id="contact-heading" className="section-label">Contact</h2>
           <div className="contact-grid">
             <a className="contact-item" href="mailto:dev.mszaman@gmail.com">
-              <i className="ti ti-mail" aria-hidden="true"></i>
+              <IconMail />
               <div>
                 <div className="contact-label">Email</div>
                 <div className="contact-val">dev.mszaman@gmail.com</div>
               </div>
             </a>
             <a className="contact-item" href="https://www.linkedin.com/in/sharfuzzaman/" target="_blank" rel="noopener noreferrer">
-              <i className="ti ti-brand-linkedin" aria-hidden="true"></i>
+              <IconBrandLinkedin />
               <div>
                 <div className="contact-label">LinkedIn</div>
                 <div className="contact-val">sharfuzzaman</div>
               </div>
             </a>
             <a className="contact-item" href="tel:+8801764121252">
-              <i className="ti ti-brand-whatsapp" aria-hidden="true"></i>
+              <IconBrandWhatsapp />
               <div>
                 <div className="contact-label">WhatsApp</div>
                 <div className="contact-val">+880 1764 121252</div>
               </div>
             </a>
             <a className="contact-item" href="https://github.com/ms-zaman" target="_blank" rel="noopener noreferrer">
-              <i className="ti ti-brand-github" aria-hidden="true"></i>
+              <IconBrandGithub />
               <div>
                 <div className="contact-label">GitHub</div>
                 <div className="contact-val">ms-zaman</div>

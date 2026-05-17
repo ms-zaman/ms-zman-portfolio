@@ -1,3 +1,10 @@
+import {
+  IconBrandGithub,
+  IconBrandLinkedin,
+  IconMail,
+  IconArrowUp,
+} from './Icons';
+
 const Footer = () => {
   return (
     <footer className="site-footer">
@@ -13,7 +20,7 @@ const Footer = () => {
             rel="noopener noreferrer"
             aria-label="GitHub profile"
           >
-            <i className="ti ti-brand-github" aria-hidden="true"></i>
+            <IconBrandGithub />
           </a>
           <a
             href="https://www.linkedin.com/in/sharfuzzaman/"
@@ -21,18 +28,18 @@ const Footer = () => {
             rel="noopener noreferrer"
             aria-label="LinkedIn profile"
           >
-            <i className="ti ti-brand-linkedin" aria-hidden="true"></i>
+            <IconBrandLinkedin />
           </a>
           <a
             href="mailto:dev.mszaman@gmail.com"
             aria-label="Send email"
           >
-            <i className="ti ti-mail" aria-hidden="true"></i>
+            <IconMail />
           </a>
         </div>
       </div>
       <a href="#main-content" className="back-to-top">
-        Back to top <i className="ti ti-arrow-up" aria-hidden="true"></i>
+        Back to top <IconArrowUp />
       </a>
     </footer>
   );
