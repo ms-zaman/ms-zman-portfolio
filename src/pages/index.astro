@@ -131,8 +131,8 @@ const LEARNING = [
     <section id="experience" class="section" aria-labelledby="experience-heading">
       <h2 id="experience-heading" class="section-label">Experience</h2>
       <div class="timeline">
-        {EXPERIENCE.map((exp) => (
-          <div class="tl-item">
+        {EXPERIENCE.map((exp, index) => (
+          <div class="tl-item" style={`top: calc(80px + ${index * 1.5}rem);`}>
             <div class={`tl-dot ${exp.current ? 'current' : ''}`} aria-hidden="true"></div>
             <div class="tl-body">
               <div class="tl-role">{exp.role}</div>

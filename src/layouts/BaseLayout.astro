@@ -1,10 +1,14 @@
 ---
+import type { ImageMetadata } from 'astro';
+import defaultFeaturedImage from '../images/ms-zaman-featured-img.webp';
+
 interface Props {
   title?: string;
   description?: string;
   ogTitle?: string;
   ogDescription?: string;
   canonicalPath?: string;
+  ogImage?: string | ImageMetadata;
 }
 
 const {
@@ -13,6 +17,7 @@ const {
   ogTitle = 'MS Zaman — Frontend Developer',
   ogDescription = '5+ years building web interfaces across React, Tailwind CSS, WordPress, Shopify Liquid, and page builder ecosystems.',
   canonicalPath = '/',
+  ogImage = defaultFeaturedImage,
 } = Astro.props;
 
 import Navigation from '../components/Navigation.astro';
@@ -20,6 +25,10 @@ import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
 const canonicalURL = new URL(canonicalPath, Astro.site);
+const ogImageSrc = typeof ogImage === 'string' ? ogImage : ogImage.src;
+const ogImageWidth = typeof ogImage === 'string' ? undefined : ogImage.width;
+const ogImageHeight = typeof ogImage === 'string' ? undefined : ogImage.height;
+const ogImageURL = new URL(ogImageSrc, Astro.site);
 ---
 
 <!doctype html>
@@ -37,13 +46,17 @@ const canonicalURL = new URL(canonicalPath, Astro.site);
     <meta property="og:description" content={ogDescription} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImageURL} />
+    {ogImageWidth && <meta property="og:image:width" content={ogImageWidth.toString()} />}
+    {ogImageHeight && <meta property="og:image:height" content={ogImageHeight.toString()} />}
     <meta property="og:locale" content="en_US" />
     <meta property="og:site_name" content="MS Zaman Portfolio" />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={ogTitle} />
     <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImageURL} />
 
     <title>{title}</title>
 
