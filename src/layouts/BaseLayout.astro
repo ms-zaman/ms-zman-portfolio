@@ -29,11 +29,24 @@ const ogImageSrc = typeof ogImage === 'string' ? ogImage : ogImage.src;
 const ogImageWidth = typeof ogImage === 'string' ? undefined : ogImage.width;
 const ogImageHeight = typeof ogImage === 'string' ? undefined : ogImage.height;
 const ogImageURL = new URL(ogImageSrc, Astro.site);
+const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
+    {gaId && (
+      <>
+        <!-- Google tag (gtag.js) -->
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+        <script is:inline define:vars={{ gaId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
