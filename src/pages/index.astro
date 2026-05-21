@@ -103,29 +103,31 @@ const LEARNING = [
 
 <BaseLayout>
   <!-- ===== HERO ===== -->
-  <div class="fade-in hero" style="transition-delay: 0.05s;">
-    <h1>MS Zaman</h1>
-    <p class="hero-role">
-      Frontend Developer <span aria-hidden="true">·</span> Dhaka, Bangladesh
-    </p>
-    <p class="hero-bio">
-      5+ years building web interfaces across <strong>React</strong>, <strong>Tailwind CSS</strong>,{' '}
-      <strong>WordPress</strong>, <strong>Shopify Liquid</strong>, and page builder ecosystems
-      including <strong>Elementor</strong>, <strong>Gutenberg</strong>, <strong>Framer</strong>, and <strong>Webflow</strong>.
-      Currently at Startise and contributing to the Templately template library —
-      templates I&apos;ve built are live and used by thousands of WordPress users globally.
-    </p>
-    <div class="hero-ctas">
-      <a href="#work" class="btn btn-primary">
-        View Work
-        <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: inline-block; vertical-align: -0.125em;">
-          <path d="M5 12h14" /><path d="M13 18l6-6" /><path d="M13 6l6 6" />
-        </svg>
-      </a>
-      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+  <div class="hero-container">
+    <canvas id="hero-canvas" class="hero-canvas"></canvas>
+    <div class="fade-in hero" style="transition-delay: 0.05s;">
+      <h1>MS Zaman</h1>
+      <p class="hero-role">
+        Frontend Developer <span aria-hidden="true">·</span> Dhaka, Bangladesh
+      </p>
+      <p class="hero-bio">
+        5+ years building web interfaces across <strong>React</strong>, <strong>Tailwind CSS</strong>,{' '}
+        <strong>WordPress</strong>, <strong>Shopify Liquid</strong>, and page builder ecosystems
+        including <strong>Elementor</strong>, <strong>Gutenberg</strong>, <strong>Framer</strong>, and <strong>Webflow</strong>.
+        Currently at Startise and contributing to the Templately template library —
+        templates I&apos;ve built are live and used by thousands of WordPress users globally.
+      </p>
+      <div class="hero-ctas">
+        <a href="#work" class="btn btn-primary">
+          View Work
+          <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: inline-block; vertical-align: -0.125em;">
+            <path d="M5 12h14" /><path d="M13 18l6-6" /><path d="M13 6l6 6" />
+          </svg>
+        </a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      </div>
     </div>
   </div>
-
   <!-- ===== EXPERIENCE ===== -->
   <div class="fade-in">
     <section id="experience" class="section" aria-labelledby="experience-heading">
@@ -190,7 +192,7 @@ const LEARNING = [
 
       <!-- Other Projects -->
       <div class="project-list">
-        <div class="project-item" style="cursor: default;">
+        <div class="project-item spotlight-card" style="cursor: default;">
           <div class="project-left">
             <div class="project-name">Yoda — Online Learning Platform</div>
             <div class="project-desc">
@@ -209,7 +211,7 @@ const LEARNING = [
           </div>
         </div>
 
-        <a class="project-item" href="mailto:dev.mszaman@gmail.com">
+        <a class="project-item spotlight-card" href="mailto:dev.mszaman@gmail.com">
           <div class="project-left">
             <div class="project-name">Client Work</div>
             <div class="project-desc">
@@ -309,17 +311,17 @@ const LEARNING = [
     <section id="contact" class="section" aria-labelledby="contact-heading">
       <h2 id="contact-heading" class="section-label">Contact</h2>
       <div class="contact-grid">
-        <a class="contact-item" href="mailto:dev.mszaman@gmail.com">
+        <a class="contact-item spotlight-card copyable" href="mailto:dev.mszaman@gmail.com" data-copy="dev.mszaman@gmail.com" title="Click to copy email">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
             <path d="M3 7l9 6 9-6" />
           </svg>
           <div>
-            <div class="contact-label">Email</div>
+            <div class="contact-label">Email <span class="copy-hint">— Click to copy</span></div>
             <div class="contact-val">dev.mszaman@gmail.com</div>
           </div>
         </a>
-        <a class="contact-item" href="https://www.linkedin.com/in/sharfuzzaman/" target="_blank" rel="noopener noreferrer">
+        <a class="contact-item spotlight-card" href="https://www.linkedin.com/in/sharfuzzaman/" target="_blank" rel="noopener noreferrer">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 4m0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
             <path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 0 0-4 0" />
@@ -329,17 +331,17 @@ const LEARNING = [
             <div class="contact-val">sharfuzzaman</div>
           </div>
         </a>
-        <a class="contact-item" href="tel:+8801764121252">
+        <a class="contact-item spotlight-card copyable" href="tel:+8801764121252" data-copy="+8801764121252" title="Click to copy phone number">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
             <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1" />
           </svg>
           <div>
-            <div class="contact-label">WhatsApp</div>
+            <div class="contact-label">WhatsApp <span class="copy-hint">— Click to copy</span></div>
             <div class="contact-val">+880 1764 121252</div>
           </div>
         </a>
-        <a class="contact-item" href="https://github.com/ms-zaman" target="_blank" rel="noopener noreferrer">
+        <a class="contact-item spotlight-card" href="https://github.com/ms-zaman" target="_blank" rel="noopener noreferrer">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" />
           </svg>
@@ -352,4 +354,157 @@ const LEARNING = [
       <p class="contact-note">Usually reply within 2 hours.</p>
     </section>
   </div>
+  <!-- ===== Toast Notification for Clipboard Copy ===== -->
+  <div id="toast-notification" class="toast-notification" role="alert" aria-live="polite">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-right: 6px; display: inline-block; vertical-align: -0.125em;">
+      <path d="M20 6L9 17l-5-5" />
+    </svg>
+    Copied to clipboard!
+  </div>
+
+  <!-- Interactive Scripts -->
+  <script is:inline>
+    (function() {
+      // --- 1. Interactive Canvas Particle Background ---
+      const canvas = document.getElementById('hero-canvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          let width = 0;
+          let height = 0;
+          let particles = [];
+          const particleCount = 40;
+          const maxDistance = 90;
+          let mouse = { x: null, y: null, radius: 100 };
+
+          function resize() {
+            const rect = canvas.getBoundingClientRect();
+            width = canvas.width = rect.width;
+            height = canvas.height = rect.height;
+          }
+
+          class Particle {
+            constructor() {
+              this.x = Math.random() * width;
+              this.y = Math.random() * height;
+              this.vx = (Math.random() - 0.5) * 0.25;
+              this.vy = (Math.random() - 0.5) * 0.25;
+              this.radius = Math.random() * 1.5 + 0.6;
+              this.originalRadius = this.radius;
+            }
+
+            update() {
+              this.x += this.vx;
+              this.y += this.vy;
+
+              if (this.x < 0 || this.x > width) this.vx *= -1;
+              if (this.y < 0 || this.y > height) this.vy *= -1;
+
+              if (mouse.x !== null && mouse.y !== null) {
+                const dx = this.x - mouse.x;
+                const dy = this.y - mouse.y;
+                const dist = Math.hypot(dx, dy);
+                
+                if (dist < mouse.radius) {
+                  const force = (mouse.radius - dist) / mouse.radius;
+                  this.x += (dx / dist) * force * 0.6;
+                  this.y += (dy / dist) * force * 0.6;
+                  this.radius = this.originalRadius + force * 1.2;
+                } else {
+                  if (this.radius > this.originalRadius) {
+                    this.radius -= 0.04;
+                  }
+                }
+              }
+            }
+
+            draw() {
+              ctx.beginPath();
+              ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+              const isDark = !document.documentElement.hasAttribute('data-theme');
+              ctx.fillStyle = isDark ? `rgba(228, 226, 220, 0.15)` : `rgba(26, 26, 26, 0.08)`;
+              ctx.fill();
+            }
+          }
+
+          function init() {
+            resize();
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+              particles.push(new Particle());
+            }
+          }
+
+          function animate() {
+            ctx.clearRect(0, 0, width, height);
+            const isDark = !document.documentElement.hasAttribute('data-theme');
+            const lineColor = isDark ? 'rgba(228, 226, 220, 0.025)' : 'rgba(26, 26, 26, 0.015)';
+            
+            for (let i = 0; i < particles.length; i++) {
+              particles[i].update();
+              particles[i].draw();
+
+              for (let j = i + 1; j < particles.length; j++) {
+                const dx = particles[i].x - particles[j].x;
+                const dy = particles[i].y - particles[j].y;
+                const dist = Math.hypot(dx, dy);
+
+                if (dist < maxDistance) {
+                  ctx.beginPath();
+                  ctx.moveTo(particles[i].x, particles[i].y);
+                  ctx.lineTo(particles[j].x, particles[j].y);
+                  ctx.strokeStyle = lineColor;
+                  ctx.lineWidth = 0.4 * (1 - dist / maxDistance);
+                  ctx.stroke();
+                }
+              }
+            }
+            requestAnimationFrame(animate);
+          }
+
+          window.addEventListener('resize', resize, { passive: true });
+          
+          const heroContainer = canvas.closest('.hero-container');
+          if (heroContainer) {
+            heroContainer.addEventListener('mousemove', (e) => {
+              const rect = canvas.getBoundingClientRect();
+              mouse.x = e.clientX - rect.left;
+              mouse.y = e.clientY - rect.top;
+            }, { passive: true });
+
+            heroContainer.addEventListener('mouseleave', () => {
+              mouse.x = null;
+              mouse.y = null;
+            }, { passive: true });
+          }
+
+          init();
+          animate();
+        }
+      }
+
+      // --- 2. Copy to Clipboard & Toast feedback ---
+      const copyableItems = document.querySelectorAll('.copyable');
+      const toast = document.getElementById('toast-notification');
+
+      copyableItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+          if (navigator.clipboard) {
+            e.preventDefault();
+            const textToCopy = this.getAttribute('data-copy');
+            navigator.clipboard.writeText(textToCopy).then(() => {
+              if (toast) {
+                toast.classList.add('show');
+                setTimeout(() => {
+                  toast.classList.remove('show');
+                }, 2200);
+              }
+            }).catch(err => {
+              console.error('Failed to copy text: ', err);
+            });
+          }
+        });
+      });
+    })();
+  </script>
 </BaseLayout>

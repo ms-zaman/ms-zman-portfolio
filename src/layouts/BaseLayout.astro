@@ -115,6 +115,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     </noscript>
   </head>
   <body>
+    <div id="scroll-progress" class="scroll-progress-bar" aria-hidden="true"></div>
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <Navigation />
     <main id="main-content" class="main-content">
@@ -122,9 +123,10 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     </main>
     <Footer />
 
-    <!-- FadeIn scroll animation — vanilla JS, no React needed -->
+    <!-- Interactive micro-effects & Scroll Spy — vanilla JS for speed and zero dependencies -->
     <script is:inline>
       (function() {
+        // 1. Intersection Observer for fade-in animations
         var observer = new IntersectionObserver(function(entries) {
           entries.forEach(function(entry) {
             if (entry.isIntersecting) {
@@ -137,6 +139,74 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
         document.querySelectorAll('.fade-in').forEach(function(el) {
           observer.observe(el);
         });
+
+        // 2. Scroll Progress Bar & Scroll Spy Active State
+        var progressBar = document.getElementById('scroll-progress');
+        var sections = document.querySelectorAll('section[id]');
+        var navLinks = document.querySelectorAll('.nav-links a, .mobile-nav a');
+        var headerOffset = 80;
+
+        function handleScroll() {
+          // Scroll Progress Bar
+          if (progressBar) {
+            var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            var scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+            progressBar.style.width = scrolled + '%';
+          }
+
+          // Scroll Spy Navigation
+          var scrollPos = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
+          
+          // If close to the top, remove active state
+          if (scrollPos < 100) {
+            navLinks.forEach(function(link) {
+              link.classList.remove('active');
+            });
+            return;
+          }
+
+          var activeSectionId = null;
+          sections.forEach(function(section) {
+            var sectionTop = section.offsetTop - headerOffset - 20;
+            var sectionHeight = section.offsetHeight;
+            var sectionId = section.getAttribute('id');
+
+            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+              activeSectionId = sectionId;
+            }
+          });
+
+          if (activeSectionId) {
+            navLinks.forEach(function(link) {
+              var href = link.getAttribute('href');
+              if (href === '#' + activeSectionId || href === '/#' + activeSectionId) {
+                link.classList.add('active');
+              } else {
+                link.classList.remove('active');
+              }
+            });
+          }
+        }
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        // Run once on load to sync initial states
+        handleScroll();
+
+        // 3. Mouse spotlight coordination (only on non-touch devices for performance)
+        var isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (!isTouchDevice) {
+          document.addEventListener('mousemove', function(e) {
+            var cards = document.querySelectorAll('.spotlight-card');
+            cards.forEach(function(card) {
+              var rect = card.getBoundingClientRect();
+              var x = e.clientX - rect.left;
+              var y = e.clientY - rect.top;
+              card.style.setProperty('--mouse-x', x + 'px');
+              card.style.setProperty('--mouse-y', y + 'px');
+            });
+          });
+        }
       })();
     </script>
   </body>

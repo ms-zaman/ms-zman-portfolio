@@ -474,7 +474,7 @@ svg {
 .project-list {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 12px;
 }
 
 .project-item {
@@ -482,14 +482,12 @@ svg {
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 0;
-  border-bottom: 0.5px solid var(--border);
+  padding: 16px;
+  background: var(--bg-2);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r-md);
   text-decoration: none;
-  transition: background 0.12s;
-}
-
-.project-item:first-child {
-  border-top: 0.5px solid var(--border);
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s, background-color 0.25s;
 }
 
 .project-item:hover .project-name {
@@ -659,25 +657,28 @@ svg {
 
 .skill-list {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 6px;
 }
 
 .skill-item {
-  font-size: 13px;
+  font-size: 11px;
+  font-family: var(--mono);
   color: var(--text-2);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  background: var(--bg-2);
+  border: 0.5px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+  display: inline-block;
 }
 
-.skill-item::before {
-  content: '';
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--text-3);
-  flex-shrink: 0;
+.skill-item:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--accent-dim);
 }
 
 /* ===== LEARNING ===== */
@@ -688,13 +689,22 @@ svg {
 }
 
 .learn-tag {
-  font-size: 12px;
+  font-size: 11px;
   font-family: var(--mono);
   color: var(--text-2);
   background: var(--bg-2);
   border: 0.5px solid var(--border);
   border-radius: 4px;
   padding: 4px 10px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+}
+
+.learn-tag:hover {
+  border-color: var(--green);
+  color: var(--text);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--green-dim);
 }
 
 /* ===== REACT PROJECTS (Build Queue) ===== */
@@ -1280,4 +1290,216 @@ svg {
   color: var(--bg);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px var(--accent-dim);
+}
+
+/* ===== SCROLL PROGRESS BAR ===== */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--accent), var(--green));
+  width: 0%;
+  z-index: 1000;
+  transition: width 0.05s ease-out;
+}
+
+/* ===== CIRCULAR VIEW TRANSITIONS THEME TOGGLE ===== */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+/* ===== HERO PARTICLES CONTAINER ===== */
+.hero-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  margin-bottom: 4rem;
+}
+
+.hero-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.85;
+}
+
+.hero {
+  margin-bottom: 0 !important; /* Managed by hero-container now */
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== SPOTLIGHT CARD HOVER GLOW ===== */
+.spotlight-card {
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+
+.spotlight-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    300px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+    rgba(61, 142, 232, 0.06),
+    transparent 80%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+[data-theme="light"] .spotlight-card::before {
+  background: radial-gradient(
+    300px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+    rgba(28, 82, 153, 0.04),
+    transparent 80%
+  );
+}
+
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
+.spotlight-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent-border) !important;
+  box-shadow: var(--shadow-card);
+}
+
+.spotlight-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== TIMELINE FOCUS EFFECTS ===== */
+.timeline:hover .tl-item:not(:hover) {
+  opacity: 0.45;
+  transform: scale(0.99);
+}
+
+.tl-item {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+}
+
+.tl-item:hover {
+  transform: scale(1.01) translateX(4px);
+  z-index: 15;
+}
+
+.tl-item:hover .tl-dot {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+  box-shadow: 0 0 10px rgba(61, 142, 232, 0.4);
+  transform: scale(1.15);
+}
+
+.tl-dot {
+  transition: all 0.25s ease;
+}
+
+/* ===== TEMPLATE ROW HOVER ANIMATION ===== */
+.template-row {
+  position: relative;
+  transition: padding-left 0.2s ease, border-color 0.2s ease;
+}
+
+.template-row:hover {
+  padding-left: 8px;
+  border-bottom-color: var(--accent-border);
+}
+
+.template-arrow {
+  transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.2s ease;
+}
+
+.template-row:hover .template-arrow {
+  transform: translate(3px, -3px) scale(1.1);
+  color: var(--accent);
+}
+
+/* ===== TOAST NOTIFICATION ===== */
+.toast-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--bg-3);
+  border: 0.5px solid var(--border-2);
+  color: var(--text);
+  padding: 10px 16px;
+  border-radius: var(--r-md);
+  font-size: 12px;
+  font-family: var(--mono);
+  box-shadow: var(--shadow-card);
+  opacity: 0;
+  transform: translateY(12px) scale(0.95);
+  pointer-events: none;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+}
+
+.toast-notification.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+[data-theme="light"] .toast-notification {
+  background: var(--bg-2);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+}
+
+.copy-hint {
+  font-size: 9px;
+  color: var(--text-3);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  font-family: var(--mono);
+  margin-left: 6px;
+}
+
+.contact-item:hover .copy-hint {
+  opacity: 0.75;
+}
+
+/* Reduced motion settings */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress-bar,
+  .tl-item,
+  .template-row,
+  .template-arrow,
+  .toast-notification,
+  .spotlight-card,
+  .skill-item,
+  .learn-tag {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  .timeline:hover .tl-item:not(:hover) {
+    opacity: 1;
+    transform: none;
+  }
 }

@@ -51,28 +51,62 @@ const ThemeToggle = ({ className = '' }) => {
       setTheme('light');
     }
   }, []);
-
-  const toggleTheme = () => {
+  const toggleTheme = (e) => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     
-    // Add transition class for smooth color change
-    document.documentElement.classList.add('theme-transition');
-    
-    // Update theme
-    if (newTheme === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
-    } else {
-      document.documentElement.removeAttribute('data-theme');
+    const performThemeToggle = () => {
+      // Update theme
+      if (newTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      
+      // Save to state and storage
+      setTheme(newTheme);
+      localStorage.setItem('theme', newTheme);
+    };
+
+    // Check for startViewTransition support and reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!document.startViewTransition || prefersReducedMotion) {
+      document.documentElement.classList.add('theme-transition');
+      performThemeToggle();
+      setTimeout(() => {
+        document.documentElement.classList.remove('theme-transition');
+      }, 300);
+      return;
     }
-    
-    // Save to state and storage
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    
-    // Remove transition class after animation completes
-    setTimeout(() => {
-      document.documentElement.classList.remove('theme-transition');
-    }, 300);
+
+    // Circular clip path reveal starting from click coordinates
+    const x = e.clientX ?? window.innerWidth / 2;
+    const y = e.clientY ?? window.innerHeight / 2;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    const transition = document.startViewTransition(() => {
+      performThemeToggle();
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ];
+      
+      document.documentElement.animate(
+        {
+          clipPath: clipPath,
+        },
+        {
+          duration: 400,
+          easing: 'ease-out',
+          pseudoElement: '::view-transition-new(root)',
+        }
+      );
+    });
   };
 
   return (
