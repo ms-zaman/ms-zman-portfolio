@@ -12,7 +12,7 @@ dist
 .astro/
 dist-ssr
 *.local
-
+docs
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

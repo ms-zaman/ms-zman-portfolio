@@ -23,6 +23,7 @@ const {
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 
 const canonicalURL = new URL(canonicalPath, Astro.site);
 const ogImageSrc = typeof ogImage === 'string' ? ogImage : ogImage.src;
@@ -113,8 +114,15 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     <noscript>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
     </noscript>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" is:inline></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" is:inline></script>
+    <ClientRouter />
   </head>
   <body>
+    <div id="cursor" class="cursor" aria-hidden="true">
+      <div class="cursor-dot"></div>
+      <div class="cursor-ring"></div>
+    </div>
     <div id="scroll-progress" class="scroll-progress-bar" aria-hidden="true"></div>
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <Navigation />
@@ -125,12 +133,13 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
 
     <!-- Interactive micro-effects & Scroll Spy — vanilla JS for speed and zero dependencies -->
     <script is:inline>
-      (function() {
+      document.addEventListener('astro:page-load', function() {
         // 1. Intersection Observer for fade-in animations
         var observer = new IntersectionObserver(function(entries) {
           entries.forEach(function(entry) {
             if (entry.isIntersecting) {
               entry.target.classList.add('visible');
+              entry.target.classList.add('is-visible');
               observer.unobserve(entry.target);
             }
           });
@@ -139,15 +148,16 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
         document.querySelectorAll('.fade-in').forEach(function(el) {
           observer.observe(el);
         });
+        document.querySelectorAll('.stagger-item').forEach(function(el) {
+          observer.observe(el);
+        });
 
         // 2. Scroll Progress Bar & Scroll Spy Active State
-        var progressBar = document.getElementById('scroll-progress');
-        var sections = document.querySelectorAll('section[id]');
-        var navLinks = document.querySelectorAll('.nav-links a, .mobile-nav a');
         var headerOffset = 80;
 
         function handleScroll() {
           // Scroll Progress Bar
+          var progressBar = document.getElementById('scroll-progress');
           if (progressBar) {
             var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
             var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -156,9 +166,10 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
           }
 
           // Scroll Spy Navigation
+          var navLinks = document.querySelectorAll('.nav-links a, .mobile-nav a');
+          var sections = document.querySelectorAll('section[id]');
           var scrollPos = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
           
-          // If close to the top, remove active state
           if (scrollPos < 100) {
             navLinks.forEach(function(link) {
               link.classList.remove('active');
@@ -189,14 +200,16 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
           }
         }
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        // Run once on load to sync initial states
+        window.removeEventListener('scroll', window.__handleScroll);
+        window.__handleScroll = handleScroll;
+        window.addEventListener('scroll', window.__handleScroll, { passive: true });
         handleScroll();
 
         // 3. Mouse spotlight coordination (only on non-touch devices for performance)
         var isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
         if (!isTouchDevice) {
-          document.addEventListener('mousemove', function(e) {
+          window.removeEventListener('mousemove', window.__handleSpotlight);
+          window.__handleSpotlight = function(e) {
             var cards = document.querySelectorAll('.spotlight-card');
             cards.forEach(function(card) {
               var rect = card.getBoundingClientRect();
@@ -205,9 +218,82 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
               card.style.setProperty('--mouse-x', x + 'px');
               card.style.setProperty('--mouse-y', y + 'px');
             });
-          });
+          };
+          window.addEventListener('mousemove', window.__handleSpotlight, { passive: true });
         }
-      })();
+
+        // 4. Custom cursor logic (desktop pointer:fine devices only)
+        var isFinePointer = window.matchMedia('(pointer: fine)').matches;
+        if (isFinePointer) {
+          if (!window.__cursorInitialized) {
+            window.__cursorInitialized = true;
+            window.__mouseX = 0;
+            window.__mouseY = 0;
+            window.__ringX = 0;
+            window.__ringY = 0;
+            window.__cursorHasMoved = false;
+
+            document.addEventListener('mousemove', function(e) {
+              if (!window.__cursorHasMoved) {
+                window.__cursorHasMoved = true;
+                var cursorEl = document.getElementById('cursor');
+                if (cursorEl) cursorEl.style.opacity = '1';
+              }
+              window.__mouseX = e.clientX;
+              window.__mouseY = e.clientY;
+              var dotEl = document.querySelector('.cursor-dot');
+              if (dotEl) {
+                dotEl.style.transform = 'translate(calc(-50% + ' + window.__mouseX + 'px), calc(-50% + ' + window.__mouseY + 'px))';
+              }
+            }, { passive: true });
+
+            function animateRing() {
+              window.__ringX += (window.__mouseX - window.__ringX) * 0.12;
+              window.__ringY += (window.__mouseY - window.__ringY) * 0.12;
+              var ringEl = document.querySelector('.cursor-ring');
+              if (ringEl) {
+                ringEl.style.transform = 'translate(calc(-50% + ' + window.__ringX + 'px), calc(-50% + ' + window.__ringY + 'px))';
+              }
+              requestAnimationFrame(animateRing);
+            }
+            requestAnimationFrame(animateRing);
+
+            document.addEventListener('mouseover', function(e) {
+              var target = e.target;
+              while (target && target !== document.body) {
+                if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.getAttribute('role') === 'button' || target.classList.contains('copyable')) {
+                  var type = target.classList.contains('btn') ? 'button' : 'link';
+                  document.body.classList.add('cursor-on-' + type);
+                  return;
+                }
+                target = target.parentNode;
+              }
+            });
+
+            document.addEventListener('mouseout', function(e) {
+              var target = e.target;
+              while (target && target !== document.body) {
+                if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.getAttribute('role') === 'button' || target.classList.contains('copyable')) {
+                  document.body.classList.remove('cursor-on-link', 'cursor-on-button');
+                  return;
+                }
+                target = target.parentNode;
+              }
+            });
+
+            document.addEventListener('mouseleave', function() {
+              var cursorEl = document.getElementById('cursor');
+              if (cursorEl) cursorEl.style.opacity = '0';
+            });
+            document.addEventListener('mouseenter', function() {
+              if (window.__cursorHasMoved) {
+                var cursorEl = document.getElementById('cursor');
+                if (cursorEl) cursorEl.style.opacity = '1';
+              }
+            });
+          }
+        }
+      });
     </script>
   </body>
 </html>
