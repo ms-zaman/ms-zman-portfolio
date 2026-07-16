@@ -1,0 +1,77 @@
+---
+/**
+ * SkyLayout — the light "Sky" theme shell for the redesigned homepage.
+ * Independent of BaseLayout (the blog's dark theme), so the two design
+ * systems coexist during the incremental migration.
+ */
+import '../styles/sky-tokens.css';
+import '../styles/sky-base.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = 'MS Zaman — Web Developer · React, WordPress & Shopify',
+  description = 'MS Zaman — web developer in Dhaka building production sites in React, WordPress & Shopify, plus 45+ page-builder templates used by 700K+ people.',
+  image = 'https://items.templately.com/pack-45896bdb2abe1521d2c17044e5ce682a/saastrive-saas-website-template-for-elementor-og_image-MRupjxL.jpg',
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://sharfuzzaman.com').href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="MS Zaman" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={image} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={image} />
+
+    <link rel="icon" href="/favicon.svg" />
+
+    <link rel="preload" as="image" href="/sky/sky.avif" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;450;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="sky">
+    <slot />
+
+    <script>
+      // Scroll-reveal: add .in when elements enter the viewport.
+      const els = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && els.length) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('in');
+              io.unobserve(e.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -8% 0px' });
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('in'));
+      }
+    </script>
+  </body>
+</html>

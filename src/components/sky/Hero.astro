@@ -1,0 +1,210 @@
+---
+/**
+ * Hero — the immersive sky header.
+ * The sky background is parameterised via CSS variables (--sun-x/-y, --sun-glow,
+ * --sky-tint) so the SkyEngine can later drive it from real time & weather.
+ * With the default token values it renders as a clear midday sky.
+ */
+import Button from './Button.astro';
+import Tag from './Tag.astro';
+
+const stack = ['React', 'WordPress', 'Shopify', 'Tailwind'];
+const industries = ['SaaS', 'E-commerce', 'Agencies'];
+const stats = [
+  { n: '700K+', l: 'users' },
+  { n: '45+', l: 'templates' },
+  { n: '5 yrs', l: 'experience' },
+];
+const birds = [
+  { cls: 'b1', dur: '0.5s' },
+  { cls: 'b2', dur: '0.42s' },
+  { cls: 'b3', dur: '0.55s' },
+  { cls: 'b4', dur: '0.46s' },
+];
+---
+<header class="hero">
+  <!-- drifting cloud cut-outs -->
+  <div class="cloud a"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="eager" /></div></div>
+  <div class="cloud b"><div class="bob"><img src="/sky/cloud-2.png" alt="" loading="eager" /></div></div>
+  <div class="cloud c"><div class="bob"><img src="/sky/cloud-2.png" alt="" loading="eager" /></div></div>
+  <div class="cloud d"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="eager" /></div></div>
+  <div class="cloud e"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="eager" /></div></div>
+
+  <!-- flapping birds (SMIL) -->
+  {birds.map((b) => (
+    <div class={`bird ${b.cls}`}>
+      <svg viewBox="0 0 44 26"><path fill="none" stroke="#274a6b" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" d="M2 15 Q12 3 22 12 Q32 3 42 15">
+        <animate attributeName="d" dur={b.dur} repeatCount="indefinite" values="M2 15 Q12 3 22 12 Q32 3 42 15;M2 13 Q12 15 22 11 Q32 15 42 13;M2 15 Q12 3 22 12 Q32 3 42 15" />
+      </path></svg>
+    </div>
+  ))}
+
+  <nav class="nav">
+    <div class="nav-in">
+      <span class="nav-brand"><span class="mono">MZ</span>MS Zaman</span>
+      <span class="nav-links">
+        <a href="#services">Services</a><a href="#work">Work</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
+      </span>
+      <a href="#contact" class="nav-cta">Let's talk</a>
+    </div>
+  </nav>
+
+  <div class="sky-wrap hero-grid">
+    <div class="greet">Hey, I'm MS Zaman — web developer in Dhaka</div>
+    <h1 class="h1">Building web experiences that just <span class="u"><em>work</em></span>.</h1>
+
+    <div class="hero-lower">
+      <div>
+        <p class="intro">Shipping production sites across <b>React</b>, <b>WordPress</b> &amp; <b>Shopify</b> — plus page-builder templates used by <b>700K+</b> people.</p>
+        <div class="cta-row">
+          <Button href="#work" variant="solid">View work <span aria-hidden="true">→</span></Button>
+          <Button href="#" variant="glass">Résumé (PDF)</Button>
+          <span class="socials">
+            <a href="https://github.com/ms-zaman" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" /></svg></a>
+            <a href="https://www.linkedin.com/in/sharfuzzaman/" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4m0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" /><path d="M8 11v5" /><path d="M8 8v.01" /><path d="M12 16v-5" /><path d="M16 16v-3a2 2 0 0 0-4 0" /></svg></a>
+          </span>
+        </div>
+      </div>
+
+      <div class="glance">
+        <h3>Stack</h3>
+        <div class="g-tags">{stack.map((t) => <Tag variant="glass">{t}</Tag>)}</div>
+        <h3>Industries</h3>
+        <div class="g-tags">{industries.map((t) => <Tag variant="glass">{t}</Tag>)}</div>
+        <div class="g-stats">
+          {stats.map((s) => <div><b>{s.n}</b><span>{s.l}</span></div>)}
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    background:
+      url('/sky/sky.avif') center top / cover no-repeat,
+      linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 44%, var(--sky-3) 66%, var(--sky-4) 82%, var(--horizon) 100%);
+  }
+  /* atmosphere — sun glow (position + colour driven by SkyEngine) + optional tint */
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, var(--sky-tint), var(--sky-tint-2)),
+      radial-gradient(38% 34% at var(--sun-x) var(--sun-y), var(--sun-glow), rgba(255, 240, 205, .28) 42%, rgba(255, 240, 205, 0) 66%);
+    transition: background 1.2s ease;
+  }
+  /* legibility scrim so white type reads over clouds; fades to white at the bottom */
+  .hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background:
+      linear-gradient(100deg, rgba(14, 38, 74, .42) 0%, rgba(14, 38, 74, .16) 40%, rgba(14, 38, 74, 0) 64%),
+      radial-gradient(150% 80% at 88% 116%, rgba(255, 255, 255, .95) 0%, rgba(255, 255, 255, 0) 58%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0) 58%, rgba(255, 255, 255, .6) 80%, rgba(255, 255, 255, .92) 93%, var(--horizon) 100%);
+  }
+
+  /* clouds */
+  .cloud { position: absolute; z-index: 2; pointer-events: none; will-change: transform; }
+  .cloud > .bob { will-change: transform; }
+  .cloud img { width: 100%; height: auto; display: block; }
+  @keyframes cdrift { from { transform: translateX(-40vw); } to { transform: translateX(140vw); } }
+  @keyframes cbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-13px); } }
+  .cloud.a { top: 8%;  width: 460px; opacity: .95; animation: cdrift 95s linear infinite; }
+  .cloud.b { top: 26%; width: 260px; opacity: .6;  animation: cdrift 150s linear infinite; animation-delay: -58s; }
+  .cloud.c { top: 40%; width: 560px; opacity: .8;  animation: cdrift 120s linear infinite; animation-delay: -82s; }
+  .cloud.d { top: 3%;  width: 200px; opacity: .5;  animation: cdrift 180s linear infinite; animation-delay: -26s; }
+  .cloud.e { top: 31%; width: 340px; opacity: .65; animation: cdrift 158s linear infinite; animation-delay: -120s; }
+  .cloud.a > .bob { animation: cbob 11s ease-in-out infinite; }
+  .cloud.b > .bob { animation: cbob 8s ease-in-out infinite; }
+  .cloud.c > .bob { animation: cbob 13.5s ease-in-out infinite; }
+  .cloud.d > .bob { animation: cbob 9s ease-in-out infinite; }
+  .cloud.e > .bob { animation: cbob 10.5s ease-in-out infinite; }
+
+  /* birds */
+  .bird { position: absolute; z-index: 3; pointer-events: none; will-change: transform; }
+  .bird svg { width: 100%; height: auto; display: block; }
+  .bird.b1 { top: 19%; width: 30px; opacity: .62; animation: flyA 32s linear infinite; }
+  .bird.b2 { top: 23%; width: 20px; opacity: .5;  animation: flyB 42s linear infinite; animation-delay: -9s; }
+  .bird.b3 { top: 15%; width: 26px; opacity: .56; animation: flyA 37s linear infinite; animation-delay: -19s; }
+  .bird.b4 { top: 29%; width: 16px; opacity: .42; animation: flyB 50s linear infinite; animation-delay: -31s; }
+  @keyframes flyA { 0% { transform: translate(-14vw, 0); } 22% { transform: translate(20vw, -34px); } 48% { transform: translate(50vw, -6px); } 72% { transform: translate(82vw, -40px); } 100% { transform: translate(130vw, -14px); } }
+  @keyframes flyB { 0% { transform: translate(-14vw, 14px); } 30% { transform: translate(30vw, -18px); } 56% { transform: translate(62vw, 16px); } 82% { transform: translate(94vw, -24px); } 100% { transform: translate(132vw, 4px); } }
+
+  /* nav */
+  .nav { position: absolute; top: 26px; left: 0; right: 0; z-index: 20; display: flex; justify-content: center; }
+  .nav-in {
+    display: flex; align-items: center; gap: 26px;
+    padding: 9px 12px 9px 16px; border-radius: var(--r-pill);
+    background: var(--glass); border: 1px solid var(--glass-line);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 30px rgba(40, 80, 140, .12);
+  }
+  .nav-brand { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15px; color: var(--ink); }
+  .nav-brand .mono {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff;
+    display: grid; place-items: center; font-size: 11px; font-weight: 600;
+  }
+  .nav-links { display: flex; gap: 20px; }
+  .nav-links a { font-size: 14px; color: var(--ink-2); transition: color .2s; }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta { font-size: 13.5px; font-weight: 500; color: #fff; background: var(--ink); padding: 8px 15px; border-radius: var(--r-pill); transition: .2s; }
+  .nav-cta:hover { background: var(--accent); }
+  @media (max-width: 760px) { .nav-links { display: none; } }
+
+  /* hero content */
+  .hero-grid { position: relative; z-index: 10; padding-top: 18vh; display: flex; flex-direction: column; gap: 34px; }
+  .greet { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; color: #eaf3ff; text-shadow: 0 1px 3px rgba(18, 44, 84, .5); }
+  .h1 {
+    font-family: var(--display); font-weight: 600; font-size: clamp(40px, 5.6vw, 72px);
+    line-height: 1.04; letter-spacing: -.035em; color: #fff; max-width: 16ch;
+    text-shadow: 0 2px 10px rgba(18, 44, 84, .3);
+  }
+  .h1 em { font-style: italic; color: #fff9ec; }
+  .h1 .u { position: relative; white-space: nowrap; }
+  .h1 .u::after { content: ""; position: absolute; left: 0; right: 0; bottom: .06em; height: .09em; background: var(--sun); border-radius: 2px; opacity: .9; }
+
+  .hero-lower { display: grid; grid-template-columns: 1.5fr 1fr; gap: 44px; align-items: end; }
+  .intro { font-size: 18px; line-height: 1.55; color: #f2f7ff; max-width: 46ch; margin-bottom: 30px; text-shadow: 0 1px 2px rgba(18, 44, 84, .4), 0 2px 22px rgba(18, 44, 84, .28); }
+  .intro b { color: #fff; font-weight: 600; }
+  .cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+  .socials { display: flex; gap: 8px; margin-left: 4px; }
+  .socials a {
+    width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--ink);
+    background: rgba(255, 255, 255, .72); border: 1px solid #fff; backdrop-filter: blur(10px); transition: .2s;
+  }
+  .socials a:hover { background: #fff; transform: translateY(-2px); }
+  .socials svg { width: 18px; height: 18px; }
+
+  /* at-a-glance card */
+  .glance {
+    background: rgba(255, 255, 255, .72); border: 1px solid rgba(255, 255, 255, .9);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-radius: 16px; padding: 18px 20px; box-shadow: 0 18px 44px rgba(40, 80, 140, .2);
+  }
+  .glance h3 { font-family: var(--sans); font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: #5a6b80; font-weight: 600; margin-bottom: 11px; }
+  .glance h3:not(:first-child) { margin-top: 18px; }
+  .g-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+  .g-stats { display: flex; gap: 16px; padding-top: 14px; margin-top: 16px; border-top: 1px solid #e7eef6; }
+  .g-stats b { display: block; font-family: var(--display); font-weight: 600; font-size: 19px; color: var(--ink); line-height: 1; }
+  .g-stats span { font-size: 11px; color: var(--ink-3); }
+  .g-stats > div:not(:first-child) { border-left: 1px solid #e7eef6; padding-left: 16px; }
+
+  @media (max-width: 900px) {
+    .hero-lower { grid-template-columns: 1fr; }
+    .hero-grid { padding-top: 15vh; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cloud, .cloud > .bob, .bird { animation: none; }
+    .bird svg :global(animate) { display: none; }
+  }
+</style>
