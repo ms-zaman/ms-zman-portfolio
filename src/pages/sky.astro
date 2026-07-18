@@ -4,8 +4,32 @@
  * Assembled from sky components; will replace index.astro once complete.
  */
 import SkyLayout from '../layouts/SkyLayout.astro';
+import Daybreak from '../components/sky/Daybreak.astro';
 import Hero from '../components/sky/Hero.astro';
+import WhatIDo from '../components/sky/WhatIDo.astro';
+import Services from '../components/sky/Services.astro';
+import SelectedWork from '../components/sky/SelectedWork.astro';
+import SkyBand from '../components/sky/SkyBand.astro';
+import OpenSource from '../components/sky/OpenSource.astro';
+import Experience from '../components/sky/Experience.astro';
+import Process from '../components/sky/Process.astro';
+import Faq from '../components/sky/Faq.astro';
+import Contact from '../components/sky/Contact.astro';
+import SiteFooter from '../components/sky/SiteFooter.astro';
 ---
 <SkyLayout>
+  <Daybreak />
   <Hero />
+  <main>
+    <WhatIDo />
+    <Services />
+    <SelectedWork />
+    <SkyBand />
+    <OpenSource />
+    <Experience />
+    <Process />
+    <Faq />
+    <Contact />
+  </main>
+  <SiteFooter />
 </SkyLayout>

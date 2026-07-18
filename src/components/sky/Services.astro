@@ -1,0 +1,156 @@
+---
+/**
+ * Services — six "what I can build for you" cards.
+ * Ported from the frozen prototype (redesign/variant-g §Services, #services).
+ * Data-driven; each `icon` is the inner markup of a 24×24 stroked SVG and each
+ * `body` may contain <b> emphasis, so both are rendered with set:html.
+ * NOTE: `.svc-start` mirrors the prototype as static text (not yet a link) —
+ * wiring every card CTA to #contact is a later polish pass.
+ */
+import SectionHead from './SectionHead.astro';
+
+interface Service {
+  title: string;
+  icon: string;
+  body: string;
+  features: string[];
+}
+
+const services: Service[] = [
+  {
+    title: 'Web apps & UIs',
+    icon: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+    body: 'Interactive, component-driven interfaces in <b>React</b> — dashboards, SaaS front-ends, and marketing sites built from your Figma or from scratch.',
+    features: ['Figma → pixel-perfect build', 'Responsive & accessible', 'Reusable component system'],
+  },
+  {
+    title: 'WordPress sites',
+    icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/><path d="M7 6.5h.01"/>',
+    body: 'Custom builds with <b>Elementor</b> or the <b>block editor</b> — client-editable, responsive, and pixel-perfect. The same craft behind 700K+ template installs.',
+    features: ['Elementor & block editor', 'Client-editable content', 'Pixel-perfect & responsive'],
+  },
+  {
+    title: 'Shopify stores',
+    icon: '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+    body: 'Conversion-focused storefronts and theme work in <b>Liquid</b> — custom sections, clean product pages, and a checkout journey that just flows.',
+    features: ['Custom Liquid sections', 'Clean product pages', 'Smooth checkout flow'],
+  },
+  {
+    title: 'Landing pages',
+    icon: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.9 12.9 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>',
+    body: 'High-converting one-pagers for launches and campaigns — sharp copy layout, fast load, and clear calls to action that move the needle.',
+    features: ['Sharp copy layout', 'Fast load & clear CTAs', 'Built to convert'],
+  },
+  {
+    title: 'Templates & design systems',
+    icon: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+    body: "Reusable templates, component libraries, and design tokens — consistent, scalable UI. I've shipped 45+ production templates on Templately.",
+    features: ['Reusable component libraries', 'Design tokens & docs', '45+ shipped on Templately'],
+  },
+  {
+    title: 'Performance & polish',
+    icon: '<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+    body: 'Speeding up a slow site, fixing responsiveness, or tightening accessibility and SEO — clean, PageSpeed-friendly code on top of what you already have.',
+    features: ['PageSpeed optimization', 'Accessibility & SEO', 'Responsive fixes'],
+  },
+];
+---
+<section class="section" id="services">
+  <div class="sky-wrap">
+    <SectionHead
+      eyebrow="Services"
+      title="What I can build for you"
+      sub="From a single landing page to a full site or store — built to load fast, read clearly, and hold up on every screen."
+    />
+
+    <div class="svc-grid">
+      {services.map((s) => (
+        <article class="svc reveal">
+          <span class="svc-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={s.icon} />
+          </span>
+          <h3>{s.title}</h3>
+          <p set:html={s.body} />
+          <div class="svc-list">
+            {s.features.map((f) => <div><span class="ck">✓</span> {f}</div>)}
+          </div>
+          <span class="svc-start">Start a project <span class="ar" aria-hidden="true">→</span></span>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .svc-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 8px;
+  }
+  .svc {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 26px 24px;
+    background: var(--card);
+    box-shadow: 0 10px 30px rgba(40, 80, 140, .05);
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+  }
+  .svc:hover {
+    transform: translateY(-4px);
+    border-color: #bcd7f2;
+    box-shadow: 0 20px 46px rgba(40, 80, 140, .12);
+  }
+  .svc-ic {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 16px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .svc-ic svg { width: 22px; height: 22px; }
+  .svc h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 19px;
+    letter-spacing: -.01em;
+    margin-bottom: 9px;
+  }
+  .svc p { font-size: 14.5px; color: var(--ink-2); line-height: 1.6; }
+  .svc p :global(b) { color: var(--ink); font-weight: 600; }
+
+  .svc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 14px 0 18px;
+  }
+  .svc-list div {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13.5px;
+    color: var(--ink-2);
+  }
+  .svc-list .ck { color: var(--accent); font-weight: 700; }
+
+  .svc-start {
+    margin-top: auto;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .svc-start .ar { color: var(--accent); transition: transform .2s; }
+  .svc:hover .svc-start .ar { transform: translateX(3px); }
+
+  @media (max-width: 900px) { .svc-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 620px) { .svc-grid { grid-template-columns: 1fr; } }
+</style>

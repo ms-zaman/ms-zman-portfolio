@@ -61,5 +61,11 @@ jspm_packages/
 tmp/
 temp/
 
+# Redesign experiment sandbox (not part of the live site yet)
+redesign/
+
+# Local-only Claude Code working context (not for the public repo)
+CLAUDE.md
+
 # Lighthouse
 lighthouse-report.*

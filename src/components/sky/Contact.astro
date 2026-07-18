@@ -1,0 +1,232 @@
+---
+/**
+ * Contact — the closing panel: a project form + direct contact channels.
+ * Ported from the frozen prototype (redesign/variant-g §Contact, #contact).
+ *
+ * ⚠️ LAUNCH BLOCKER: the form `action` is still the Formspree placeholder
+ * (`formspree.io/f/your-id`). Swap in the real form ID before going live, or the
+ * form silently won't deliver. The email/WhatsApp/GitHub/LinkedIn are real.
+ */
+const FORMSPREE_ACTION = 'https://formspree.io/f/your-id'; // TODO: real Formspree ID
+const EMAIL = 'dev.mszaman@gmail.com';
+
+const projectTypes = [
+  'Web app / UI (React)',
+  'WordPress site',
+  'Shopify store',
+  'Landing page',
+  'Templates / design system',
+  'Performance & polish',
+  'Something else',
+];
+---
+<section class="section contact" id="contact">
+  <div class="sky-wrap">
+    <div class="contact-panel reveal">
+      <div class="c-cloud x1" aria-hidden="true"><img src="/sky/cloud-1.png" alt="" loading="lazy" /></div>
+      <div class="c-cloud x2" aria-hidden="true"><img src="/sky/cloud-2.png" alt="" loading="lazy" /></div>
+
+      <div class="eyebrow c-eyebrow"><span class="s">✦</span> Contact</div>
+      <div class="big">Let's build something <em>together.</em></div>
+      <p class="contact-note">Tell me about your project — I'll get back with a plan and a quote.</p>
+
+      <form class="c-form" action={FORMSPREE_ACTION} method="POST">
+        <div class="cf-card">
+          <div class="cf-row">
+            <div class="cf-field cf-field--flush"><label>Name</label><input type="text" name="name" placeholder="Your name" required /></div>
+            <div class="cf-field cf-field--flush"><label>Email</label><input type="email" name="email" placeholder="you@company.com" required /></div>
+          </div>
+          <div class="cf-field"><label>Project type</label>
+            <select name="project_type">
+              {projectTypes.map((t) => <option>{t}</option>)}
+            </select>
+          </div>
+          <div class="cf-field"><label>Message</label><textarea name="message" placeholder="A few lines about scope, timeline & budget…" required></textarea></div>
+          <div class="cf-actions">
+            <button type="submit" class="cf-submit">Send message <span aria-hidden="true">→</span></button>
+            <span class="cf-note">No spam. Replies from a real person.</span>
+          </div>
+        </div>
+
+        <div class="cf-side">
+          <a class="cf-ch" href={`mailto:${EMAIL}`} data-copy={EMAIL} title="Click to copy">
+            <span class="ic">✉</span><span><small>Prefer email?</small><b>{EMAIL}</b></span>
+          </a>
+          <a class="cf-ch" href="https://wa.me/8801764121252" target="_blank" rel="noopener">
+            <span class="ic" style="background:#e9f7ef;color:#1e7a4d">✆</span><span><small>Quick chat</small><b>WhatsApp</b></span>
+          </a>
+          <a class="cf-ch" href="https://github.com/ms-zaman" target="_blank" rel="noopener">
+            <span class="ic" style="background:#eef1f6;color:#2c3440">◐</span><span><small>Code</small><b>GitHub · ms-zaman</b></span>
+          </a>
+          <a class="cf-ch" href="https://www.linkedin.com/in/sharfuzzaman/" target="_blank" rel="noopener">
+            <span class="ic" style="background:#e8f1fb;color:#2f74c0">in</span><span><small>Connect</small><b>LinkedIn · /sharfuzzaman</b></span>
+          </a>
+          <div class="cf-tz">Based in <b>Dhaka (GMT+6)</b> — comfortable working across US &amp; EU time zones.</div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite">Copied</div>
+</section>
+
+<style>
+  .contact { padding: 40px 0 100px; border-top: none; }
+  .contact-panel {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    border-radius: 30px;
+    padding: 96px 40px 84px;
+    background: linear-gradient(180deg, #cfe6fb 0%, #e6f2fd 52%, #f9fcff 100%);
+    box-shadow: 0 24px 60px rgba(40, 80, 140, .10);
+  }
+  .contact-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(42% 46% at 82% 0%, rgba(255, 244, 214, .75), rgba(255, 244, 214, 0) 62%);
+  }
+  .c-cloud { position: absolute; pointer-events: none; opacity: .55; }
+  .c-cloud img { width: 100%; height: auto; display: block; }
+  .c-cloud.x1 { width: 300px; top: 10%; left: -40px; animation: c-bob 12s ease-in-out infinite; }
+  .c-cloud.x2 { width: 220px; bottom: 14%; right: -30px; opacity: .45; animation: c-bob 9.5s ease-in-out infinite; }
+  @keyframes c-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-13px); } }
+
+  .c-eyebrow { justify-content: center; position: relative; margin-bottom: 22px; }
+  .contact .big {
+    position: relative;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(36px, 6vw, 74px);
+    letter-spacing: -.03em;
+    line-height: 1.04;
+    margin-bottom: 30px;
+  }
+  .contact .big em { font-style: italic; color: var(--accent); }
+  .contact-note { position: relative; margin-top: 22px; font-size: 13.5px; color: #56718e; }
+
+  .c-form {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 22px;
+    max-width: 900px;
+    margin: 34px auto 0;
+    text-align: left;
+  }
+  .cf-card { background: #fff; border: 1px solid #e1edfa; border-radius: 18px; padding: 24px; box-shadow: 0 16px 40px rgba(40, 80, 140, .10); }
+  .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .cf-field { display: block; margin-bottom: 14px; }
+  .cf-field--flush { margin: 0; }
+  .cf-field label { display: block; font-size: 12px; font-weight: 600; color: #5a6b80; margin-bottom: 7px; }
+  .cf-field input,
+  .cf-field select,
+  .cf-field textarea {
+    width: 100%;
+    border: 1px solid #e1e8f1;
+    border-radius: 10px;
+    background: #fbfdff;
+    padding: 12px 14px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .cf-field input:focus,
+  .cf-field select:focus,
+  .cf-field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #fff;
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .cf-field textarea { min-height: 96px; resize: vertical; }
+  .cf-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .cf-submit {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #fff;
+    background: var(--ink);
+    padding: 13px 26px;
+    border-radius: 999px;
+    border: 0;
+    cursor: pointer;
+    transition: .2s;
+  }
+  .cf-submit:hover { background: var(--accent); }
+  .cf-note { font-size: 12px; color: var(--ink-3); }
+
+  .cf-side { display: flex; flex-direction: column; gap: 12px; }
+  .cf-ch { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #e1edfa; border-radius: 14px; padding: 14px 16px; transition: .2s; }
+  .cf-ch:hover { border-color: #bcd7f2; transform: translateY(-1px); }
+  .cf-ch .ic { width: 38px; height: 38px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-size: 16px; flex: none; }
+  .cf-ch small { font-size: 12px; color: var(--ink-3); display: block; }
+  .cf-ch b { font-size: 14px; font-weight: 500; color: var(--ink); }
+  .cf-tz { margin-top: auto; background: #eef6ff; border: 1px dashed #b9d6f2; border-radius: 14px; padding: 14px 16px; font-size: 13px; color: #3a5a7e; line-height: 1.55; }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    transform: translateX(-50%) translateY(18px);
+    opacity: 0;
+    pointer-events: none;
+    background: var(--ink);
+    color: #fff;
+    font-size: 13.5px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    transition: .3s;
+    z-index: 200;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 760px) {
+    .c-form { grid-template-columns: 1fr; }
+    .cf-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 680px) {
+    .contact-panel { padding: 70px 22px 60px; border-radius: 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .c-cloud.x1, .c-cloud.x2 { animation: none; }
+  }
+</style>
+
+<script>
+  // Copy-to-clipboard channels + a small toast.
+  const toast = document.getElementById('toast');
+  let toastTimer: number | undefined;
+  const showToast = (msg: string) => {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => toast.classList.remove('show'), 1900);
+  };
+  const fallbackCopy = (v: string) => {
+    const t = document.createElement('textarea');
+    t.value = v;
+    t.style.position = 'fixed';
+    t.style.opacity = '0';
+    document.body.appendChild(t);
+    t.select();
+    try { document.execCommand('copy'); } catch { /* ignore */ }
+    document.body.removeChild(t);
+  };
+  document.querySelectorAll<HTMLElement>('[data-copy]').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const v = el.getAttribute('data-copy') || '';
+      if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(v).catch(() => fallbackCopy(v));
+      } else {
+        fallbackCopy(v);
+      }
+      showToast('Copied ' + v);
+    });
+  });
+</script>

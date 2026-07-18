@@ -1,0 +1,24 @@
+---
+/**
+ * SiteFooter — the light Sky-theme footer for the redesigned homepage.
+ * Ported from the frozen prototype (redesign/variant-g footer).
+ */
+const year = new Date().getFullYear();
+---
+<footer class="sky-footer sky-wrap">
+  <span>© {year} MS Zaman</span>
+  <span>Web Developer · Dhaka</span>
+</footer>
+
+<style>
+  .sky-footer {
+    border-top: 1px solid var(--line);
+    padding: 30px 40px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--ink-3);
+  }
+</style>

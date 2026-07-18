@@ -1,0 +1,95 @@
+---
+/**
+ * Daybreak — the one-time "sunrise" brand entrance.
+ * A full-screen overlay that rises a sun and the MS Zaman wordmark, then wipes
+ * up to reveal the hero. Shown once per session (sessionStorage) and skipped for
+ * prefers-reduced-motion. Ported from the frozen prototype (redesign/variant-g).
+ * It sits above the hero, so the SkyEngine's first paint happens underneath it.
+ */
+---
+<div id="dawn" aria-hidden="true">
+  <div class="sun"></div>
+  <div class="dawn-bird">
+    <svg viewBox="0 0 40 20" fill="none" stroke="#1b2635" stroke-width="2" stroke-linecap="round">
+      <path d="M2 12 Q10 2 20 11 Q30 2 38 12" />
+    </svg>
+  </div>
+  <div class="dawn-name">MS Zaman</div>
+  <div class="dawn-role">Web Developer · Dhaka</div>
+</div>
+
+<style>
+  #dawn {
+    position: fixed; inset: 0; z-index: 9999; background: #fff; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; flex-direction: column;
+    animation: dawnFail .5s ease 5.5s forwards;
+    transition: clip-path 1.1s cubic-bezier(.65, 0, .35, 1) .15s, opacity .6s ease .8s;
+  }
+  @keyframes dawnFail { to { opacity: 0; visibility: hidden; pointer-events: none; } }
+  #dawn.done { clip-path: inset(0 0 100% 0); opacity: 0; pointer-events: none; }
+
+  .sun {
+    position: absolute; left: 50%; bottom: 38%; width: 120px; height: 120px; border-radius: 50%;
+    background: radial-gradient(circle at 50% 45%, var(--sun) 0%, var(--sun-deep) 70%);
+    transform: translate(-50%, 60px) scale(.6); opacity: 0; filter: blur(1px);
+    box-shadow: 0 0 60px 20px rgba(246, 179, 82, .35);
+  }
+  #dawn.in .sun {
+    transform: translate(-50%, -10px) scale(1); opacity: 1;
+    transition: transform 1.5s cubic-bezier(.22, .61, .36, 1), opacity 1s ease;
+  }
+
+  .dawn-name {
+    position: relative; z-index: 2; font-family: var(--display); font-weight: 600;
+    font-size: clamp(30px, 5vw, 52px); letter-spacing: -.01em; color: var(--ink);
+    opacity: 0; transform: translateY(12px);
+  }
+  #dawn.in .dawn-name {
+    opacity: 1; transform: none;
+    transition: opacity .8s ease .5s, transform .9s cubic-bezier(.22, .61, .36, 1) .5s;
+  }
+
+  .dawn-role {
+    position: relative; z-index: 2; margin-top: 12px; font-size: 12px; letter-spacing: .28em;
+    text-transform: uppercase; color: var(--ink-3); opacity: 0;
+  }
+  #dawn.in .dawn-role { opacity: 1; transition: opacity .8s ease 1s; }
+
+  .dawn-bird {
+    position: absolute; z-index: 2; top: 34%; left: -6%; width: 34px; height: 18px; opacity: 0;
+  }
+  .dawn-bird svg { width: 100%; height: 100%; }
+  #dawn.in .dawn-bird { opacity: .7; animation: dawnFly 2.6s ease-in .9s forwards; }
+  @keyframes dawnFly { from { transform: translate(0, 0); } to { transform: translate(80vw, -40px); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    #dawn * { animation: none !important; transition: none !important; opacity: 1 !important; transform: none !important; }
+    #dawn.done { opacity: 0; visibility: hidden; }
+  }
+</style>
+
+<script>
+  // Timer-driven entrance that always dismisses; shown once per session.
+  const dawn = document.getElementById('dawn');
+  if (dawn) {
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    let seen = false;
+    try { seen = sessionStorage.getItem('mz_dawn_seen') === '1'; } catch { /* private mode */ }
+
+    if (seen) {
+      dawn.remove();
+    } else {
+      try { sessionStorage.setItem('mz_dawn_seen', '1'); } catch { /* private mode */ }
+      let done = false;
+      const dismiss = () => {
+        if (done) return;
+        done = true;
+        dawn.classList.add('done');
+        setTimeout(() => dawn.remove(), 1000);
+      };
+      setTimeout(() => dawn.classList.add('in'), 40);
+      setTimeout(dismiss, reduce ? 500 : 1300);
+      setTimeout(dismiss, 1900); // safety
+    }
+  }
+</script>

@@ -57,6 +57,12 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://sharfuzzama
     <slot />
 
     <script>
+      // SkyEngine: local time → sun arc + dawn/day/dusk/night palette.
+      import { initSkyEngine } from '../scripts/sky-engine';
+      initSkyEngine();
+    </script>
+
+    <script>
       // Scroll-reveal: add .in when elements enter the viewport.
       const els = document.querySelectorAll('.reveal');
       if ('IntersectionObserver' in window && els.length) {
