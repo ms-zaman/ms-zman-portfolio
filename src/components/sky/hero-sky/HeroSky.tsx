@@ -79,6 +79,14 @@ export default function HeroSky({ condition: forced }: Props) {
     };
   }, [forced, reduced]);
 
+  // Dev-only: preview any condition live from the console, e.g.
+  //   __setSkyCondition('drizzle')   (watch it lerp over ~1.5s)
+  // Stripped from production builds by Vite (import.meta.env.DEV → false).
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+    (window as unknown as { __setSkyCondition?: typeof setCondition }).__setSkyCondition = setCondition;
+  }, []);
+
   // reduced motion → no canvas; the CSS photo poster (+ birds) carries the hero
   if (reduced) return null;
 

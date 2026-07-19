@@ -46,11 +46,11 @@ export interface Preset {
 
 export const CONDITIONS: Record<Condition, Preset> = {
   sunny: {
-    skyBlend: 0.4,
-    domeHorizon: '#cfe6fb', domeZenith: '#2f7bce', domeGlow: '#ffe9b8', glowStrength: 0.7,
-    turbidity: 1.6, rayleigh: 2.4, mie: 0.006, stars: 0,
+    skyBlend: 0.52,
+    domeHorizon: '#d6ebfe', domeZenith: '#2b74c8', domeGlow: '#ffe4a6', glowStrength: 1.0,
+    turbidity: 1.5, rayleigh: 2.7, mie: 0.005, stars: 0,
     ambient: 0.9, ambientColor: '#eaf4ff', keyIntensity: 1.5, keyColor: '#ffe680',
-    cloudOpacity: 0.22, cloudColor: '#ffffff', cloudSpeed: 0.55,
+    cloudOpacity: 0.16, cloudColor: '#ffffff', cloudSpeed: 0.55,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#cfe0f5',
     fogDensity: 0.0016, fogColor: '#cfe4fb',
     lightning: 0,
