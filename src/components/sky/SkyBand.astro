@@ -9,6 +9,9 @@
  * Enhancement over the prototype: an `.sb-atmos` layer reuses the SkyEngine's
  * state vars (--sky-tint / --sky-tint-2 / --sun-glow / --sun-x/-y) so the band
  * tracks time-of-day like the hero — no bright-noon band under a night hero.
+ * It also blends `--wx-tint`, a weather wash the R3F hero island publishes
+ * (see weather-css.ts), so the band tracks the current weather too — staying in
+ * sync with the hero without a second WebGL canvas.
  */
 ---
 <section class="skyband" aria-labelledby="sb-heading">
@@ -36,17 +39,20 @@
       linear-gradient(180deg, var(--sky-2), var(--sky-1));
   }
 
-  /* atmosphere — sun glow + phase tint driven by the SkyEngine (sits above the
-     clouds so passing clouds get tinted too, then under the scrim) */
+  /* atmosphere — a weather wash (--wx-tint, published by the R3F hero island) over
+     the SkyEngine's sun glow + time-of-day tint, so the band tracks both the hour
+     and the current weather. Sits above the clouds so they get tinted too, under
+     the scrim. 1.5s cross-fade matches the hero's condition lerp. */
   .sb-atmos {
     position: absolute;
     inset: 0;
     z-index: 1;
     pointer-events: none;
     background:
+      linear-gradient(var(--wx-tint), var(--wx-tint)),
       linear-gradient(180deg, var(--sky-tint), var(--sky-tint-2)),
       radial-gradient(46% 70% at var(--sun-x) var(--sun-y), var(--sun-glow), rgba(255, 240, 205, 0) 70%);
-    transition: background 1.2s ease;
+    transition: background 1.5s ease;
   }
 
   /* center scrim for legibility + white feather so the photo dissolves into the

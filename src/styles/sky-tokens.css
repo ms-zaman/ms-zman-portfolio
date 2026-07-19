@@ -58,6 +58,7 @@
   --sun-glow: rgba(255, 244, 214, .7);
   --sky-tint: transparent;   /* dawn/dusk/night overlay the engine fades in */
   --sky-tint-2: transparent;
+  --wx-tint: transparent;    /* weather wash — set by the R3F hero island (see weather-css.ts) */
 }
 
 @media (max-width: 900px) { :root { --section-y: 80px; } }

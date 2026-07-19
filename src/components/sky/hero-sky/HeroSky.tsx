@@ -18,6 +18,7 @@ import { computeState, DHAKA, resolveVisitorLocation } from '../../../scripts/sk
 import type { Location } from '../../../scripts/sky-engine';
 import { fetchWeather, type WeatherKind } from '../../../scripts/weather';
 import { conditionOverride, resolveCondition } from '../../../scripts/resolve-condition';
+import { applyWeatherVars } from '../../../scripts/weather-css';
 
 const prefersReducedMotion = () =>
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -78,6 +79,13 @@ export default function HeroSky({ condition: forced }: Props) {
       window.clearInterval(id);
     };
   }, [forced, reduced]);
+
+  // Publish the resolved condition to CSS so the mid-page SkyBand (which stays
+  // CSS, not a second WebGL canvas) tracks the hero's weather. Runs even under
+  // reduced motion so the band still gets the initial condition's wash.
+  useEffect(() => {
+    applyWeatherVars(condition);
+  }, [condition]);
 
   // Dev-only: preview any condition live from the console, e.g.
   //   __setSkyCondition('drizzle')   (watch it lerp over ~1.5s)
