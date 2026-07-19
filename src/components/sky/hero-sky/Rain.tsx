@@ -27,7 +27,12 @@ const TOP = 12;
 const BOTTOM = -12;
 const SPAN_Y = TOP - BOTTOM;
 const WIND = 0.18; // horizontal drift as a fraction of fall speed — wind-blown rain
-const TILT = Math.atan(WIND); // lean each streak to match its velocity direction
+// Streaks fall down-AND-right (x increases with the wind). To read as motion blur the
+// quad's long axis must lie ALONG that velocity — a "\" lean (head down-right, tail
+// up-left). rotation.z is CCW, so that alignment is a POSITIVE angle. (Flip both the
+// wind sign and this angle together, or the lean fights the drift and the eye reads
+// it as sliding sideways.)
+const TILT = Math.atan(WIND);
 
 interface Drop {
   x: number;
@@ -143,9 +148,9 @@ export function Rain() {
     for (let i = 0; i < RAIN_MAX; i++) {
       const d = drops[i];
       d.y -= fall * d.spd;
-      d.x -= wind * d.spd;
+      d.x += wind * d.spd;
       if (d.y < BOTTOM) d.y += SPAN_Y; // wrap to the top
-      if (d.x < -SPREAD_X / 2) d.x += SPREAD_X; // wrap horizontally as the wind carries it
+      if (d.x > SPREAD_X / 2) d.x -= SPREAD_X; // wrap horizontally as the wind carries it
       dummy.position.set(d.x + drift, d.y, d.z);
       dummy.scale.set(d.w, d.h, 1);
       dummy.updateMatrix();
