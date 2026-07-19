@@ -3,11 +3,14 @@
  * Contact — the closing panel: a project form + direct contact channels.
  * Ported from the frozen prototype (redesign/variant-g §Contact, #contact).
  *
- * ⚠️ LAUNCH BLOCKER: the form `action` is still the Formspree placeholder
- * (`formspree.io/f/your-id`). Swap in the real form ID before going live, or the
- * form silently won't deliver. The email/WhatsApp/GitHub/LinkedIn are real.
+ * The form posts to Netlify Forms — no third-party service or API key, since the
+ * site is hosted on Netlify. Netlify auto-detects the form from the built static
+ * HTML (`data-netlify` + a hidden `form-name`); submissions land in the Netlify
+ * dashboard → Forms (configure email notifications there). A honeypot field filters
+ * bots. JS enhances it with an inline success/error state; without JS the native
+ * POST still delivers (Netlify shows its own success page).
  */
-const FORMSPREE_ACTION = 'https://formspree.io/f/your-id'; // TODO: real Formspree ID
+const FORM_NAME = 'contact';
 const EMAIL = 'dev.mszaman@gmail.com';
 
 const projectTypes = [
@@ -27,24 +30,34 @@ const projectTypes = [
       <div class="c-cloud x2" aria-hidden="true"><img src="/sky/cloud-2.png" alt="" loading="lazy" /></div>
 
       <div class="eyebrow c-eyebrow"><span class="s">✦</span> Contact</div>
-      <div class="big">Let's build something <em>together.</em></div>
+      <h2 class="big">Let's build something <em>together.</em></h2>
       <p class="contact-note">Tell me about your project — I'll get back with a plan and a quote.</p>
 
-      <form class="c-form" action={FORMSPREE_ACTION} method="POST">
+      <form class="c-form" name={FORM_NAME} method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value={FORM_NAME} />
+        <p class="cf-hp" aria-hidden="true">
+          <label>Don't fill this out if you're human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+        </p>
         <div class="cf-card">
           <div class="cf-row">
-            <div class="cf-field cf-field--flush"><label>Name</label><input type="text" name="name" placeholder="Your name" required /></div>
-            <div class="cf-field cf-field--flush"><label>Email</label><input type="email" name="email" placeholder="you@company.com" required /></div>
+            <div class="cf-field cf-field--flush"><label for="cf-name">Name</label><input id="cf-name" type="text" name="name" placeholder="Your name" autocomplete="name" required /></div>
+            <div class="cf-field cf-field--flush"><label for="cf-email">Email</label><input id="cf-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required /></div>
           </div>
-          <div class="cf-field"><label>Project type</label>
-            <select name="project_type">
+          <div class="cf-field"><label for="cf-type">Project type</label>
+            <select id="cf-type" name="project_type">
               {projectTypes.map((t) => <option>{t}</option>)}
             </select>
           </div>
-          <div class="cf-field"><label>Message</label><textarea name="message" placeholder="A few lines about scope, timeline & budget…" required></textarea></div>
+          <div class="cf-field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" placeholder="A few lines about scope, timeline & budget…" required></textarea></div>
           <div class="cf-actions">
             <button type="submit" class="cf-submit">Send message <span aria-hidden="true">→</span></button>
             <span class="cf-note">No spam. Replies from a real person.</span>
+          </div>
+          <p class="cf-err" role="alert" hidden>Couldn't send just now — please email <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.</p>
+          <div class="cf-sent" role="status" aria-live="polite" tabindex="-1">
+            <span class="cf-sent-ic" aria-hidden="true">✓</span>
+            <b>Thanks — your message is on its way.</b>
+            <span>I'll get back to you shortly. Prefer email? <a href={`mailto:${EMAIL}`}>{EMAIL}</a></span>
           </div>
         </div>
 
@@ -102,7 +115,7 @@ const projectTypes = [
     font-size: clamp(36px, 6vw, 74px);
     letter-spacing: -.03em;
     line-height: 1.04;
-    margin-bottom: 30px;
+    margin: 0 0 30px;
   }
   .contact .big em { font-style: italic; color: var(--accent); }
   .contact-note { position: relative; margin-top: 22px; font-size: 13.5px; color: #56718e; }
@@ -157,7 +170,26 @@ const projectTypes = [
     transition: .2s;
   }
   .cf-submit:hover { background: var(--accent); }
+  .cf-submit:disabled { opacity: .6; cursor: default; }
   .cf-note { font-size: 12px; color: var(--ink-3); }
+
+  /* honeypot — off-screen (rendered so bots fill it, invisible to people/AT/keyboard) */
+  .cf-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  /* submit feedback */
+  .cf-err { margin: 12px 2px 0; font-size: 13px; color: #b4232a; }
+  .cf-err a { color: inherit; text-decoration: underline; }
+  .cf-sent { display: none; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding: 24px 8px 8px; }
+  .cf-sent-ic { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: #e9f7ef; color: #1e7a4d; font-size: 22px; margin-bottom: 4px; }
+  .cf-sent b { font-family: var(--display); font-weight: 600; font-size: 18px; color: var(--ink); }
+  .cf-sent span { font-size: 13.5px; color: var(--ink-2); line-height: 1.5; }
+  .cf-sent a { color: var(--accent); text-decoration: underline; }
+  .cf-sent:focus { outline: none; }
+  .cf-card.is-sent .cf-row,
+  .cf-card.is-sent .cf-field,
+  .cf-card.is-sent .cf-actions,
+  .cf-card.is-sent .cf-err { display: none; }
+  .cf-card.is-sent .cf-sent { display: flex; }
 
   .cf-side { display: flex; flex-direction: column; gap: 12px; }
   .cf-ch { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #e1edfa; border-radius: 14px; padding: 14px 16px; transition: .2s; }
@@ -228,5 +260,35 @@ const projectTypes = [
       }
       showToast('Copied ' + v);
     });
+  });
+
+  // Netlify Forms — AJAX submit with an inline success/error state. Without JS the
+  // native POST still delivers (Netlify shows its own success page), so this is a
+  // pure enhancement.
+  const cForm = document.querySelector<HTMLFormElement>('.c-form');
+  const cCard = cForm?.querySelector<HTMLElement>('.cf-card');
+  const cErr = cForm?.querySelector<HTMLElement>('.cf-err');
+  const cSent = cForm?.querySelector<HTMLElement>('.cf-sent');
+  const cBtn = cForm?.querySelector<HTMLButtonElement>('.cf-submit');
+  cForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!cForm.reportValidity()) return;
+    if (cErr) cErr.hidden = true;
+    const label = cBtn?.innerHTML;
+    if (cBtn) { cBtn.disabled = true; cBtn.textContent = 'Sending…'; }
+    try {
+      const body = new URLSearchParams(new FormData(cForm) as unknown as Record<string, string>).toString();
+      const res = await fetch(cForm.getAttribute('action') || location.pathname, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body,
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      cCard?.classList.add('is-sent');
+      cSent?.focus();
+    } catch {
+      if (cBtn) { cBtn.disabled = false; cBtn.innerHTML = label || 'Send message'; }
+      if (cErr) cErr.hidden = false;
+    }
   });
 </script>

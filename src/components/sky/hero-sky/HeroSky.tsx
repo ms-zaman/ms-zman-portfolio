@@ -71,7 +71,9 @@ export default function HeroSky({ condition: forced }: Props) {
       const loc = await resolveVisitorLocation(true); // silent; Dhaka fallback
       if (cancelled) return;
       locationRef.current = loc;
-      const weather = await fetchWeather(loc);
+      // cap the request so a stalled network can't hold the connection open;
+      // fetchWeather swallows the abort and returns null → we keep the default sky
+      const weather = await fetchWeather(loc, AbortSignal.timeout(6000));
       if (cancelled) return;
       if (weather) kind = weather;
       recompute();

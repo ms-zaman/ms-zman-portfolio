@@ -32,9 +32,10 @@
   --glass: rgba(255, 255, 255, .55);
   --glass-line: rgba(255, 255, 255, .7);
 
-  /* — type families — */
-  --display: 'Inter Tight', 'Inter', system-ui, sans-serif;
-  --sans: 'Inter', system-ui, sans-serif;
+  /* — type families (self-hosted via Astro Fonts API; the cssVariable already
+     includes a metric-matched fallback, so there's no font-swap layout shift) — */
+  --display: var(--font-inter-tight, 'Inter Tight'), system-ui, sans-serif;
+  --sans: var(--font-inter, 'Inter'), system-ui, sans-serif;
 
   /* — radii — */
   --r-sm: 7px;

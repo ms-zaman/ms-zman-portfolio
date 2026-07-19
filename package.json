@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "check": "astro check"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.5",
@@ -20,6 +21,10 @@
     "three": "^0.169.0"
   },
   "devDependencies": {
-    "@types/three": "^0.169.0"
+    "@astrojs/check": "^0.9.9",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@types/three": "^0.169.0",
+    "typescript": "^6.0.3"
   }
 }

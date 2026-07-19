@@ -4,6 +4,7 @@
  * Independent of BaseLayout (the blog's dark theme), so the two design
  * systems coexist during the incremental migration.
  */
+import { Font } from 'astro:assets';
 import '../styles/sky-tokens.css';
 import '../styles/sky-base.css';
 
@@ -11,15 +12,47 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  /** Keep this page out of search indexes (e.g. the internal styleguide). */
+  noindex?: boolean;
 }
 
 const {
   title = 'MS Zaman — Web Developer · React, WordPress & Shopify',
   description = 'MS Zaman — web developer in Dhaka building production sites in React, WordPress & Shopify, plus 45+ page-builder templates used by 700K+ people.',
-  image = 'https://items.templately.com/pack-45896bdb2abe1521d2c17044e5ce682a/saastrive-saas-website-template-for-elementor-og_image-MRupjxL.jpg',
+  image = '/og.jpg',
+  noindex = false,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://sharfuzzaman.com').href;
+const site = Astro.site ?? new URL('https://sharfuzzaman.com');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
+
+// Structured data — Person + WebSite (helps search engines model the site owner).
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${site.origin}/#person`,
+      name: 'MS Zaman',
+      url: site.origin,
+      image: ogImage,
+      jobTitle: 'Web Developer',
+      description,
+      sameAs: ['https://github.com/ms-zaman', 'https://www.linkedin.com/in/sharfuzzaman/'],
+      knowsAbout: ['React', 'WordPress', 'Shopify', 'Tailwind CSS', 'Web Performance', 'Frontend Development'],
+      address: { '@type': 'PostalAddress', addressLocality: 'Dhaka', addressCountry: 'BD' },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${site.origin}/#website`,
+      name: 'MS Zaman',
+      url: site.origin,
+      author: { '@id': `${site.origin}/#person` },
+      inLanguage: 'en',
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -30,30 +63,36 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://sharfuzzama
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content="MS Zaman" />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    <meta name="theme-color" content="#3f86cf" />
     <link rel="canonical" href={canonical} />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MS Zaman" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={image} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="MS Zaman — Building web experiences that just work." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={image} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline></script>
 
     <link rel="preload" as="image" href="/sky/sky.avif" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;450;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-inter-tight" preload />
   </head>
 
   <body class="sky">
+    <a href="#content" class="skip-link">Skip to content</a>
     <slot />
 
     <script>
