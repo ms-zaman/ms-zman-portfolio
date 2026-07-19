@@ -18,16 +18,16 @@
  * Weather (Open-Meteo) is a later v2 concern.
  */
 
-type Phase = 'dawn' | 'day' | 'dusk' | 'night';
+export type Phase = 'dawn' | 'day' | 'dusk' | 'night';
 
-interface Location {
+export interface Location {
   lat: number;
   lng: number;
   /** Fixed UTC offset in hours, used to express solar times in local time. */
   utcOffset: number;
 }
 
-interface SkyState {
+export interface SkyState {
   phase: Phase;
   sunX: number; // percent
   sunY: number; // percent (small = high in the sky)
@@ -36,7 +36,7 @@ interface SkyState {
   tint2: string;
 }
 
-const DHAKA: Location = { lat: 23.8103, lng: 90.4125, utcOffset: 6 };
+export const DHAKA: Location = { lat: 23.8103, lng: 90.4125, utcOffset: 6 };
 
 const RAD = Math.PI / 180;
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
@@ -112,7 +112,7 @@ function overrideHour(): number | null {
   }
 }
 
-function computeState(loc: Location, now: Date = new Date()): SkyState {
+export function computeState(loc: Location, now: Date = new Date()): SkyState {
   const { sunrise, sunset } = sunTimes(now, loc);
   const SR = sunrise ?? 6;   // polar fallback: assume a plain 6→18 day
   const SS = sunset ?? 18;
@@ -135,6 +135,30 @@ function computeState(loc: Location, now: Date = new Date()): SkyState {
 
   const p = PALETTE[phase];
   return { phase, sunX, sunY, glow: p.glow, tint: p.tint, tint2: p.tint2 };
+}
+
+/**
+ * Sun direction for the 3D hero scene, as a (roughly) unit vector.
+ * Reuses the same solar arc as the CSS engine, but — unlike `computeState`, which
+ * clamps the sun to the visible sky — it lets the sun dip *below* the horizon at
+ * night (y < 0) so drei's <Sky> darkens on its own. Honours the ?skyHour override.
+ */
+export function sunVector(loc: Location, now: Date = new Date()): [number, number, number] {
+  const { sunrise, sunset } = sunTimes(now, loc);
+  const SR = sunrise ?? 6;
+  const SS = sunset ?? 18;
+  const h = overrideHour() ?? localHours(now, loc);
+
+  // fraction of the daylight span: 0 at sunrise, 1 at sunset, outside [0,1] at night
+  const dayFrac = (h - SR) / (SS - SR);
+  // elevation arcs 0 → 1 → 0 through the day and goes negative at night; clamped so
+  // it stays below the horizon in the small hours instead of wrapping back up
+  const y = Math.sin(Math.PI * clamp(dayFrac, -0.4, 1.4));
+  // azimuth sweeps east → west during daylight, then holds at the horizon overnight
+  const x = lerp(-1, 1, clamp(dayFrac, 0, 1));
+  const z = -0.35; // nudge the sun into the scene so its glow reads on-screen
+  const len = Math.hypot(x, y, z) || 1;
+  return [x / len, y / len, z / len];
 }
 
 function apply(root: HTMLElement, s: SkyState): void {
@@ -180,6 +204,36 @@ export function requestVisitorLocation(silentOnly = false): void {
   navigator.permissions?.query({ name: 'geolocation' as PermissionName })
     .then((status) => { if (status.state === 'granted') use(); })
     .catch(() => {});
+}
+
+/**
+ * Promise-based, non-mutating location resolve for the R3F island. Resolves to the
+ * visitor's coordinates only when geolocation was *already* granted (silentOnly),
+ * otherwise Dhaka — it never prompts, matching the CSS engine's privacy stance.
+ */
+export function resolveVisitorLocation(silentOnly = true): Promise<Location> {
+  return new Promise((resolve) => {
+    if (!('geolocation' in navigator)) return resolve(DHAKA);
+
+    const use = () =>
+      navigator.geolocation.getCurrentPosition(
+        (pos) =>
+          resolve({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            utcOffset: -new Date().getTimezoneOffset() / 60,
+          }),
+        () => resolve(DHAKA), // denied / unavailable → Dhaka
+        { maximumAge: 30 * 60_000, timeout: 8000 },
+      );
+
+    if (!silentOnly) return use();
+
+    navigator.permissions
+      ?.query({ name: 'geolocation' as PermissionName })
+      .then((s) => (s.state === 'granted' ? use() : resolve(DHAKA)))
+      .catch(() => resolve(DHAKA));
+  });
 }
 
 /** Wire up the engine: render Dhaka now, keep it live, upgrade silently if allowed. */

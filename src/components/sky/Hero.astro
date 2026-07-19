@@ -7,6 +7,7 @@
  */
 import Button from './Button.astro';
 import Tag from './Tag.astro';
+import HeroSky from './hero-sky/HeroSky';
 
 const stack = ['React', 'WordPress', 'Shopify', 'Tailwind'];
 const industries = ['SaaS', 'E-commerce', 'Agencies'];
@@ -23,7 +24,11 @@ const birds = [
 ];
 ---
 <header class="hero">
-  <!-- drifting cloud cut-outs -->
+  <!-- R3F weather island: renders the live sky in WebGL above the CSS photo poster.
+       client:only (no SSR) — the poster below covers the pre-hydration paint. -->
+  <HeroSky client:only="react" />
+
+  <!-- drifting cloud cut-outs (CSS poster; hidden once WebGL owns the sky) -->
   <div class="cloud a"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="eager" /></div></div>
   <div class="cloud b"><div class="bob"><img src="/sky/cloud-2.png" alt="" loading="eager" /></div></div>
   <div class="cloud c"><div class="bob"><img src="/sky/cloud-2.png" alt="" loading="eager" /></div></div>
@@ -98,7 +103,7 @@ const birds = [
     background:
       linear-gradient(180deg, var(--sky-tint), var(--sky-tint-2)),
       radial-gradient(38% 34% at var(--sun-x) var(--sun-y), var(--sun-glow), rgba(255, 240, 205, .28) 42%, rgba(255, 240, 205, 0) 66%);
-    transition: background 1.2s ease;
+    transition: background 1.2s ease, opacity 1.2s ease;
   }
   /* legibility scrim so white type reads over clouds; fades to white at the bottom */
   .hero::after {
@@ -112,6 +117,24 @@ const birds = [
       radial-gradient(150% 80% at 88% 116%, rgba(255, 255, 255, .95) 0%, rgba(255, 255, 255, 0) 58%),
       linear-gradient(180deg, rgba(255, 255, 255, 0) 58%, rgba(255, 255, 255, .6) 80%, rgba(255, 255, 255, .92) 93%, var(--horizon) 100%);
   }
+
+  /* R3F weather island — above the photo poster (base), below the atmosphere/scrim.
+     :global() is required because this div is rendered by React, so it never gets
+     Astro's scoped-style attribute. */
+  .hero :global(.hero-sky) {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+    pointer-events: none;
+  }
+  .hero :global(.hero-sky.ready) { opacity: 1; }
+  .hero :global(.hero-sky canvas) { display: block; width: 100% !important; height: 100% !important; }
+
+  /* once WebGL owns the sky, retire the CSS poster clouds + atmosphere glow (birds stay) */
+  .hero.sky-webgl .cloud { display: none; }
+  .hero.sky-webgl::before { opacity: 0; }
 
   /* clouds */
   .cloud { position: absolute; z-index: 2; pointer-events: none; will-change: transform; }
@@ -162,7 +185,14 @@ const birds = [
   @media (max-width: 760px) { .nav-links { display: none; } }
 
   /* hero content */
-  .hero-grid { position: relative; z-index: 10; padding-top: 18vh; display: flex; flex-direction: column; gap: 34px; }
+  /* fill the hero and center the content block so it stays balanced at any
+     viewport height (top padding clears the floating nav) */
+  .hero-grid {
+    position: relative; z-index: 10;
+    min-height: 100vh; box-sizing: border-box;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 34px; padding: 130px 0 72px;
+  }
   .greet { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; color: #eaf3ff; text-shadow: 0 1px 3px rgba(18, 44, 84, .5); }
   .h1 {
     font-family: var(--display); font-weight: 600; font-size: clamp(40px, 5.6vw, 72px);
@@ -201,7 +231,8 @@ const birds = [
 
   @media (max-width: 900px) {
     .hero-lower { grid-template-columns: 1fr; }
-    .hero-grid { padding-top: 15vh; }
+    /* stacked content is tall — anchor to top so it never hides under the nav */
+    .hero-grid { justify-content: flex-start; padding-top: 116px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .cloud, .cloud > .bob, .bird { animation: none; }

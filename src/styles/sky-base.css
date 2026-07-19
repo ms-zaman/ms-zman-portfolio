@@ -6,6 +6,7 @@
    ============================================================ */
 
 .sky {
+  margin: 0;
   font-family: var(--sans);
   color: var(--ink);
   background: var(--horizon);

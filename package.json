@@ -11,9 +11,15 @@
   "dependencies": {
     "@astrojs/react": "^5.0.5",
     "@astrojs/sitemap": "^3.7.2",
+    "@react-three/drei": "^9.122.0",
+    "@react-three/fiber": "^8.18.0",
     "astro": "^6.3.3",
     "fuse.js": "^7.3.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "three": "^0.169.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.169.0"
   }
 }
