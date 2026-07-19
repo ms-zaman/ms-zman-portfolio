@@ -7,11 +7,13 @@
  *   • renders the <Canvas> (dpr 1–2, AdaptiveDpr) with <WeatherScene> under Suspense;
  *   • fades itself in once the first frame is ready and hides the CSS poster clouds,
  *     so the instant-painting photo poster covers the pre-hydration gap;
- *   • bails out entirely under prefers-reduced-motion, leaving the poster in place.
+ *   • pauses the render loop when the hero is offscreen or the tab is hidden;
+ *   • falls back to the poster on WebGL failure (error boundary) or reduced motion.
  */
 import { Canvas } from '@react-three/fiber';
 import { AdaptiveDpr } from '@react-three/drei';
 import { Suspense, useEffect, useRef, useState } from 'react';
+import { CanvasErrorBoundary } from './ErrorBoundary';
 import { WeatherScene } from './WeatherScene';
 import type { Condition } from './conditions';
 import { computeState, DHAKA, resolveVisitorLocation } from '../../../scripts/sky-engine';
@@ -40,6 +42,9 @@ export default function HeroSky({ condition: forced }: Props) {
   );
   const [ready, setReady] = useState(false);
   const locationRef = useRef<Location>(DHAKA);
+  const containerRef = useRef<HTMLDivElement>(null);
+  // drive the render loop: "always" when the hero is visible, "never" when it isn't
+  const [active, setActive] = useState(true);
 
   // resolve the live condition (unless forced or overridden via ?skyWeather)
   useEffect(() => {
@@ -95,27 +100,53 @@ export default function HeroSky({ condition: forced }: Props) {
     (window as unknown as { __setSkyCondition?: typeof setCondition }).__setSkyCondition = setCondition;
   }, []);
 
+  // Pause the WebGL loop when the hero is offscreen (scrolled past) or the tab is
+  // hidden, so it doesn't burn GPU/battery while the visitor reads the rest of the
+  // page. `frameloop="never"` fully stops rendering until it's visible again.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    let inView = true;
+    const update = () => setActive(inView && !document.hidden);
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        update();
+      },
+      { rootMargin: '200px' }, // resume just before it scrolls back into view
+    );
+    io.observe(el);
+    document.addEventListener('visibilitychange', update);
+    return () => {
+      io.disconnect();
+      document.removeEventListener('visibilitychange', update);
+    };
+  }, []);
+
   // reduced motion → no canvas; the CSS photo poster (+ birds) carries the hero
   if (reduced) return null;
 
   return (
-    <div className={`hero-sky${ready ? ' ready' : ''}`} aria-hidden="true">
-      <Canvas
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-        camera={{ position: [0, 0.2, 6], fov: 60, near: 0.1, far: 1_000_000 }}
-        onCreated={({ gl }) => {
-          gl.setClearColor(0x000000, 0);
-          markWebglReady();
-          requestAnimationFrame(() => setReady(true));
-        }}
-      >
-        <Suspense fallback={null}>
-          <WeatherScene condition={condition} locationRef={locationRef} />
-        </Suspense>
-        {/* auto-drop resolution under sustained load to protect 60 FPS */}
-        <AdaptiveDpr pixelated={false} />
-      </Canvas>
+    <div ref={containerRef} className={`hero-sky${ready ? ' ready' : ''}`} aria-hidden="true">
+      <CanvasErrorBoundary>
+        <Canvas
+          dpr={[1, 2]}
+          frameloop={active ? 'always' : 'never'}
+          gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+          camera={{ position: [0, 0.2, 6], fov: 60, near: 0.1, far: 1_000_000 }}
+          onCreated={({ gl }) => {
+            gl.setClearColor(0x000000, 0);
+            markWebglReady();
+            requestAnimationFrame(() => setReady(true));
+          }}
+        >
+          <Suspense fallback={null}>
+            <WeatherScene condition={condition} locationRef={locationRef} />
+          </Suspense>
+          {/* auto-drop resolution under sustained load to protect 60 FPS */}
+          <AdaptiveDpr pixelated={false} />
+        </Canvas>
+      </CanvasErrorBoundary>
     </div>
   );
 }
