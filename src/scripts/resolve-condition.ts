@@ -11,6 +11,7 @@ const CONDITION_VALUES: readonly Condition[] = [
   'sunny',
   'cloudy',
   'drizzle',
+  'snow',
   'overcast-night',
   'clear-night',
 ];
@@ -24,8 +25,9 @@ export function resolveCondition(kind: WeatherKind, phase: Phase): Condition {
       return night ? 'clear-night' : 'sunny';
     case 'overcast':
     case 'fog':
-    case 'snow':
       return night ? 'overcast-night' : 'cloudy';
+    case 'snow':
+      return night ? 'overcast-night' : 'snow';
     case 'drizzle':
     case 'rain':
     case 'thunder':

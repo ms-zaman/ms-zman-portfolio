@@ -11,7 +11,7 @@
  *   overcast-night deep navy #0a192f, thick dark clouds, exponential fog
  *   clear-night    same navy but sparse clouds + stars
  */
-export type Condition = 'sunny' | 'cloudy' | 'drizzle' | 'overcast-night' | 'clear-night';
+export type Condition = 'sunny' | 'cloudy' | 'drizzle' | 'snow' | 'overcast-night' | 'clear-night';
 
 export interface Preset {
   // — backdrop (drei <Sky> + gradient SkyDome) —
@@ -37,6 +37,9 @@ export interface Preset {
   rainOpacity: number;
   rainSpeed: number;
   rainColor: string;
+  // — snow —
+  snowOpacity: number;
+  snowSpeed: number;
   // — fog —
   fogDensity: number;
   fogColor: string;
@@ -52,6 +55,7 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 0.9, ambientColor: '#eaf4ff', keyIntensity: 1.5, keyColor: '#ffe680',
     cloudOpacity: 0.16, cloudColor: '#ffffff', cloudSpeed: 0.55,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#cfe0f5',
+    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.0016, fogColor: '#cfe4fb',
     lightning: 0,
   },
@@ -62,6 +66,7 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 0.7, ambientColor: '#dfe6ee', keyIntensity: 0.7, keyColor: '#c3cfdd',
     cloudOpacity: 0.9, cloudColor: '#b9c4d2', cloudSpeed: 0.9,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#aebccd',
+    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.006, fogColor: '#b7c3d1',
     lightning: 0.4,
   },
@@ -72,8 +77,20 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 0.5, ambientColor: '#8f9cad', keyIntensity: 0.45, keyColor: '#8a97a8',
     cloudOpacity: 1, cloudColor: '#6b7789', cloudSpeed: 1.4,
     rainOpacity: 0.5, rainSpeed: 9, rainColor: '#c3ccd8',
+    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.011, fogColor: '#5b6675',
     lightning: 0.9,
+  },
+  snow: {
+    skyBlend: 0.86,
+    domeHorizon: '#e4ebf3', domeZenith: '#aeb9c8', domeGlow: '#eef2f7', glowStrength: 0.35,
+    turbidity: 9, rayleigh: 1.4, mie: 0.02, stars: 0,
+    ambient: 0.88, ambientColor: '#eef3f8', keyIntensity: 0.8, keyColor: '#dde7f2',
+    cloudOpacity: 0.85, cloudColor: '#cdd6e0', cloudSpeed: 0.7,
+    rainOpacity: 0, rainSpeed: 0, rainColor: '#ffffff',
+    snowOpacity: 0.9, snowSpeed: 1.1,
+    fogDensity: 0.009, fogColor: '#d9e2ec',
+    lightning: 0,
   },
   'overcast-night': {
     skyBlend: 1,
@@ -82,6 +99,7 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 0.4, ambientColor: '#2c3d59', keyIntensity: 0.3, keyColor: '#33466a',
     cloudOpacity: 1, cloudColor: '#2b3a56', cloudSpeed: 1,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#3a465a',
+    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.012, fogColor: '#141d30',
     lightning: 0,
   },
@@ -92,6 +110,7 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 0.24, ambientColor: '#223049', keyIntensity: 0.14, keyColor: '#2a3a56',
     cloudOpacity: 0.22, cloudColor: '#141f36', cloudSpeed: 0.5,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#2a3546',
+    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.004, fogColor: '#060d1c',
     lightning: 0,
   },

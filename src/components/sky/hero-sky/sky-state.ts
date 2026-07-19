@@ -16,7 +16,7 @@ import type { Preset } from './conditions';
 export const NUM_KEYS = [
   'skyBlend', 'glowStrength', 'turbidity', 'rayleigh', 'mie', 'stars',
   'ambient', 'keyIntensity', 'cloudOpacity', 'cloudSpeed',
-  'rainOpacity', 'rainSpeed', 'fogDensity', 'lightning',
+  'rainOpacity', 'rainSpeed', 'snowOpacity', 'snowSpeed', 'fogDensity', 'lightning',
 ] as const;
 export type NumKey = (typeof NUM_KEYS)[number];
 
