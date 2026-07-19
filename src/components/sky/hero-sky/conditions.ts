@@ -77,12 +77,12 @@ export const CONDITIONS: Record<Condition, Preset> = {
   },
   'overcast-night': {
     skyBlend: 1,
-    domeHorizon: '#101b2e', domeZenith: '#0a192f', domeGlow: '#1b2740', glowStrength: 0.12,
+    domeHorizon: '#17253c', domeZenith: '#0c1c34', domeGlow: '#233150', glowStrength: 0.15,
     turbidity: 10, rayleigh: 0.6, mie: 0.02, stars: 0,
-    ambient: 0.28, ambientColor: '#26344c', keyIntensity: 0.18, keyColor: '#2a3a56',
-    cloudOpacity: 1, cloudColor: '#1c2740', cloudSpeed: 1,
+    ambient: 0.4, ambientColor: '#2c3d59', keyIntensity: 0.3, keyColor: '#33466a',
+    cloudOpacity: 1, cloudColor: '#2b3a56', cloudSpeed: 1,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#3a465a',
-    fogDensity: 0.014, fogColor: '#0a1120',
+    fogDensity: 0.012, fogColor: '#141d30',
     lightning: 0,
   },
   'clear-night': {
