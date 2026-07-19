@@ -18,6 +18,8 @@ const SPREAD_Z_NEAR = -4;
 const SPREAD_Z_FAR = 9;
 const TOP = 12;
 const BOTTOM = -12;
+const WIND = 0.18; // horizontal drift as a fraction of fall speed — wind-blown rain
+const TILT = Math.atan(WIND); // lean each streak to match its velocity direction
 
 interface Drop {
   x: number;
@@ -70,11 +72,15 @@ export function Rain() {
     meshRef.current.visible = true;
 
     const fall = live.nums.rainSpeed * Math.min(dt, 0.05); // clamp dt to avoid teleporting
+    const wind = fall * WIND; // horizontal component of the fall
     const drift = live.parallax.x * 0.6; // droplets shift slightly with parallax
+    dummy.rotation.z = TILT; // streaks lean along their velocity (trailing end upwind)
     for (let i = 0; i < RAIN_MAX; i++) {
       const d = drops[i];
       d.y -= fall * d.spd;
+      d.x -= wind * d.spd;
       if (d.y < BOTTOM) d.y += TOP - BOTTOM; // wrap to the top
+      if (d.x < -SPREAD_X / 2) d.x += SPREAD_X; // wrap horizontally as the wind carries it
       dummy.position.set(d.x + drift, d.y, d.z);
       dummy.scale.set(1, d.len, 1);
       dummy.updateMatrix();
