@@ -1,9 +1,11 @@
 /**
- * Clouds — the existing brand cloud cut-outs (/sky/cloud-1.png, cloud-2.png) as
- * billboarded planes layered across Z for parallax depth. Lit by MeshLambertMaterial
- * so the condition's key/ambient light actually tints them (warm at golden hour,
- * slate in drizzle, near-black at night) and so lightning can flash across them.
- * Opacity, colour and drift speed are read from the lerped Live state each frame.
+ * Clouds — the brand cloud cut-outs (/sky/cloud-1.png, cloud-2.png) as billboarded
+ * planes, scattered across the sky at varied heights & depths so each reads as a
+ * distinct fluffy raft (মেঘের ভেলা) rather than a merged haze band. Each plane is
+ * sized to its texture's NATIVE aspect (no vertical squash), soft-edged (no alphaTest
+ * hard-cut), and lit by MeshLambertMaterial so the condition's key/ambient light
+ * tints them (bright white midday, slate in drizzle, near-black at night) and
+ * lightning can flash across them. Opacity/colour/drift come from the lerped Live state.
  */
 import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
@@ -11,28 +13,35 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useSky } from './sky-state';
 
+// native pixel aspect (width / height) of each cloud PNG — planes match this so the
+// cloud keeps its real shape instead of being stretched to a fixed 2:1 quad
+const ASPECT = [2048 / 729, 1024 / 393] as const;
+
 interface Layer {
   tex: 0 | 1; // which cloud texture
   x: number;
   y: number;
-  z: number; // deeper = more parallax
-  scale: number;
+  z: number; // deeper = smaller on screen + more parallax
+  w: number; // world width (height derives from the texture aspect)
   speed: number; // per-layer drift multiplier
   opacity: number; // per-layer opacity multiplier
 }
 
-// hand-placed layers: a few near, a few deep, spread across the upper hero
+// Hand-scattered rafts: varied x, y (height) and z (depth) so they never line up
+// into a band. A few big & nearer, a few small & deep. The 3D clouds sit under the
+// scrim + text, so placement is free of legibility concerns.
 const LAYERS: Layer[] = [
-  { tex: 0, x: -9, y: 3.0, z: -10, scale: 13, speed: 0.5, opacity: 0.9 },
-  { tex: 1, x: 6, y: 4.2, z: -14, scale: 9, speed: 0.35, opacity: 0.6 },
-  { tex: 0, x: 2, y: 1.4, z: -6, scale: 16, speed: 0.8, opacity: 0.8 },
-  { tex: 1, x: -5, y: 5.0, z: -18, scale: 7, speed: 0.28, opacity: 0.5 },
-  { tex: 0, x: 10, y: 2.2, z: -8, scale: 11, speed: 0.65, opacity: 0.7 },
-  { tex: 1, x: -12, y: 0.6, z: -5, scale: 10, speed: 0.95, opacity: 0.65 },
-  { tex: 0, x: 0, y: 6.0, z: -22, scale: 6, speed: 0.22, opacity: 0.45 },
+  { tex: 0, x: -13, y: 5.2, z: -14, w: 12, speed: 0.42, opacity: 0.98 },
+  { tex: 1, x: -6, y: 2.6, z: -11, w: 9, speed: 0.52, opacity: 0.92 },
+  { tex: 0, x: 2, y: 7.4, z: -19, w: 12, speed: 0.3, opacity: 0.85 },
+  { tex: 1, x: 7, y: 4.0, z: -12, w: 8, speed: 0.5, opacity: 0.94 },
+  { tex: 0, x: 14, y: 6.2, z: -16, w: 12, speed: 0.4, opacity: 0.9 },
+  { tex: 1, x: -12, y: 8.0, z: -20, w: 8, speed: 0.28, opacity: 0.8 },
+  { tex: 0, x: 12, y: 2.8, z: -12, w: 11, speed: 0.5, opacity: 0.94 },
+  { tex: 1, x: -2, y: 5.0, z: -15, w: 8, speed: 0.4, opacity: 0.88 },
 ];
 
-const WRAP = 20; // horizontal wrap-around half-width
+const WRAP = 22; // horizontal wrap-around half-width
 
 export function Clouds() {
   const live = useSky();
@@ -43,8 +52,7 @@ export function Clouds() {
     for (const t of textures) t.colorSpace = THREE.SRGBColorSpace;
   }, [textures]);
 
-  // cloud cut-outs are ~2:1 wide, so height = width / 2
-  const geometry = useMemo(() => new THREE.PlaneGeometry(1, 0.5), []);
+  const geometry = useMemo(() => new THREE.PlaneGeometry(1, 1), []);
 
   useFrame((_, dt) => {
     const g = groupRef.current;
@@ -71,7 +79,7 @@ export function Clouds() {
           key={i}
           geometry={geometry}
           position={[layer.x, layer.y, layer.z]}
-          scale={layer.scale}
+          scale={[layer.w, layer.w / ASPECT[layer.tex], 1]}
         >
           <meshLambertMaterial
             map={textures[layer.tex]}

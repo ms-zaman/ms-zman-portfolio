@@ -49,11 +49,15 @@ export interface Preset {
 
 export const CONDITIONS: Record<Condition, Preset> = {
   sunny: {
-    skyBlend: 0.52,
-    domeHorizon: '#d6ebfe', domeZenith: '#2b74c8', domeGlow: '#ffe4a6', glowStrength: 1.0,
+    // Dome-dominant so the vibrant azure isn't diluted grey by the pale <Sky>
+    // horizon band. Palette sampled from the original hero photo (sky.avif):
+    // a saturated azure up top easing to light azure low (the scrim whitens the
+    // very bottom for legibility). A sliver of <Sky> (0.1) keeps the sun alive.
+    skyBlend: 0.9,
+    domeHorizon: '#a9d6fb', domeZenith: '#1c90f0', domeGlow: '#ffe4a6', glowStrength: 1.0,
     turbidity: 1.5, rayleigh: 2.7, mie: 0.005, stars: 0,
-    ambient: 0.9, ambientColor: '#eaf4ff', keyIntensity: 1.5, keyColor: '#ffe680',
-    cloudOpacity: 0.16, cloudColor: '#ffffff', cloudSpeed: 0.55,
+    ambient: 1.7, ambientColor: '#ffffff', keyIntensity: 1.5, keyColor: '#ffe680',
+    cloudOpacity: 1, cloudColor: '#ffffff', cloudSpeed: 0.5,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#cfe0f5',
     snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.0016, fogColor: '#cfe4fb',
