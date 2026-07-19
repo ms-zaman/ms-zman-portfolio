@@ -76,7 +76,7 @@ export const CONDITIONS: Record<Condition, Preset> = {
     turbidity: 12, rayleigh: 1.4, mie: 0.03, stars: 0,
     ambient: 0.5, ambientColor: '#8f9cad', keyIntensity: 0.45, keyColor: '#8a97a8',
     cloudOpacity: 1, cloudColor: '#6b7789', cloudSpeed: 1.4,
-    rainOpacity: 0.5, rainSpeed: 9, rainColor: '#c3ccd8',
+    rainOpacity: 0.62, rainSpeed: 9, rainColor: '#c3ccd8',
     snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.011, fogColor: '#5b6675',
     lightning: 0.9,
