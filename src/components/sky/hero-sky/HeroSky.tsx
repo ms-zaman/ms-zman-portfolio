@@ -139,7 +139,12 @@ export default function HeroSky({ condition: forced }: Props) {
           onCreated={({ gl }) => {
             gl.setClearColor(0x000000, 0);
             markWebglReady();
-            requestAnimationFrame(() => setReady(true));
+            requestAnimationFrame(() => {
+              setReady(true);
+              // tell the Loader the live sky is up, so it can reveal in sync
+              (window as unknown as { __skyHeroReady?: boolean }).__skyHeroReady = true;
+              window.dispatchEvent(new Event('sky:hero-ready'));
+            });
           }}
         >
           <Suspense fallback={null}>
