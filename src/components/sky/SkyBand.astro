@@ -54,20 +54,6 @@
       radial-gradient(46% 70% at var(--sun-x) var(--sun-y), var(--sun-glow), rgba(255, 240, 205, 0) 70%);
     transition: background 1.5s ease;
   }
-
-  /* center scrim for legibility + white feather so the photo dissolves into the
-     white sections above & below */
-  .skyband::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    background:
-      radial-gradient(58% 74% at 50% 50%, rgba(14, 38, 74, .36), rgba(14, 38, 74, .14) 58%, rgba(14, 38, 74, 0) 100%),
-      linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0) 17%, rgba(255, 255, 255, 0) 83%, #fff 100%);
-  }
-
   .sky-wrap { position: relative; z-index: 3; }
 
   /* eyebrow — reuse the shared markup but recolour for the dark band */
