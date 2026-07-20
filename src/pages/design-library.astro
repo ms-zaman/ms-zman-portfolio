@@ -1,0 +1,175 @@
+---
+/**
+ * Sky Design Library — a living styleguide for the redesign.
+ * Renders the design tokens and primitive components so we can review
+ * the system in one place as we build. Not linked from the site nav.
+ */
+import SkyLayout from '../layouts/SkyLayout.astro';
+import Eyebrow from '../components/sky/Eyebrow.astro';
+import SectionHead from '../components/sky/SectionHead.astro';
+import Button from '../components/sky/Button.astro';
+import Tag from '../components/sky/Tag.astro';
+
+const colors = [
+  { name: 'sky-1', v: '#3f86cf' },
+  { name: 'sky-2', v: '#6ea9e4' },
+  { name: 'sky-3', v: '#a9cff2' },
+  { name: 'sky-4', v: '#dcecfb' },
+  { name: 'ink', v: '#1b2635' },
+  { name: 'ink-2', v: '#4a596b' },
+  { name: 'ink-3', v: '#8794a6' },
+  { name: 'accent', v: '#2f74c0' },
+  { name: 'accent-soft', v: '#e8f1fb' },
+  { name: 'sun', v: '#f6b352' },
+  { name: 'sun-deep', v: '#e08e2a' },
+  { name: 'paper', v: '#f7fafd' },
+  { name: 'line', v: '#e5ebf2' },
+  { name: 'card', v: '#ffffff' },
+];
+
+const typeScale = [
+  { label: 'Display / clamp 40–72', font: 'var(--display)', size: '48px', weight: 600, text: 'Building web experiences' },
+  { label: 'H2 / clamp 28–42', font: 'var(--display)', size: '34px', weight: 600, text: 'What I can build for you' },
+  { label: 'Statement / clamp 25–40', font: 'var(--display)', size: '28px', weight: 500, text: 'Interfaces that feel obvious' },
+  { label: 'Card title / 19px', font: 'var(--display)', size: '19px', weight: 600, text: 'React web apps' },
+  { label: 'Body / 17px · Inter', font: 'var(--sans)', size: '17px', weight: 400, text: 'Shipping production sites across React, WordPress & Shopify.' },
+  { label: 'Small / 14px · Inter', font: 'var(--sans)', size: '14px', weight: 400, text: 'No spam. Replies from a real person.' },
+];
+---
+<SkyLayout title="Sky — Design Library" noindex={true}>
+  <header class="dl-hero">
+    <div class="sky-wrap">
+      <Eyebrow>Design library</Eyebrow>
+      <h1 class="dl-title">Sky <em>system</em>.</h1>
+      <p class="dl-lead">Tokens and primitive components for the redesign. Build sections on top of these — never one-off values.</p>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="sky-wrap">
+      <SectionHead eyebrow="Tokens" title="Color" sub="Semantic names, not raw hex. Reference via var(--name)." />
+      <div class="dl-swatches">
+        {colors.map((c) => (
+          <div class="dl-sw">
+            <div class="dl-chip" style={`background:${c.v}`}></div>
+            <div class="dl-sw-meta">
+              <b>--{c.name}</b>
+              <span>{c.v}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sky-wrap">
+      <SectionHead eyebrow="Tokens" title="Typography" sub="Inter Tight for display, Inter for body." />
+      <div class="dl-type">
+        {typeScale.map((t) => (
+          <div class="dl-type-row">
+            <span class="dl-type-label">{t.label}</span>
+            <div style={`font-family:${t.font};font-size:${t.size};font-weight:${t.weight};line-height:1.2;letter-spacing:-.01em`}>{t.text}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sky-wrap">
+      <SectionHead eyebrow="Primitives" title="Buttons" sub="Pill CTAs. Glass reads over the sky; solid & accent over white." />
+      <div class="dl-row">
+        <Button href="#">Solid button <span aria-hidden="true">→</span></Button>
+        <Button variant="accent" href="#">Accent button</Button>
+        <Button variant="solid" type="button">Real &lt;button&gt;</Button>
+      </div>
+      <div class="dl-sky-panel">
+        <Button variant="glass" href="#">Glass button</Button>
+        <Tag variant="glass">React</Tag>
+        <Tag variant="glass">Shopify</Tag>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sky-wrap">
+      <SectionHead eyebrow="Primitives" title="Tags & eyebrow" sub="Soft chips over white; the eyebrow kicks off every section." />
+      <div class="dl-row">
+        <Tag>TypeScript</Tag>
+        <Tag>Playwright</Tag>
+        <Tag>Design tokens</Tag>
+        <Tag>AI agents</Tag>
+      </div>
+      <div class="dl-row" style="margin-top:24px">
+        <Eyebrow>Services</Eyebrow>
+        <Eyebrow>Open source</Eyebrow>
+        <Eyebrow>How I build</Eyebrow>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sky-wrap">
+      <SectionHead eyebrow="Composite" title="Section header" sub="Eyebrow + title + this supporting line — one component (SectionHead)." />
+    </div>
+  </section>
+</SkyLayout>
+
+<style>
+  .dl-hero { padding: 90px 0 40px; }
+  .dl-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(40px, 6vw, 68px);
+    letter-spacing: -.03em;
+    line-height: 1.02;
+    margin: 16px 0 14px;
+  }
+  .dl-title em { font-style: italic; color: var(--accent); }
+  .dl-lead { font-size: 18px; color: var(--ink-2); max-width: 54ch; }
+
+  .dl-swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 16px;
+  }
+  .dl-sw {
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    background: var(--card);
+    box-shadow: var(--shadow-sm);
+  }
+  .dl-chip { height: 68px; }
+  .dl-sw-meta { padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+  .dl-sw-meta b { font-size: 13px; color: var(--ink); font-weight: 600; }
+  .dl-sw-meta span { font-size: 12px; color: var(--ink-3); font-family: ui-monospace, monospace; }
+
+  .dl-type { display: flex; flex-direction: column; gap: 22px; }
+  .dl-type-row {
+    display: grid;
+    grid-template-columns: 190px 1fr;
+    gap: 24px;
+    align-items: baseline;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .dl-type-label { font-size: 12px; color: var(--ink-3); font-weight: 600; letter-spacing: .04em; }
+
+  .dl-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+  .dl-sky-panel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px;
+    margin-top: 22px;
+    padding: 28px;
+    border-radius: var(--r-lg);
+    background: linear-gradient(160deg, var(--sky-1), var(--sky-2));
+  }
+
+  @media (max-width: 620px) {
+    .dl-type-row { grid-template-columns: 1fr; gap: 6px; }
+  }
+</style>

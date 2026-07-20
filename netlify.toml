@@ -2,6 +2,20 @@
   command = "npm run build"
   publish = "dist"
 
+[build.environment]
+  # pin the build runtime so a Netlify default bump can't change output
+  NODE_VERSION = "22"
+
+# The redesign now lives at / — retire the pre-launch /sky staging route
+[[redirects]]
+  from = "/sky"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/sky/*"
+  to = "/"
+  status = 301
+
 # Security headers
 [[headers]]
   for = "/*"
@@ -9,6 +23,8 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Permissions-Policy = "geolocation=(self), camera=(), microphone=(), payment=()"
 
 # Cache hashed static assets immutably (Astro emits content-hashed files under /_astro/)
 [[headers]]

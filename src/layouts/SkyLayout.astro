@@ -1,0 +1,136 @@
+---
+/**
+ * SkyLayout — the light "Sky" theme shell for the redesigned homepage.
+ * Independent of BaseLayout (the blog's dark theme), so the two design
+ * systems coexist during the incremental migration.
+ */
+import { Font } from 'astro:assets';
+import '../styles/sky-tokens.css';
+import '../styles/sky-base.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  /** Keep this page out of search indexes (e.g. the internal styleguide). */
+  noindex?: boolean;
+}
+
+const {
+  title = 'MS Zaman — Web Developer · React, WordPress & Shopify',
+  description = 'MS Zaman — web developer in Dhaka building production sites in React, WordPress & Shopify, plus 45+ page-builder templates used by 700K+ people.',
+  image = '/og.jpg',
+  noindex = false,
+} = Astro.props;
+
+const site = Astro.site ?? new URL('https://sharfuzzaman.com');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
+
+// Structured data — Person + WebSite (helps search engines model the site owner).
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      '@id': `${site.origin}/#person`,
+      name: 'MS Zaman',
+      url: site.origin,
+      image: ogImage,
+      jobTitle: 'Web Developer',
+      description,
+      sameAs: ['https://github.com/ms-zaman', 'https://www.linkedin.com/in/sharfuzzaman/'],
+      knowsAbout: ['React', 'WordPress', 'Shopify', 'Tailwind CSS', 'Web Performance', 'Frontend Development'],
+      address: { '@type': 'PostalAddress', addressLocality: 'Dhaka', addressCountry: 'BD' },
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${site.origin}/#website`,
+      name: 'MS Zaman',
+      url: site.origin,
+      author: { '@id': `${site.origin}/#person` },
+      inLanguage: 'en',
+    },
+  ],
+};
+
+// Preserve site-wide analytics on the redesigned homepage (same GA as BaseLayout).
+const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {gaId && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+        <script is:inline define:vars={{ gaId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="MS Zaman" />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
+    <meta name="theme-color" content="#3f86cf" />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MS Zaman" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="MS Zaman — Building web experiences that just work." />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline></script>
+
+    <link rel="preload" as="image" href="/sky/sky.avif" />
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-inter-tight" preload />
+  </head>
+
+  <body class="sky">
+    <a href="#content" class="skip-link">Skip to content</a>
+    <slot />
+
+    <script>
+      // SkyEngine: local time → sun arc + dawn/day/dusk/night palette.
+      import { initSkyEngine } from '../scripts/sky-engine';
+      initSkyEngine();
+    </script>
+
+    <script>
+      // Scroll-reveal: add .in when elements enter the viewport.
+      const els = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && els.length) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('in');
+              io.unobserve(e.target);
+            }
+          });
+        }, { rootMargin: '0px 0px -8% 0px' });
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('in'));
+      }
+    </script>
+  </body>
+</html>

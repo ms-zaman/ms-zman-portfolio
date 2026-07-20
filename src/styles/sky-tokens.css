@@ -1,0 +1,66 @@
+/* ============================================================
+   Sky design system — TOKENS
+   Extracted from the redesign prototype (redesign/variant-g.html).
+   Loaded only on Sky pages (via SkyLayout), so it never collides
+   with the blog's dark theme in global.css.
+   ============================================================ */
+:root {
+  /* — sky palette (hero / immersive backgrounds) — */
+  --sky-1: #3f86cf;
+  --sky-2: #6ea9e4;
+  --sky-3: #a9cff2;
+  --sky-4: #dcecfb;
+  --horizon: #ffffff;
+
+  /* — ink / text — */
+  --ink: #1b2635;
+  --ink-2: #4a596b;
+  --ink-3: #8794a6;
+
+  /* — surfaces & lines — */
+  --line: #e5ebf2;
+  --paper: #f7fafd;
+  --card: #ffffff;
+
+  /* — accent + sun — */
+  --accent: #2f74c0;
+  --accent-soft: #e8f1fb;
+  --sun: #f6b352;
+  --sun-deep: #e08e2a;
+
+  /* — glass (floating nav / cards over sky) — */
+  --glass: rgba(255, 255, 255, .55);
+  --glass-line: rgba(255, 255, 255, .7);
+
+  /* — type families (self-hosted via Astro Fonts API; the cssVariable already
+     includes a metric-matched fallback, so there's no font-swap layout shift) — */
+  --display: var(--font-inter-tight, 'Inter Tight'), system-ui, sans-serif;
+  --sans: var(--font-inter, 'Inter'), system-ui, sans-serif;
+
+  /* — radii — */
+  --r-sm: 7px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+
+  /* — elevation — */
+  --shadow-sm: 0 10px 30px rgba(40, 80, 140, .05);
+  --shadow-md: 0 14px 40px rgba(40, 80, 140, .10);
+  --shadow-lg: 0 22px 54px rgba(40, 80, 140, .13);
+
+  /* — layout — */
+  --wrap: 1200px;
+  --section-y: 100px;
+
+  /* — sky state (runtime-controlled by SkyEngine; defaults = clear midday) — */
+  --sun-x: 86%;          /* horizontal sun position: sunrise≈left … sunset≈right */
+  --sun-y: 2%;           /* vertical sun position: noon≈high … horizon≈low */
+  --sun-glow: rgba(255, 244, 214, .7);
+  --sky-tint: transparent;   /* dawn/dusk/night overlay the engine fades in */
+  --sky-tint-2: transparent;
+  --wx-tint: transparent;    /* weather wash — set by the R3F hero island (see weather-css.ts) */
+}
+
+@media (max-width: 900px) { :root { --section-y: 80px; } }
+@media (max-width: 680px) { :root { --section-y: 60px; } }

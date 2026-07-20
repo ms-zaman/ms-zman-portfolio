@@ -1,0 +1,94 @@
+/* ============================================================
+   Sky design system — BASE + shared utilities
+   Everything is scoped under `.sky` (set on <body> by SkyLayout)
+   so these globals never leak into the blog's dark theme.
+   Component-specific styling lives inside each .astro component.
+   ============================================================ */
+
+.sky {
+  margin: 0;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--horizon);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+.sky *,
+.sky *::before,
+.sky *::after { box-sizing: border-box; }
+.sky ::selection { background: var(--sun); color: #3a2600; }
+.sky a { color: inherit; text-decoration: none; }
+.sky img { max-width: 100%; height: auto; display: block; }
+
+/* — layout utilities — */
+.sky-wrap {
+  max-width: var(--wrap);
+  margin: 0 auto;
+  padding: 0 40px;
+}
+.sky .section {
+  padding: var(--section-y) 0;
+  border-top: 1px solid var(--line);
+}
+
+/* — scroll-reveal (progressive enhancement; JS adds .in) — */
+.sky .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .8s ease, transform .8s ease;
+}
+.sky .reveal.in { opacity: 1; transform: none; }
+
+/* — focus: consistent keyboard ring; outline follows each element's radius — */
+.sky a:focus-visible,
+.sky button:focus-visible,
+.sky summary:focus-visible,
+.sky [tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+/* programmatic skip targets (tabindex="-1") shouldn't paint a ring on focus */
+.sky [tabindex="-1"]:focus { outline: none; }
+
+/* — skip link: hidden until focused, so keyboard users can bypass the nav — */
+.sky .skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1000;
+  padding: 10px 16px;
+  border-radius: var(--r-md);
+  background: var(--ink);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  transform: translateY(-160%);
+  transition: transform .2s ease;
+}
+.sky .skip-link:focus-visible {
+  transform: translateY(0);
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* — visually hidden but exposed to assistive tech (screen-reader-only) — */
+.sky .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sky .reveal { opacity: 1; transform: none; }
+}
+@media (max-width: 680px) {
+  .sky-wrap { padding: 0 22px; }
+}

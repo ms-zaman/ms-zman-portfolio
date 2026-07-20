@@ -1,0 +1,20 @@
+---
+/** Eyebrow — small uppercase section kicker with a sun-colored ✦ mark. */
+interface Props { class?: string; }
+const { class: className = '' } = Astro.props;
+---
+<div class:list={['eyebrow', className]}><span class="s">✦</span><slot /></div>
+
+<style>
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .eyebrow .s { color: var(--sun-deep); }
+</style>

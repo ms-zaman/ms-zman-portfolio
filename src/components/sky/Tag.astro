@@ -1,0 +1,26 @@
+---
+/** Tag — small chip. variants: soft (accent, default) · glass (over sky). */
+interface Props { variant?: 'soft' | 'glass'; class?: string; }
+const { variant = 'soft', class: className = '' } = Astro.props;
+---
+<span class:list={['tag', `tag-${variant}`, className]}><slot /></span>
+
+<style>
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    line-height: 1.4;
+    padding: 4px 11px;
+    border-radius: var(--r-sm);
+  }
+  .tag-soft { color: var(--accent); background: var(--accent-soft); }
+  .tag-glass {
+    font-size: 12.5px;
+    color: #2c3e56;
+    background: rgba(255, 255, 255, .92);
+    border: 1px solid #fff;
+    padding: 6px 12px;
+    border-radius: 9px;
+  }
+</style>

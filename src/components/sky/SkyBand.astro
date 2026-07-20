@@ -1,0 +1,146 @@
+---
+/**
+ * SkyBand — a mid-page full-bleed immersive sky band that echoes the hero and
+ * brings the brand motif back into the body. White type over the sky photo, a
+ * center scrim for legibility, and a white feather top/bottom so the photo
+ * dissolves into the white sections around it.
+ * Ported from the frozen prototype (redesign/variant-g §How I build, .skyband).
+ *
+ * Enhancement over the prototype: an `.sb-atmos` layer reuses the SkyEngine's
+ * state vars (--sky-tint / --sky-tint-2 / --sun-glow / --sun-x/-y) so the band
+ * tracks time-of-day like the hero — no bright-noon band under a night hero.
+ * It also blends `--wx-tint`, a weather wash the R3F hero island publishes
+ * (see weather-css.ts), so the band tracks the current weather too — staying in
+ * sync with the hero without a second WebGL canvas.
+ */
+---
+<section class="skyband" aria-labelledby="sb-heading">
+  <div class="cloud b" aria-hidden="true"><div class="bob"><img src="/sky/cloud-2.png" alt="" loading="lazy" /></div></div>
+  <div class="cloud c" aria-hidden="true"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="lazy" /></div></div>
+  <div class="sb-atmos" aria-hidden="true"></div>
+
+  <div class="sky-wrap">
+    <div class="eyebrow reveal"><span class="s">✦</span> How I build</div>
+    <h2 class="sb-title reveal" id="sb-heading">Great code should feel as good as it looks — and work even <em>better</em>.</h2>
+    <p class="sb-sub reveal">That's the standard behind everything you've just seen — and everything I'll build with you next.</p>
+    <a href="#contact" class="sb-cta reveal">Let's talk <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+
+<style>
+  .skyband {
+    position: relative;
+    overflow: hidden;
+    padding: 118px 0;
+    text-align: center;
+    color: #fff;
+    background:
+      url('/sky/sky.avif') center 42% / cover no-repeat,
+      linear-gradient(180deg, var(--sky-2), var(--sky-1));
+  }
+
+  /* atmosphere — a weather wash (--wx-tint, published by the R3F hero island) over
+     the SkyEngine's sun glow + time-of-day tint, so the band tracks both the hour
+     and the current weather. Sits above the clouds so they get tinted too, under
+     the scrim. 1.5s cross-fade matches the hero's condition lerp. */
+  .sb-atmos {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--wx-tint), var(--wx-tint)),
+      linear-gradient(180deg, var(--sky-tint), var(--sky-tint-2)),
+      radial-gradient(46% 70% at var(--sun-x) var(--sun-y), var(--sun-glow), rgba(255, 240, 205, 0) 70%);
+    transition: background 1.5s ease;
+  }
+
+  /* center scrim for legibility + white feather so the photo dissolves into the
+     white sections above & below */
+  .skyband::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      radial-gradient(58% 74% at 50% 50%, rgba(14, 38, 74, .36), rgba(14, 38, 74, .14) 58%, rgba(14, 38, 74, 0) 100%),
+      linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0) 17%, rgba(255, 255, 255, 0) 83%, #fff 100%);
+  }
+
+  .sky-wrap { position: relative; z-index: 3; }
+
+  /* eyebrow — reuse the shared markup but recolour for the dark band */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: #eaf3ff;
+    margin-bottom: 22px;
+  }
+  .eyebrow .s { color: var(--sun); }
+
+  .sb-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(30px, 5vw, 56px);
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    max-width: 20ch;
+    margin: 0 auto 16px;
+    text-shadow: 0 2px 4px rgba(18, 44, 84, .4), 0 6px 34px rgba(18, 44, 84, .32);
+  }
+  .sb-title em { font-style: italic; color: #ffe3a6; }
+  .sb-sub {
+    font-size: 16.5px;
+    color: #eef5ff;
+    max-width: 50ch;
+    margin: 0 auto 32px;
+    text-shadow: 0 1px 3px rgba(18, 44, 84, .4);
+  }
+  .sb-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 14px 26px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .92);
+    border: 1px solid #fff;
+    color: var(--ink);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: .22s;
+  }
+  .sb-cta:hover { background: #fff; transform: translateY(-2px); box-shadow: 0 14px 30px rgba(30, 70, 130, .3); }
+
+  /* light, high-contrast focus ring over the photo (accent blue would blend) */
+  .skyband a:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 4px rgba(16, 38, 72, .4);
+  }
+
+  /* drifting clouds — sit behind the scrim so they get darkened like the hero */
+  .cloud { position: absolute; z-index: 0; pointer-events: none; will-change: transform; }
+  .cloud > .bob { will-change: transform; }
+  .cloud img { width: 100%; height: auto; display: block; }
+  @keyframes sb-drift { from { transform: translateX(-40vw); } to { transform: translateX(140vw); } }
+  @keyframes sb-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-13px); } }
+  .cloud.b { top: 22%; width: 260px; opacity: .6; animation: sb-drift 150s linear infinite; animation-delay: -58s; }
+  .cloud.c { top: 44%; width: 560px; opacity: .8; animation: sb-drift 120s linear infinite; animation-delay: -82s; }
+  .cloud.b > .bob { animation: sb-bob 8s ease-in-out infinite; }
+  .cloud.c > .bob { animation: sb-bob 13.5s ease-in-out infinite; }
+
+  @media (max-width: 680px) { .skyband { padding: 88px 0; } }
+  @media (prefers-reduced-motion: reduce) {
+    .cloud, .cloud > .bob { animation: none; }
+    .sb-atmos { transition: none; }
+  }
+</style>

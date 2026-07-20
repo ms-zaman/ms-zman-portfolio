@@ -1,0 +1,47 @@
+---
+/**
+ * SectionHead — the shared section header: eyebrow + title on the left,
+ * optional supporting line on the right. Mirrors the prototype's .work-head.
+ */
+import Eyebrow from './Eyebrow.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  sub?: string;
+  class?: string;
+}
+const { eyebrow, title, sub, class: className = '' } = Astro.props;
+---
+<div class:list={['work-head', 'reveal', className]}>
+  <div>
+    {eyebrow && <Eyebrow class="wh-eyebrow">{eyebrow}</Eyebrow>}
+    <h2 class="work-title">{title}</h2>
+  </div>
+  {sub && <p class="work-sub">{sub}</p>}
+</div>
+
+<style>
+  .work-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px 32px;
+    flex-wrap: wrap;
+    margin-bottom: 44px;
+  }
+  .wh-eyebrow { margin-bottom: 18px; }
+  .work-title {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: clamp(28px, 4vw, 42px);
+    letter-spacing: -.02em;
+    line-height: 1.05;
+  }
+  .work-sub {
+    font-size: 15px;
+    color: var(--ink-2);
+    line-height: 1.55;
+    max-width: 32ch;
+  }
+</style>

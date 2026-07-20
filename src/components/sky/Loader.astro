@@ -1,0 +1,174 @@
+---
+/**
+ * Loader — a load-aware brand entrance (replaces the old "Daybreak" sunrise).
+ * A living-sky panel: soft drifting clouds, the MZ mark ringed by a real progress
+ * arc (trickles through fonts → page → hero milestones), and the wordmark. It HOLDS
+ * until the fonts and the WebGL hero are actually ready, then completes the ring and
+ * fades + lifts away in one smooth reveal — no fixed-timer wipe, no cut-off, no
+ * disjointed poster→WebGL pop. Reduced-motion safe; removed from the DOM when done.
+ */
+---
+<div id="loader" aria-hidden="true">
+  <div class="ld-in">
+    <span class="ld-badge" style="--p:0">
+      <svg class="ld-ring" viewBox="0 0 52 52" aria-hidden="true">
+        <circle class="ld-trk" cx="26" cy="26" r="23" />
+        <circle class="ld-prg" cx="26" cy="26" r="23" />
+      </svg>
+      <span class="ld-mz">MZ</span>
+    </span>
+    <span class="ld-name">MS Zaman</span>
+  </div>
+</div>
+
+<style>
+  #loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--sky-2) 0%, var(--sky-3) 58%, var(--sky-4) 100%);
+    opacity: 1;
+    transition: opacity .7s ease;
+  }
+  #loader.done { opacity: 0; pointer-events: none; }
+
+  /* soft drifting clouds — brand continuity with the hero sky (CSS only) */
+  #loader::before,
+  #loader::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0));
+    filter: blur(14px);
+    pointer-events: none;
+  }
+  #loader::before { width: 360px; height: 150px; top: 20%; left: -150px; animation: ld-drift 19s linear infinite; }
+  #loader::after { width: 300px; height: 132px; bottom: 22%; right: -140px; opacity: .7; animation: ld-drift2 27s linear infinite; }
+  @keyframes ld-drift { from { transform: translateX(0); } to { transform: translateX(72vw); } }
+  @keyframes ld-drift2 { from { transform: translateX(0); } to { transform: translateX(-66vw); } }
+
+  .ld-in {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    animation: ld-rise .6s cubic-bezier(.22, .61, .36, 1) both;
+  }
+  @keyframes ld-rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+  }
+  #loader.done .ld-in {
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+
+  /* MZ mark ringed by a real progress arc */
+  .ld-badge { position: relative; width: 52px; height: 52px; }
+  .ld-ring { position: absolute; inset: 0; transform: rotate(-90deg); overflow: visible; }
+  .ld-trk { fill: none; stroke: rgba(255, 255, 255, .28); stroke-width: 2.5; }
+  .ld-prg {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-dasharray: 144.5;
+    stroke-dashoffset: calc(144.5 * (1 - var(--p, 0)));
+    transition: stroke-dashoffset .5s cubic-bezier(.4, 0, .2, 1);
+  }
+  .ld-mz {
+    position: absolute;
+    inset: 5px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    display: grid;
+    place-items: center;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -.3px;
+    box-shadow: 0 10px 28px rgba(20, 44, 84, .25);
+    animation: ld-glow 2.6s ease-in-out infinite;
+  }
+  @keyframes ld-glow {
+    0%, 100% { box-shadow: 0 10px 28px rgba(20, 44, 84, .25), 0 0 0 rgba(120, 170, 230, 0); }
+    50% { box-shadow: 0 10px 28px rgba(20, 44, 84, .25), 0 0 20px rgba(120, 170, 230, .55); }
+  }
+
+  .ld-name {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 23px;
+    letter-spacing: -.01em;
+    color: var(--ink);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #loader::before, #loader::after, .ld-in, .ld-mz { animation: none; }
+    .ld-prg { transition: none; }
+    #loader, #loader.done .ld-in { transition: opacity .25s ease; }
+  }
+</style>
+
+<script>
+  // Load-aware dismissal with a real progress arc (fonts → page → hero), then reveal.
+  const loader = document.getElementById('loader');
+  if (loader) {
+    const badge = loader.querySelector<HTMLElement>('.ld-badge');
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    const start = performance.now();
+    const MIN = reduce ? 0 : 600; // minimum beat so it never flash-blinks
+    const MAX = 4500; // hard cap — never trap the visitor behind the loader
+    let p = 0.08;
+    let done = false;
+    let trickleId = 0;
+
+    const setP = (v: number) => {
+      p = Math.min(1, Math.max(p, v));
+      badge?.style.setProperty('--p', String(p));
+    };
+    setP(0.08);
+    // trickle toward 90% so the arc always feels alive while real work happens
+    if (!reduce) trickleId = window.setInterval(() => { if (p < 0.9) setP(p + (0.9 - p) * 0.07); }, 340);
+
+    const finish = () => {
+      loader.classList.add('done');
+      const gone = () => loader.remove();
+      loader.addEventListener('transitionend', gone, { once: true });
+      window.setTimeout(gone, 1100); // fallback if transitionend never fires
+    };
+    const reveal = () => {
+      if (done) return;
+      done = true;
+      window.clearInterval(trickleId);
+      setP(1); // complete the ring…
+      const wait = Math.max(260, MIN - (performance.now() - start)); // …let it land, then reveal
+      window.setTimeout(finish, wait);
+    };
+
+    const fontsReady = document.fonts?.ready ?? Promise.resolve();
+    fontsReady.then(() => setP(0.5));
+    const pageLoaded =
+      document.readyState === 'complete'
+        ? Promise.resolve()
+        : new Promise<void>((r) => window.addEventListener('load', () => r(), { once: true }));
+    pageLoaded.then(() => setP(0.8));
+
+    if (reduce) {
+      Promise.all([fontsReady, pageLoaded]).then(reveal);
+    } else {
+      // reveal in sync with the WebGL hero's first frame when it arrives…
+      if ((window as unknown as { __skyHeroReady?: boolean }).__skyHeroReady) reveal();
+      else window.addEventListener('sky:hero-ready', reveal, { once: true });
+      // …otherwise shortly after fonts + page are ready
+      Promise.all([fontsReady, pageLoaded]).then(() => window.setTimeout(reveal, 900));
+    }
+    window.setTimeout(reveal, MAX);
+  }
+</script>

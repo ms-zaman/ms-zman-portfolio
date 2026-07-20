@@ -1,0 +1,132 @@
+---
+/**
+ * Faq — native <details> accordion with a JS-driven grid-rows animation so it
+ * expands/collapses smoothly in both directions (the `.exp` class does the work).
+ * Ported from the frozen prototype (redesign/variant-g §FAQ, #faq).
+ *
+ * NOTE(MS Zaman): the timeline / pricing / availability answers are sensible
+ * defaults — review and edit them to match how you actually work.
+ */
+import SectionHead from './SectionHead.astro';
+
+const faqs = [
+  {
+    q: 'What kind of projects do you take on?',
+    a: "React web apps and UIs, custom WordPress sites (Elementor or the block editor), Shopify storefronts, landing pages, and template or design-system work. If it lives on the web and needs to look sharp and load fast, it's probably a fit.",
+  },
+  {
+    q: 'How long does a typical project take?',
+    a: "It depends on scope. A focused landing page is usually 1–2 weeks; a full site or store is typically 3–6 weeks. I'll give you a clear timeline up front during discovery, before anything starts.",
+  },
+  {
+    q: 'How do you charge?',
+    a: 'Fixed price per project when the scope is well-defined, or hourly for ongoing and open-ended work. We agree on it together before I begin — no surprises on the invoice.',
+  },
+  {
+    q: 'Are you available for new work?',
+    a: "Yes — I'm currently open to freelance and contract projects. I'm based in Dhaka (GMT+6) and regularly work with clients across time zones.",
+  },
+  {
+    q: 'Can you work with my existing team or codebase?',
+    a: 'Absolutely. I can join an existing team, build from your Figma, or pick up and extend an existing WordPress, Shopify, or React codebase.',
+  },
+  {
+    q: 'Will I be able to edit the site myself afterward?',
+    a: "Yes — especially on WordPress and Shopify, I build things to be client-editable and hand over with a short walkthrough so you're never dependent on me for small changes.",
+  },
+];
+---
+<section class="section" id="faq">
+  <div class="sky-wrap">
+    <SectionHead
+      eyebrow="FAQ"
+      title="Good questions"
+      sub="The things clients usually want to know before we start."
+    />
+    <div class="faq reveal">
+      {faqs.map((f) => (
+        <details>
+          <summary>{f.q}<span class="pl"></span></summary>
+          <div class="faq-a"><div class="faq-ain"><p>{f.a}</p></div></div>
+        </details>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq { max-width: 760px; margin: 8px auto 0; }
+  .faq details { border-bottom: 1px solid var(--line); }
+  .faq summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 4px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: -.01em;
+    color: var(--ink);
+    transition: color .2s;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq details:not(.exp) summary { color: var(--ink-2); }
+  .faq details:not(.exp):hover summary { color: var(--accent); }
+
+  /* plus/minus toggle */
+  .faq summary .pl { flex: none; width: 22px; height: 22px; position: relative; transition: transform .25s; }
+  .faq summary .pl::before,
+  .faq summary .pl::after { content: ""; position: absolute; background: var(--accent); border-radius: 2px; }
+  .faq summary .pl::before { left: 0; right: 0; top: 10px; height: 2px; }
+  .faq summary .pl::after { top: 0; bottom: 0; left: 10px; width: 2px; transition: opacity .25s; }
+  .faq details.exp summary .pl::after { opacity: 0; }
+
+  /* animated body */
+  .faq-a {
+    display: grid;
+    grid-template-rows: 0fr;
+    opacity: 0;
+    transition: grid-template-rows .36s cubic-bezier(.4, 0, .2, 1), opacity .28s ease;
+  }
+  .faq-ain { overflow: hidden; min-height: 0; }
+  .faq details.exp .faq-a { grid-template-rows: 1fr; opacity: 1; }
+  .faq details.exp {
+    background: #f6faff;
+    border: 1px solid #e1edfa;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    margin: 6px 0;
+    padding: 0 16px;
+  }
+  .faq details.exp::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
+  .faq p { font-size: 15px; color: var(--ink-2); line-height: 1.65; padding: 0 4px 22px; max-width: 66ch; margin: 0; }
+</style>
+
+<script>
+  // Animate expand/collapse in both directions via the `.exp` class.
+  document.querySelectorAll('.faq details').forEach((d) => {
+    const sum = d.querySelector('summary');
+    sum?.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (d.classList.contains('exp')) {
+        // closing — wait for the row animation, then actually close
+        d.classList.remove('exp');
+        const a = d.querySelector('.faq-a');
+        const onEnd = (ev: Event) => {
+          if ((ev as TransitionEvent).propertyName !== 'grid-template-rows') return;
+          a?.removeEventListener('transitionend', onEnd);
+          (d as HTMLDetailsElement).open = false;
+        };
+        a?.addEventListener('transitionend', onEnd);
+      } else {
+        // opening — open first, then add the class on the next frame to transition
+        (d as HTMLDetailsElement).open = true;
+        requestAnimationFrame(() => d.classList.add('exp'));
+      }
+    });
+  });
+</script>

@@ -1,0 +1,115 @@
+---
+/**
+ * Experience — a vertical timeline of four roles.
+ * Ported from the frozen prototype (redesign/variant-g §Experience, #experience).
+ * Job titles are kept factual; the current role carries a "now" dot + badge.
+ */
+import SectionHead from './SectionHead.astro';
+
+interface Role {
+  when: string;
+  now?: boolean;
+  role: string;
+  co: string;
+  desc: string;
+  tags: string[];
+}
+
+const roles: Role[] = [
+  {
+    when: 'Sep 2025 — present',
+    now: true,
+    role: 'Frontend Developer',
+    co: 'Startise · Dhaka',
+    desc: 'Building production Elementor and Gutenberg templates for Templately. Template creation, review, and issue resolution across the library, plus marketing campaigns.',
+    tags: ['Elementor', 'Gutenberg', 'Templately'],
+  },
+  {
+    when: 'Nov 2022 — Sep 2025',
+    role: 'Jr. Frontend Developer',
+    co: 'Startise · Dhaka',
+    desc: 'Designed and shipped 40+ production templates, built custom responsive WordPress themes, and turned Figma mockups into pixel-perfect implementations.',
+    tags: ['WordPress', 'Figma', '40+ templates'],
+  },
+  {
+    when: 'Jan — Oct 2022',
+    role: 'Jr. Frontend Developer',
+    co: 'American Best IT · Dhaka',
+    desc: 'Built 15+ SEO-friendly lead-generation sites for US and Canada clients — clean code and Google PageSpeed optimization.',
+    tags: ['SEO', 'PageSpeed', '15+ sites'],
+  },
+  {
+    when: 'Jan — Oct 2021',
+    role: 'Jr. Web Developer',
+    co: 'Technofelia · Dhaka',
+    desc: 'Worked across Yoda (online learning platform) and Hisabee (NDA), plus freelance fixes and end-to-end deployments.',
+    tags: ['Deployment', 'Freelance'],
+  },
+];
+---
+<section class="section" id="experience">
+  <div class="sky-wrap">
+    <SectionHead
+      eyebrow="Experience"
+      title="Where I've worked"
+      sub="Four roles across five years — agency sites to a template marketplace serving 700K+ users."
+    />
+
+    <div class="xp-list">
+      {roles.map((r) => (
+        <div class="xp-row reveal">
+          <span class:list={['dot', { now: r.now }]}></span>
+          <div class="xp-when">{r.when}{r.now && <span class="now">CURRENT</span>}</div>
+          <div class="xp-role">{r.role}</div>
+          <div class="xp-co">{r.co}</div>
+          <p class="xp-desc">{r.desc}</p>
+          <div class="xp-tags">{r.tags.map((t) => <span>{t}</span>)}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .xp-list { position: relative; margin-top: 12px; padding-left: 30px; }
+  .xp-list::before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: 14px;
+    bottom: 20px;
+    width: 2px;
+    background: var(--line);
+  }
+  .xp-row { position: relative; padding: 16px 0 18px; }
+  .xp-row .dot {
+    position: absolute;
+    left: -29px;
+    top: 19px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #c3d5e8;
+    box-shadow: 0 0 0 4px #fff;
+  }
+  .xp-row .dot.now {
+    width: 13px;
+    height: 13px;
+    left: -30px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+  .xp-when { font-size: 12.5px; font-weight: 500; color: var(--ink-3); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; }
+  .xp-when .now { font-size: 10.5px; font-weight: 600; letter-spacing: .06em; color: #1e7a4d; background: #e4f5eb; padding: 2px 8px; border-radius: 999px; }
+  .xp-role { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+  .xp-co { font-size: 14px; color: var(--accent); font-weight: 500; margin: 2px 0 9px; }
+  .xp-desc { font-size: 14.5px; color: var(--ink-2); line-height: 1.6; max-width: 66ch; }
+  .xp-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+  .xp-tags span { font-size: 12px; color: var(--ink-2); background: #f2f6fb; padding: 4px 10px; border-radius: 7px; }
+
+  @media (max-width: 680px) {
+    .xp-list { padding-left: 24px; }
+    .xp-row .dot { left: -23px; }
+    .xp-row .dot.now { left: -24px; }
+  }
+</style>
