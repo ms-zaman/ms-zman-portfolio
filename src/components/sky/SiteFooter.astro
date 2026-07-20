@@ -7,6 +7,11 @@ const year = new Date().getFullYear();
 ---
 <footer class="sky-footer sky-wrap">
   <span>© {year} MS Zaman</span>
+  <nav class="sf-nav" aria-label="Footer">
+    <a href="/blog">Blog</a>
+    <a href="#contact">Contact</a>
+    <a href="https://github.com/ms-zaman" target="_blank" rel="noopener">GitHub</a>
+  </nav>
   <span>Web Developer · Dhaka</span>
 </footer>
 
@@ -15,10 +20,14 @@ const year = new Date().getFullYear();
     border-top: 1px solid var(--line);
     padding: 30px 40px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 10px 24px;
     font-size: 13px;
     color: var(--ink-3);
   }
+  .sf-nav { display: flex; gap: 20px; }
+  .sf-nav a { color: var(--ink-2); transition: color .2s; }
+  .sf-nav a:hover { color: var(--accent); }
 </style>
