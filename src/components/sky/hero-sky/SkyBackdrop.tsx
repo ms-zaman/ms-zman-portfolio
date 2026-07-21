@@ -46,7 +46,25 @@ const DOME_FRAG = /* glsl */ `
   void main() {
     // vertical gradient: horizon low → zenith high (matches the 5-stop CSS sky)
     float h = clamp(vDir.y * 0.5 + 0.5, 0.0, 1.0);
-    vec3 col = mix(uHorizon, uZenith, smoothstep(0.12, 0.92, h));
+    // Encode the two endpoints, THEN interpolate between them. THREE.Color turns each
+    // preset hex into linear light on the way in, and this puts it back into the
+    // renderer's output space — so a hex in conditions.ts means on screen what it
+    // means in a colour picker. (It used to skip this entirely: #475569 landed at
+    // rgb(16,23,36), darker than the night sky.)
+    //
+    // Encoding first and mixing after is deliberate. Mixing in linear light and
+    // encoding the result is the physically-correct gradient, but it lifts the middle
+    // — sunny's mid-sky went +21/255 in red, because its endpoints are far apart. This
+    // palette was authored against a display-space ramp (what a CSS gradient does), so
+    // interpolating there keeps every preset looking exactly as tuned.
+    //
+    // The glow terms below are added after this for the same reason: they were tuned
+    // in display space. Folding them in before the encode runs them through the sRGB
+    // curve, which lifts small values hard — the moon's wide wash alone turned the
+    // deep-navy night into flat grey (+64/255 measured).
+    vec3 hor = linearToOutputTexel(vec4(uHorizon, 1.0)).rgb;
+    vec3 zen = linearToOutputTexel(vec4(uZenith, 1.0)).rgb;
+    vec3 col = mix(hor, zen, smoothstep(0.12, 0.92, h));
     // additive sun glow around the shared sun direction
     float d = max(dot(normalize(vDir), normalize(uSunDir)), 0.0);
     col += uGlow * (pow(d, 8.0) * uGlowStrength);

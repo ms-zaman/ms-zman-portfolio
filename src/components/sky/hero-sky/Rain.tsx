@@ -1,5 +1,5 @@
 /**
- * Rain — 3500 motion-blurred streaks rendered as ONE draw call via <instancedMesh>.
+ * Rain — 1900 motion-blurred streaks rendered as ONE draw call via <instancedMesh>.
  *
  * Each streak is a camera-facing quad textured with a soft, comet-shaped alpha
  * gradient (bright leading head, feathered trailing tail) instead of a hard box —
@@ -19,7 +19,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useSky } from './sky-state';
 
-const RAIN_MAX = 3500;
+const RAIN_MAX = 1900;
 const SPREAD_X = 30; // droplets fill a box in front of the camera
 const Z_FAR = -10; // deepest layer (faint, thin)
 const Z_NEAR = 3; // nearest layer — kept in front of the camera (which sits at z≈6)
@@ -134,7 +134,7 @@ export function Rain() {
     matRef.current.opacity = opacity;
     matRef.current.color.copy(live.cols.rainColor);
 
-    // cheap out when there's no visible rain — skip 3500 matrix writes
+    // cheap out when there's no visible rain — skip every matrix write
     if (opacity < 0.01) {
       meshRef.current.visible = false;
       return;

@@ -13,10 +13,11 @@ const CONDITION_VALUES: readonly Condition[] = [
   'drizzle',
   'snow',
   'overcast-night',
+  'drizzle-night',
   'clear-night',
 ];
 
-/** Map weather + phase → scene condition. At night, "clear" → stars, wet/heavy → overcast-night. */
+/** Map weather + phase → scene condition. At night: "clear" → stars, wet → rain, heavy → overcast. */
 export function resolveCondition(kind: WeatherKind, phase: Phase): Condition {
   const night = phase === 'night';
   switch (kind) {
@@ -31,7 +32,9 @@ export function resolveCondition(kind: WeatherKind, phase: Phase): Condition {
     case 'drizzle':
     case 'rain':
     case 'thunder':
-      return night ? 'overcast-night' : 'drizzle';
+      // these used to fall through to overcast-night, which renders no rain at all —
+      // so a rainy night looked identical to a merely cloudy one
+      return night ? 'drizzle-night' : 'drizzle';
     default:
       return night ? 'clear-night' : 'sunny';
   }
