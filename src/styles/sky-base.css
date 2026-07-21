@@ -32,6 +32,11 @@
   padding: var(--section-y) 0;
   border-top: 1px solid var(--line);
 }
+/* The nav pill is fixed (Hero.astro), so an anchor jump would otherwise drop a
+   section's top rule — and, at the narrow widths where --section-y shrinks to
+   60px, its heading too — underneath it. Land them clear of the pill instead. */
+.sky .section[id],
+.sky #content { scroll-margin-top: 84px; }
 
 /* — scroll-reveal (progressive enhancement; JS adds .in) — */
 .sky .reveal {

@@ -14,6 +14,10 @@
  * A manual pick is remembered in localStorage (`STORE_KEY`), so a visitor who
  * likes the snow keeps the snow on their next visit. `?skyWeather=` still wins
  * over both and is deliberately *not* saved — it's a preview link, not a choice.
+ *
+ * It also gets *one* chance to be noticed: ~2s after the sky resolves it plays a
+ * single bounce + glow ring (`HINT_KEY`), then never again on that browser. See
+ * the hint effect below.
  */
 import { useEffect, useId, useRef, useState } from 'react';
 import type { Condition } from './conditions';
@@ -41,6 +45,34 @@ function save(condition: Condition | null) {
     /* not being able to remember is not worth breaking the click over */
   }
 }
+
+/** Set once the attention hint has played (or been made moot by a click). */
+const HINT_KEY = 'sky-hint-seen';
+/** How long after the sky resolves the chip clears its throat. */
+const HINT_DELAY = 2000;
+/** Matches the `sky-hint` keyframes in Hero.astro; drops the class when done. */
+const HINT_MS = 1500;
+
+function hintSeen(): boolean {
+  try {
+    return localStorage.getItem(HINT_KEY) === '1';
+  } catch {
+    // No storage means no way to remember having hinted, and a nudge that
+    // replays every visit stops being a nudge. Stay quiet instead.
+    return true;
+  }
+}
+
+function markHintSeen() {
+  try {
+    localStorage.setItem(HINT_KEY, '1');
+  } catch {
+    /* nothing to do — hintSeen() already fails closed */
+  }
+}
+
+const reducedMotion = () =>
+  typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // — icons — inline SVG rather than ☀/☁ glyphs, which fall out of the self-hosted
 // font stack and land on whatever the OS has. 16×16, stroked to match the socials.
@@ -133,10 +165,12 @@ interface Props {
 export function SkyPicker({ condition, manual, onPick, location }: Props) {
   const [open, setOpen] = useState(false);
   const [inHero, setInHero] = useState(true);
+  const [hint, setHint] = useState(false);
   // re-render each minute so the clock on the chip doesn't go stale
   const [, tick] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const hinted = useRef(false);
   const menuId = useId();
 
   useEffect(() => {
@@ -162,6 +196,43 @@ export function SkyPicker({ condition, manual, onPick, location }: Props) {
     return () => io.disconnect();
   }, []);
 
+  // The chip states a fact quietly in a corner, which is exactly how it got
+  // missed. So once — ever, per browser — it announces itself: a beat after the
+  // sky has actually resolved (no point pointing at a sky that isn't up yet, and
+  // `sky:hero-ready` is also what retires the loader), a single bounce and a glow
+  // ring. Not a loop and not a shake: a status light catching your eye.
+  //
+  // It's skipped outright for anyone who has seen it, who has already opened the
+  // menu (`markHintSeen` in `toggle` — they found it themselves), whose chip has
+  // scrolled out of the hero, or who asked for less motion.
+  useEffect(() => {
+    if (hinted.current || open || !inHero || hintSeen() || reducedMotion()) return;
+
+    let timer = 0;
+    const arm = () => {
+      timer = window.setTimeout(() => {
+        hinted.current = true;
+        markHintSeen();
+        setHint(true);
+      }, HINT_DELAY);
+    };
+    if ((window as unknown as { __skyHeroReady?: boolean }).__skyHeroReady) arm();
+    else window.addEventListener('sky:hero-ready', arm, { once: true });
+
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('sky:hero-ready', arm);
+    };
+  }, [open, inHero]);
+
+  // Drop the class once the animation has run. Kept in its own effect so that a
+  // scroll or a click mid-bounce can't cancel the timer and leave it stuck on.
+  useEffect(() => {
+    if (!hint) return;
+    const id = window.setTimeout(() => setHint(false), HINT_MS);
+    return () => window.clearTimeout(id);
+  }, [hint]);
+
   // close on outside click / Escape; Escape hands focus back to the chip
   useEffect(() => {
     if (!open) return;
@@ -185,6 +256,15 @@ export function SkyPicker({ condition, manual, onPick, location }: Props) {
   const active = ITEMS.find((i) => i.id === condition) ?? ITEMS[0];
   const auto = manual === null;
   const place = location.lat === DHAKA.lat && location.lng === DHAKA.lng ? 'Dhaka' : 'Your sky';
+
+  const toggle = () => {
+    // Touching the chip at all is proof it was discovered — the hint has nothing
+    // left to teach, now or on any later visit.
+    hinted.current = true;
+    markHintSeen();
+    setHint(false);
+    setOpen((o) => !o);
+  };
 
   const pick = (next: Condition | null) => {
     onPick(next);
@@ -232,18 +312,23 @@ export function SkyPicker({ condition, manual, onPick, location }: Props) {
       <button
         type="button"
         ref={triggerRef}
-        className="sky-chip"
+        className={`sky-chip${hint ? ' hint' : ''}`}
         aria-expanded={open}
         aria-haspopup="true"
         aria-controls={open ? menuId : undefined}
-        onClick={() => setOpen((o) => !o)}
+        onClick={toggle}
       >
         <Icon name={active.icon} />
         {auto ? (
           <>
+            {/* the dot alone was the only claim that any of this is real, and a
+                pulsing dot is easy to read as decoration — so say the word too */}
             <span className="sky-live" aria-hidden="true" />
+            <span className="sky-live-t" aria-hidden="true">
+              Live ·
+            </span>
             <span>
-              {place}, {clockLabel(location)}
+              {place} {clockLabel(location)}
             </span>
             <span className="sr-only">— live weather. Change the hero sky</span>
           </>
@@ -253,6 +338,12 @@ export function SkyPicker({ condition, manual, onPick, location }: Props) {
             <span className="sr-only">— chosen. Change the hero sky</span>
           </>
         )}
+        {/* hover/focus-only affordance — see .sky-cue in Hero.astro */}
+        <span className="sky-cue" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 15l6-6 6 6" />
+          </svg>
+        </span>
       </button>
     </div>
   );

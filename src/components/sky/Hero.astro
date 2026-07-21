@@ -253,7 +253,7 @@ const birds = [
   .hero :global(.sky-pick) {
     position: absolute;
     z-index: 12;
-    right: max(24px, calc((100vw - var(--wrap)) / 2));
+    right: 20px;
     bottom: 26px;
     display: flex;
     flex-direction: column;
@@ -262,7 +262,8 @@ const birds = [
   }
   .hero :global(.sky-chip) {
     display: inline-flex; align-items: center; gap: 8px;
-    padding: 8px 14px 8px 11px; border-radius: var(--r-pill);
+    position: relative; /* anchors the one-time hint ring */
+    padding: 8px 12px 8px 11px; border-radius: var(--r-pill);
     font: inherit; font-size: 13px; color: var(--ink); cursor: pointer;
     background: var(--glass); border: 1px solid var(--glass-line);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
@@ -279,6 +280,49 @@ const birds = [
     animation: sky-pulse 2.6s ease-in-out infinite;
   }
   @keyframes sky-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+  /* …and the word, because a pulsing dot on its own reads as decoration. Set in
+     the small-caps of the menu's group headings so it stays a label, not copy. */
+  .hero :global(.sky-live-t) {
+    margin-left: -3px; /* sits with its dot, not evenly between both neighbours */
+    font-family: var(--sans); font-size: 10px; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2);
+  }
+
+  /* The "you can click this" tell. Resting, the chip is a statement about the
+     sky; the caret only turns up on hover/focus, and it holds its 12px whether
+     it's visible or not so nothing reflows under the cursor. */
+  .hero :global(.sky-cue) {
+    display: inline-flex; margin-left: -2px; color: var(--ink-3);
+    opacity: 0; transform: translateY(2px);
+    transition: opacity .2s, transform .2s;
+  }
+  .hero :global(.sky-cue svg) { width: 12px; height: 12px; color: inherit; }
+  .hero :global(.sky-chip:hover .sky-cue),
+  .hero :global(.sky-chip:focus-visible .sky-cue) { opacity: .8; transform: none; }
+  /* open = the menu is already up there, so flip it and stop hiding */
+  .hero :global(.sky-chip[aria-expanded="true"] .sky-cue) { opacity: .8; transform: rotate(180deg); }
+
+  /* The one-time "notice me" (SkyPicker gates it on localStorage, once per
+     browser): one soft bounce, and a ring breathing out of the chip's own edge.
+     The ring is two-toned on purpose — a white edge for the dawn/day skies and
+     an ink one just behind it for the night skies, so whichever one the sky
+     swallows, the other still draws. */
+  .hero :global(.sky-chip.hint) { animation: sky-hint 1.5s cubic-bezier(.34, 1.36, .64, 1) both; }
+  .hero :global(.sky-chip.hint::after) {
+    content: ''; position: absolute; inset: -1px;
+    border-radius: inherit; pointer-events: none;
+    animation: sky-hint-ring 1.5s ease-out both;
+  }
+  @keyframes sky-hint {
+    0%, 8% { transform: scale(1); }
+    34% { transform: scale(1.07); }
+    62% { transform: scale(.99); }
+    100% { transform: scale(1); }
+  }
+  @keyframes sky-hint-ring {
+    0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, .85), 0 0 0 0 rgba(40, 80, 140, .4); }
+    100% { box-shadow: 0 0 0 14px rgba(255, 255, 255, 0), 0 0 0 20px rgba(40, 80, 140, 0); }
+  }
 
   .hero :global(.sky-menu) {
     width: 208px; padding: 7px; border-radius: 14px;
@@ -355,14 +399,35 @@ const birds = [
   @keyframes flyA { 0% { transform: translate(-14vw, 0); } 22% { transform: translate(20vw, -34px); } 48% { transform: translate(50vw, -6px); } 72% { transform: translate(82vw, -40px); } 100% { transform: translate(130vw, -14px); } }
   @keyframes flyB { 0% { transform: translate(-14vw, 14px); } 30% { transform: translate(30vw, -18px); } 56% { transform: translate(62vw, 16px); } 82% { transform: translate(94vw, -24px); } 100% { transform: translate(132vw, 4px); } }
 
-  /* nav */
-  .nav { position: absolute; top: 26px; left: 0; right: 0; z-index: 20; display: flex; justify-content: center; }
+  /* nav — fixed to the viewport so it rides the whole page, not just the hero.
+     It still *lives* in the hero markup: the hero is the first thing on the page,
+     so `top: 26px` fixed lands on the exact pixel the absolute pill used to at
+     scrollTop 0, and .hero-grid's 160px padding-top clears it as before. (The
+     hero's overflow:hidden doesn't clip it — nothing up the tree transforms, so
+     the containing block is the viewport.) */
+  .nav {
+    position: fixed; top: 26px; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: center;
+    transition: top .28s ease;
+  }
   .nav-in {
     display: flex; align-items: center; gap: 26px;
     padding: 9px 12px 9px 16px; border-radius: var(--r-pill);
     background: var(--glass); border: 1px solid var(--glass-line);
     backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     box-shadow: 0 10px 30px rgba(40, 80, 140, .12);
+    transition: padding .28s ease, background .28s ease, border-color .28s ease, box-shadow .28s ease;
+  }
+  /* Past the hero the pill sits on the white sections, where 55% glass over white
+     leaves the links washed out and the blur has nothing to bite on. Go near-solid
+     and lift it off the page instead. Only the pill moves — it's fixed, so none of
+     this can shift the document. */
+  .nav.scrolled { top: 16px; }
+  .nav.scrolled .nav-in {
+    padding: 7px 10px 7px 14px;
+    background: rgba(255, 255, 255, .93);
+    border-color: rgba(255, 255, 255, .96);
+    box-shadow: var(--shadow-md);
   }
   .nav-brand { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15px; color: var(--ink); }
   .nav-brand .mono {
@@ -438,9 +503,48 @@ const birds = [
     :global(:root[data-sky-phase="dusk"]) .sun { --size: 28px; }
   }
   @media (prefers-reduced-motion: reduce) {
+    /* the chip still says its piece, it just doesn't jump up and down about it.
+       (SkyPicker checks the same query before ever setting .hint — this is the
+       belt to that braces, for a preference flipped after load.) */
+    .hero :global(.sky-chip.hint), .hero :global(.sky-chip.hint::after) { animation: none; }
+    .hero :global(.sky-cue) { transition: none; }
+    /* the nav still goes solid past the hero, it just arrives there instantly */
+    .nav, .nav-in { transition: none; }
     .cloud, .cloud > .bob, .bird { animation: none; }
     .bird svg :global(animate) { display: none; }
     .hero::before { transition: none; }
     .sun::before, .sun::after { animation: none; }
   }
 </style>
+
+<script>
+  // Flip the fixed nav to its opaque state once the hero's bottom edge has passed
+  // under the pill. The hero is its own sentinel: an IntersectionObserver whose
+  // root is inset from the top by the pill's height stops seeing the hero at
+  // exactly that moment — no scroll handler on every frame, no spacer element to
+  // keep in sync with the CSS, and it reports the right state on a reload that
+  // restores mid-page scroll.
+  const NAV_BOTTOM = 80; // 26px top + the pill's ~46px, rounded up for air
+
+  const nav = document.querySelector('.nav');
+  const hero = document.querySelector('.hero');
+
+  if (nav && hero) {
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          // take the newest entry — a batch can hold several for one target
+          const e = entries[entries.length - 1];
+          nav.classList.toggle('scrolled', !e.isIntersecting);
+        },
+        { rootMargin: `-${NAV_BOTTOM}px 0px 0px 0px` },
+      );
+      io.observe(hero);
+    } else {
+      const onScroll = () =>
+        nav.classList.toggle('scrolled', hero.getBoundingClientRect().bottom <= NAV_BOTTOM);
+      addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    }
+  }
+</script>
