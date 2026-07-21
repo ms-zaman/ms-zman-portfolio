@@ -244,6 +244,90 @@ const birds = [
   }
   :global(:root[data-sky-phase="night"]) .sun { display: none; }
 
+  /* ── sky picker ─────────────────────────────────────────────────────────────
+     The live-weather chip and its menu. Rendered by React (SkyPicker.tsx), so it
+     never gets Astro's scoped-style attribute — hence :global() throughout, the
+     same as .hero-sky above. z-index 12 puts it over the legibility scrim (4) and
+     the copy (10); it is the one thing in the hero that takes a click. The menu
+     opens *upward* because the chip sits at the bottom of the hero. */
+  .hero :global(.sky-pick) {
+    position: absolute;
+    z-index: 12;
+    right: max(24px, calc((100vw - var(--wrap)) / 2));
+    bottom: 26px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  .hero :global(.sky-chip) {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px 8px 11px; border-radius: var(--r-pill);
+    font: inherit; font-size: 13px; color: var(--ink); cursor: pointer;
+    background: var(--glass); border: 1px solid var(--glass-line);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 10px 30px rgba(40, 80, 140, .12);
+    transition: background .2s, transform .2s, box-shadow .2s;
+  }
+  .hero :global(.sky-chip:hover) { background: rgba(255, 255, 255, .78); transform: translateY(-1px); }
+  .hero :global(.sky-chip svg) { width: 17px; height: 17px; color: var(--ink-2); flex: none; }
+  /* the "this is live" tell — a slow pulse, so it reads as a status light and not
+     as something asking to be clicked */
+  .hero :global(.sky-live) {
+    width: 6px; height: 6px; border-radius: 50%; flex: none;
+    background: #35c07a; box-shadow: 0 0 0 3px rgba(53, 192, 122, .18);
+    animation: sky-pulse 2.6s ease-in-out infinite;
+  }
+  @keyframes sky-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+
+  .hero :global(.sky-menu) {
+    width: 208px; padding: 7px; border-radius: 14px;
+    background: rgba(255, 255, 255, .82); border: 1px solid rgba(255, 255, 255, .9);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 18px 44px rgba(40, 80, 140, .22);
+    animation: sky-rise .18s ease both;
+  }
+  @keyframes sky-rise { from { opacity: 0; transform: translateY(6px); } }
+  .hero :global(.sky-group) { margin-top: 4px; padding-top: 4px; border-top: 1px solid #e7eef6; }
+  .hero :global(.sky-group-t) {
+    margin: 4px 0 3px; padding: 0 9px;
+    font-family: var(--sans); font-size: 10px; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase; color: #7c8ba0;
+  }
+  .hero :global(.sky-opt) {
+    display: flex; align-items: center; gap: 9px; width: 100%;
+    padding: 7px 9px; border: 0; border-radius: 9px; background: none;
+    font: inherit; font-size: 13.5px; color: var(--ink); text-align: left; cursor: pointer;
+    transition: background .15s;
+  }
+  .hero :global(.sky-opt svg) { width: 16px; height: 16px; color: var(--ink-3); flex: none; }
+  .hero :global(.sky-opt em) { margin-left: auto; font-style: normal; font-size: 11px; color: var(--ink-3); }
+  .hero :global(.sky-opt:hover) { background: rgba(40, 80, 140, .07); }
+  .hero :global(.sky-opt.on) { background: var(--ink); color: #fff; }
+  .hero :global(.sky-opt.on svg), .hero :global(.sky-opt.on em) { color: rgba(255, 255, 255, .75); }
+  .hero :global(.sky-chip:focus-visible), .hero :global(.sky-opt:focus-visible) {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+
+  @media (max-width: 900px) {
+    /* The mobile hero is taller than the viewport (stacked copy + glance card), so
+       an absolutely-positioned chip at its bottom edge lands below the fold. Pin it
+       to the viewport instead and shrink it to an icon so it doesn't sit on top of
+       the copy; SkyPicker's IntersectionObserver drops it once the hero scrolls by. */
+    .hero :global(.sky-pick) { position: fixed; right: 16px; bottom: 16px; }
+    .hero :global(.sky-pick.gone) { opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s; }
+    .hero :global(.sky-chip) {
+      width: 44px; height: 44px; padding: 0; border-radius: 50%;
+      justify-content: center; position: relative;
+      background: rgba(255, 255, 255, .8);
+    }
+    .hero :global(.sky-chip svg) { width: 20px; height: 20px; }
+    /* icon only — the place/time label has nowhere to go at this width */
+    .hero :global(.sky-chip > span:not(.sky-live):not(.sr-only)) { display: none; }
+    .hero :global(.sky-live) { position: absolute; top: 7px; right: 7px; }
+    .hero :global(.sky-menu) { animation: none; }
+  }
+
   /* clouds */
   .cloud { position: absolute; z-index: 2; pointer-events: none; will-change: transform; }
   .cloud > .bob { will-change: transform; }

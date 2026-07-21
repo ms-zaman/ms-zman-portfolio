@@ -112,6 +112,15 @@ function overrideHour(): number | null {
   }
 }
 
+/**
+ * The clock the sky is actually running on, as fractional hours — the visitor's
+ * wall time at `loc`, or whatever `?skyHour` forces. The hero's sky picker shows
+ * this, so a preview URL doesn't end up claiming 2pm under a midnight sky.
+ */
+export function skyHour(loc: Location, now: Date = new Date()): number {
+  return overrideHour() ?? localHours(now, loc);
+}
+
 export function computeState(loc: Location, now: Date = new Date()): SkyState {
   const { sunrise, sunset } = sunTimes(now, loc);
   const SR = sunrise ?? 6;   // polar fallback: assume a plain 6→18 day
