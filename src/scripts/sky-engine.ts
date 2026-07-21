@@ -161,6 +161,41 @@ export function sunVector(loc: Location, now: Date = new Date()): [number, numbe
   return [x / len, y / len, z / len];
 }
 
+/**
+ * Moon direction for the 3D hero scene, as a unit vector.
+ *
+ * Deliberately *not* real lunar ephemeris — the real moon is frequently below the
+ * horizon or behind the viewer, which would leave the night hero empty. Instead it
+ * rides an anti-solar arc that is composed for the camera: always inside the
+ * frustum (fov 60°, so |elevation| stays under ~25° and azimuth under ~30°) and
+ * always in the *right* half of the frame, because the hero copy sits on the left.
+ * It rises and drifts across the night, so 9pm and 3am don't look identical.
+ * Honours the ?skyHour override via the same clock as `sunVector`.
+ */
+export function moonVector(loc: Location, now: Date = new Date()): [number, number, number] {
+  const { sunrise, sunset } = sunTimes(now, loc);
+  const SR = sunrise ?? 6;
+  const SS = sunset ?? 18;
+  const h = overrideHour() ?? localHours(now, loc);
+
+  // night progress: 0 at sunset → 1 at sunrise (wraps past midnight)
+  const nightSpan = Math.max(24 - (SS - SR), 1);
+  const nightFrac = clamp(norm24(h - SS) / nightSpan, 0, 1);
+
+  // azimuth swings from well right of centre toward the middle as the night wears on
+  const az = lerp(0.56, 0.3, nightFrac);
+  // elevation arcs up and back down, floored so the moon never sinks out of frame.
+  // Capped low enough (~17°, against a 30° half-fov) that it clears the floating
+  // nav pill instead of rising behind it.
+  const el = 0.16 + 0.14 * Math.sin(Math.PI * nightFrac);
+
+  const x = Math.sin(az) * Math.cos(el);
+  const y = Math.sin(el);
+  const z = -Math.cos(az) * Math.cos(el);
+  const len = Math.hypot(x, y, z) || 1;
+  return [x / len, y / len, z / len];
+}
+
 function apply(root: HTMLElement, s: SkyState): void {
   root.style.setProperty('--sun-x', `${s.sunX.toFixed(1)}%`);
   root.style.setProperty('--sun-y', `${s.sunY.toFixed(1)}%`);

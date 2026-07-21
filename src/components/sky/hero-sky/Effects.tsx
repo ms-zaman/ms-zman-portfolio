@@ -7,11 +7,16 @@ import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useSky } from './sky-state';
 
-/** Ambient fill + a key "sun" light aimed along the shared sunDir; both lerped. */
+/**
+ * Ambient fill + a key "sun" light along sunDir + a cool moon key along moonDir;
+ * all lerped. The moon key is what keeps night clouds from going flat black — it
+ * catches the raft edges facing the moon and leaves the rest in shadow.
+ */
 export function Lighting() {
   const live = useSky();
   const ambientRef = useRef<THREE.AmbientLight>(null!);
   const keyRef = useRef<THREE.DirectionalLight>(null!);
+  const moonRef = useRef<THREE.DirectionalLight>(null!);
 
   useFrame(() => {
     ambientRef.current.intensity = live.nums.ambient;
@@ -20,12 +25,25 @@ export function Lighting() {
     keyRef.current.color.copy(live.cols.keyColor);
     // place the key light along the sun direction so cloud shading tracks the sun
     keyRef.current.position.copy(live.sunDir).multiplyScalar(20);
+
+    moonRef.current.intensity = live.nums.moonLight;
+    moonRef.current.color.copy(live.cols.moonColor);
+    // Keep the moon's x/y (so the lit side tracks where the disc actually hangs)
+    // but pull the light to the camera side in z. The real moon sits *behind* the
+    // rafts, and a Lambert plane that's backlit just goes black — it can't rim-light.
+    // Flipping z lets the moonlight land on the faces we can actually see.
+    moonRef.current.position.set(
+      live.moonDir.x * 20,
+      live.moonDir.y * 20,
+      Math.abs(live.moonDir.z) * 14,
+    );
   });
 
   return (
     <>
       <ambientLight ref={ambientRef} />
       <directionalLight ref={keyRef} />
+      <directionalLight ref={moonRef} />
     </>
   );
 }
