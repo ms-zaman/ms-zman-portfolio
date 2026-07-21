@@ -114,8 +114,6 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     <noscript>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
     </noscript>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" is:inline></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" is:inline></script>
     <ClientRouter />
   </head>
   <body>
@@ -131,73 +129,17 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     </main>
     <Footer />
 
-    <!-- Interactive micro-effects & Scroll Spy — vanilla JS for speed and zero dependencies -->
+    <!-- Interactive micro-effects — vanilla JS for speed and zero dependencies -->
     <script is:inline>
       document.addEventListener('astro:page-load', function() {
-        // 1. Intersection Observer for fade-in animations
-        var observer = new IntersectionObserver(function(entries) {
-          entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('visible');
-              entry.target.classList.add('is-visible');
-              observer.unobserve(entry.target);
-            }
-          });
-        }, { threshold: 0.08 });
-
-        document.querySelectorAll('.fade-in').forEach(function(el) {
-          observer.observe(el);
-        });
-        document.querySelectorAll('.stagger-item').forEach(function(el) {
-          observer.observe(el);
-        });
-
-        // 2. Scroll Progress Bar & Scroll Spy Active State
-        var headerOffset = 80;
-
+        // 1. Scroll progress bar
         function handleScroll() {
-          // Scroll Progress Bar
           var progressBar = document.getElementById('scroll-progress');
-          if (progressBar) {
-            var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
-            var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            var scrolled = height > 0 ? (winScroll / height) * 100 : 0;
-            progressBar.style.width = scrolled + '%';
-          }
-
-          // Scroll Spy Navigation
-          var navLinks = document.querySelectorAll('.nav-links a, .mobile-nav a');
-          var sections = document.querySelectorAll('section[id]');
-          var scrollPos = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop;
-          
-          if (scrollPos < 100) {
-            navLinks.forEach(function(link) {
-              link.classList.remove('active');
-            });
-            return;
-          }
-
-          var activeSectionId = null;
-          sections.forEach(function(section) {
-            var sectionTop = section.offsetTop - headerOffset - 20;
-            var sectionHeight = section.offsetHeight;
-            var sectionId = section.getAttribute('id');
-
-            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-              activeSectionId = sectionId;
-            }
-          });
-
-          if (activeSectionId) {
-            navLinks.forEach(function(link) {
-              var href = link.getAttribute('href');
-              if (href === '#' + activeSectionId || href === '/#' + activeSectionId) {
-                link.classList.add('active');
-              } else {
-                link.classList.remove('active');
-              }
-            });
-          }
+          if (!progressBar) return;
+          var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+          var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+          var scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+          progressBar.style.width = scrolled + '%';
         }
 
         window.removeEventListener('scroll', window.__handleScroll);
@@ -205,24 +147,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
         window.addEventListener('scroll', window.__handleScroll, { passive: true });
         handleScroll();
 
-        // 3. Mouse spotlight coordination (only on non-touch devices for performance)
-        var isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-        if (!isTouchDevice) {
-          window.removeEventListener('mousemove', window.__handleSpotlight);
-          window.__handleSpotlight = function(e) {
-            var cards = document.querySelectorAll('.spotlight-card');
-            cards.forEach(function(card) {
-              var rect = card.getBoundingClientRect();
-              var x = e.clientX - rect.left;
-              var y = e.clientY - rect.top;
-              card.style.setProperty('--mouse-x', x + 'px');
-              card.style.setProperty('--mouse-y', y + 'px');
-            });
-          };
-          window.addEventListener('mousemove', window.__handleSpotlight, { passive: true });
-        }
-
-        // 4. Custom cursor logic (desktop pointer:fine devices only)
+        // 2. Custom cursor logic (desktop pointer:fine devices only)
         var isFinePointer = window.matchMedia('(pointer: fine)').matches;
         if (isFinePointer) {
           if (!window.__cursorInitialized) {

@@ -1,9 +1,11 @@
 ---
+/**
+ * Navigation — the dark-theme nav for the blog and 404 (BaseLayout).
+ * The homepage has its own Sky nav, so every section link here is
+ * cross-page (`/#work`) rather than a same-page anchor.
+ */
 import ThemeToggle from './ThemeToggle.jsx';
 import MobileMenu from './MobileMenu.jsx';
-
-const currentPath = Astro.url.pathname;
-const isHome = currentPath === '/';
 ---
 
 <nav class="nav" role="navigation" aria-label="Main navigation">
@@ -14,9 +16,9 @@ const isHome = currentPath === '/';
 
     <!-- Desktop Navigation -->
     <ul class="nav-links">
-      <li><a href={isHome ? '#work' : '/#work'}>Work</a></li>
-      <li><a href={isHome ? '#experience' : '/#experience'}>Experience</a></li>
-      <li><a href={isHome ? '#contact' : '/#contact'}>Contact</a></li>
+      <li><a href="/#work">Work</a></li>
+      <li><a href="/#experience">Experience</a></li>
+      <li><a href="/#contact">Contact</a></li>
       <li><a href="/blog">Blog</a></li>
       <li style="display: flex; align-items: center;">
         <ThemeToggle client:load />
@@ -30,6 +32,6 @@ const isHome = currentPath === '/';
     </ul>
 
     <!-- Mobile menu — React island for toggle interactivity -->
-    <MobileMenu client:load isHome={isHome} />
+    <MobileMenu client:load />
   </div>
 </nav>
