@@ -143,7 +143,6 @@ export function Rain() {
 
     const fall = live.nums.rainSpeed * Math.min(dt, 0.05); // clamp dt to avoid teleporting
     const wind = fall * WIND; // horizontal component of the fall
-    const drift = live.parallax.x * 0.6; // droplets shift slightly with parallax
     dummy.rotation.z = TILT; // streaks lean along their velocity (trailing end upwind)
     for (let i = 0; i < RAIN_MAX; i++) {
       const d = drops[i];
@@ -151,7 +150,7 @@ export function Rain() {
       d.x += wind * d.spd;
       if (d.y < BOTTOM) d.y += SPAN_Y; // wrap to the top
       if (d.x > SPREAD_X / 2) d.x -= SPREAD_X; // wrap horizontally as the wind carries it
-      dummy.position.set(d.x + drift, d.y, d.z);
+      dummy.position.set(d.x, d.y, d.z);
       dummy.scale.set(d.w, d.h, 1);
       dummy.updateMatrix();
       meshRef.current.setMatrixAt(i, dummy.matrix);

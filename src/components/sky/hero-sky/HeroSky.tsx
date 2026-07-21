@@ -25,6 +25,20 @@ import { applyWeatherVars } from '../../../scripts/weather-css';
 const prefersReducedMotion = () =>
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+/**
+ * Conditions the CSS hero renders better than WebGL can, so the canvas sits them out.
+ *
+ * `sunny` is the prototype's hero (redesign/variant-e): the sky.avif photograph, its
+ * warm off-frame glow, and the drifting cloud cut-outs. A two-stop procedural dome
+ * can't reproduce a photograph — matching it by eye left ~11.5° of hue drift at every
+ * height, and closing that gap dropped the h1 below its contrast floor. Letting the
+ * CSS hero own the clear-sky case makes the two layers identical by construction
+ * (there is no handoff to mismatch) and costs no WebGL work on the commonest sky.
+ * Every other condition — clouds, rain, snow, the moonlit nights — is procedural,
+ * where the canvas earns its keep.
+ */
+const POSTER_CONDITIONS: ReadonlySet<Condition> = new Set<Condition>(['sunny']);
+
 /** Signal the Astro hero that WebGL is live, so it can hide the CSS poster clouds/glow. */
 function markWebglReady() {
   document.querySelector('.hero')?.classList.add('sky-webgl');
@@ -45,6 +59,7 @@ export default function HeroSky({ condition: forced }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   // drive the render loop: "always" when the hero is visible, "never" when it isn't
   const [active, setActive] = useState(true);
+  const usePoster = reduced || POSTER_CONDITIONS.has(condition);
 
   // resolve the live condition (unless forced or overridden via ?skyWeather)
   useEffect(() => {
@@ -102,6 +117,17 @@ export default function HeroSky({ condition: forced }: Props) {
     (window as unknown as { __setSkyCondition?: typeof setCondition }).__setSkyCondition = setCondition;
   }, []);
 
+  // Hand the sky back to the CSS hero: drop the class that hides its clouds/glow,
+  // and tell the Loader it can reveal now — otherwise it waits on a WebGL first
+  // frame that will never arrive and only reveals on its 900ms fallback.
+  useEffect(() => {
+    if (!usePoster) return;
+    document.querySelector('.hero')?.classList.remove('sky-webgl');
+    setReady(false);
+    (window as unknown as { __skyHeroReady?: boolean }).__skyHeroReady = true;
+    window.dispatchEvent(new Event('sky:hero-ready'));
+  }, [usePoster]);
+
   // Pause the WebGL loop when the hero is offscreen (scrolled past) or the tab is
   // hidden, so it doesn't burn GPU/battery while the visitor reads the rest of the
   // page. `frameloop="never"` fully stops rendering until it's visible again.
@@ -125,8 +151,8 @@ export default function HeroSky({ condition: forced }: Props) {
     };
   }, []);
 
-  // reduced motion → no canvas; the CSS photo poster (+ birds) carries the hero
-  if (reduced) return null;
+  // reduced motion, or a condition the CSS hero owns → no canvas at all
+  if (usePoster) return null;
 
   return (
     <div ref={containerRef} className={`hero-sky${ready ? ' ready' : ''}`} aria-hidden="true">
@@ -135,7 +161,7 @@ export default function HeroSky({ condition: forced }: Props) {
           dpr={[1, 2]}
           frameloop={active ? 'always' : 'never'}
           gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-          camera={{ position: [0, 0.2, 6], fov: 60, near: 0.1, far: 1_000_000 }}
+          camera={{ position: [0, 0.1, 6], fov: 60, near: 0.1, far: 1_000_000 }}
           onCreated={({ gl }) => {
             gl.setClearColor(0x000000, 0);
             markWebglReady();

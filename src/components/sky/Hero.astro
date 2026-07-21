@@ -28,6 +28,9 @@ const birds = [
        client:only (no SSR) — the poster below covers the pre-hydration paint. -->
   <HeroSky client:only="react" />
 
+  <!-- the sun (CSS poster; hidden at night and once WebGL owns the sky) -->
+  <div class="sun" aria-hidden="true"><span class="sun-core"></span></div>
+
   <!-- drifting cloud cut-outs (CSS poster; hidden once WebGL owns the sky) -->
   <div class="cloud a"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="eager" /></div></div>
   <div class="cloud b"><div class="bob"><img src="/sky/cloud-2.png" alt="" loading="eager" /></div></div>
@@ -88,7 +91,7 @@ const birds = [
 <style>
   .hero {
     position: relative;
-    min-height: 100vh;
+    min-height: calc(100vh - 120px); ;
     overflow: hidden;
     background:
       url('/sky/sky.avif') center top / cover no-repeat,
@@ -106,17 +109,28 @@ const birds = [
       radial-gradient(38% 34% at var(--sun-x) var(--sun-y), var(--sun-glow), rgba(255, 240, 205, .28) 42%, rgba(255, 240, 205, 0) 66%);
     transition: background 1.2s ease, opacity 1.2s ease;
   }
-  /* legibility scrim so white type reads over clouds; fades to white at the bottom */
+  /* Legibility scrim so white type reads over the clouds, feathering to white at the
+     bottom. This belongs to the photo hero (the prototype's sunny sky) — it was
+     switched off site-wide because it muddied the WebGL sky, but the photo needs it:
+     without it the intro copy sits on the photo's bright lower half at 1.69:1.
+     So it is on by default (which is also the pre-hydration state, where the poster
+     is what's showing) and switched off below as soon as a non-sunny condition is
+     published, since those are rendered by the canvas. */
   .hero::after {
     content: "";
     position: absolute;
     inset: 0;
     z-index: 4;
     pointer-events: none;
-    /* background:
+    background:
       linear-gradient(100deg, rgba(14, 38, 74, .42) 0%, rgba(14, 38, 74, .16) 40%, rgba(14, 38, 74, 0) 64%),
       radial-gradient(150% 80% at 88% 116%, rgba(255, 255, 255, .95) 0%, rgba(255, 255, 255, 0) 58%),
-      linear-gradient(180deg, rgba(255, 255, 255, 0) 58%, rgba(255, 255, 255, .6) 80%, rgba(255, 255, 255, .92) 93%, var(--horizon) 100%); */
+      linear-gradient(180deg, rgba(255, 255, 255, 0) 58%, rgba(255, 255, 255, .6) 80%, rgba(255, 255, 255, .92) 93%, var(--horizon) 100%);
+    transition: opacity 1.2s ease;
+  }
+  /* every condition except sunny is the WebGL sky — keep it unmuddied */
+  :global(:root[data-sky-weather]:not([data-sky-weather="sunny"])) .hero::after {
+    background: none;
   }
 
   /* R3F weather island — above the photo poster (base), below the atmosphere/scrim.
@@ -133,9 +147,102 @@ const birds = [
   .hero :global(.hero-sky.ready) { opacity: 1; }
   .hero :global(.hero-sky canvas) { display: block; width: 100% !important; height: 100% !important; }
 
-  /* once WebGL owns the sky, retire the CSS poster clouds + atmosphere glow (birds stay) */
+  /* once WebGL owns the sky, retire the CSS poster clouds + atmosphere glow + sun
+     (birds stay) — the canvas draws its own sun, veiled by whatever deck it has */
   .hero.sky-webgl .cloud { display: none; }
   .hero.sky-webgl::before { opacity: 0; }
+  .hero.sky-webgl .sun { opacity: 0; }
+
+  /* ── the sun ────────────────────────────────────────────────────────────────
+     The daytime counterpart to the WebGL moon: a core disc, a corona, and two
+     counter-rotating ray fans. Four things worth knowing:
+
+     • Horizontal position is the real solar arc (--sun-x, 6% → 94% between
+       sunrise and sunset), so the sun genuinely tracks the visitor's day.
+     • Vertical position is *not* --sun-y. That runs to 60% at sunrise, which
+       lands the disc in the middle of the headline. The hero photo looks
+       straight up — there is no horizon in frame, so a low sun wouldn't read as
+       low anyway. Instead the disc lives in the clear band between the nav pill
+       and the greet line, in px (both of those are px-anchored, so a % would
+       drift into them on a taller viewport). The wide --sun-y glow on ::before
+       still sinks to the horizon at dawn/dusk — that's what tells the time.
+     • z-index 1 puts it under the drifting cloud cut-outs (z 2), so rafts pass
+       in front of it, the way the clouds pass in front of the WebGL moon.
+     • Colour follows data-sky-phase; at night it's simply gone.               */
+  .sun {
+    --core: #fffdf7;
+    --halo-1: rgba(255, 247, 224, .92);
+    --halo-2: rgba(255, 236, 190, .42);
+    --halo-3: rgba(255, 226, 165, .16);
+    --ray: rgba(255, 248, 226, .44);
+    --band: 122px;   /* nav pill ends at 84px, the greet line starts at 160px */
+    --size: 42px;
+    --corona: 380px;
+
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    left: var(--sun-x);
+    top: var(--band);
+    width: var(--corona);
+    height: var(--corona);
+    margin: calc(var(--corona) / -2) 0 0 calc(var(--corona) / -2);
+    transition: opacity 1.2s ease, left 1.2s ease;
+  }
+  /* corona — the wide warm bloom the disc sits inside. It deliberately starts at
+     the *mid* halo, not the bright one: filling the centre with --halo-1 makes the
+     surround as bright as the core, and the disc stops reading as the light source
+     (worst on phones, where the disc is 24px inside a 210px wash). The hot centre
+     is the core's own box-shadow instead. */
+  .sun::before,
+  .sun::after,
+  .sun-core { content: ""; position: absolute; inset: 0; border-radius: 50%; }
+  .sun::before {
+    background: radial-gradient(closest-side, var(--halo-2) 0%, var(--halo-2) 9%, var(--halo-3) 30%, transparent 68%);
+    animation: sun-breathe 9s ease-in-out infinite;
+  }
+  /* ray fan — two layers at different counts and speeds so the pattern never
+     resolves into an obvious repeat. Masked to a ring so the rays emerge from
+     outside the disc and fade before the corona's edge. */
+  .sun::after {
+    background: repeating-conic-gradient(from 0deg, var(--ray) 0deg 2.6deg, transparent 2.6deg 17deg);
+    -webkit-mask-image: radial-gradient(closest-side, transparent 7%, #000 24%, transparent 58%);
+    mask-image: radial-gradient(closest-side, transparent 7%, #000 24%, transparent 58%);
+    filter: blur(4px);
+    animation: sun-turn 240s linear infinite;
+  }
+  /* core disc — small and blown out, the way a real sun is. The stops hold pure
+     white most of the way across before falling off fast: a slow ramp from the
+     centre reads as a cotton ball, not a light source. The box-shadows are the
+     tight bloom that keeps the edge from looking like a pasted-on circle. */
+  .sun-core {
+    inset: calc((var(--corona) - var(--size)) / 2);
+    background: radial-gradient(circle, #fff 0%, #fff 46%, var(--core) 66%, var(--halo-1) 84%, rgba(255, 222, 158, .45) 100%);
+    /* keyed off --size so the bloom shrinks with the disc: at a fixed px radius a
+       26px phone sun turns into a diffuse smudge with no core left in it */
+    box-shadow:
+      0 0 calc(var(--size) * .33) calc(var(--size) * .07) #fff,
+      0 0 calc(var(--size) * .72) calc(var(--size) * .24) var(--halo-1),
+      0 0 calc(var(--size) * 1.7) calc(var(--size) * .52) var(--halo-2),
+      0 0 calc(var(--size) * 3.6) calc(var(--size) * 1.2) var(--halo-3);
+  }
+  @keyframes sun-turn { to { transform: rotate(360deg); } }
+  @keyframes sun-breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.045); opacity: .9; } }
+
+  /* dawn/dusk: bigger, lower-contrast, and much warmer — a sun seen through
+     more atmosphere. Night: no sun at all (the WebGL moon has the sky). */
+  /* dawn runs hotter than dusk on purpose: the sun is on the left then, which is
+     the strong end of the legibility scrim, and the scrim paints over it (z 4 vs 1).
+     Without the extra headroom a sunrise reads as a grey smudge. */
+  :global(:root[data-sky-phase="dawn"]) .sun {
+    --core: #fff7e8; --halo-1: rgba(255, 232, 196, 1); --halo-2: rgba(255, 198, 150, .56);
+    --halo-3: rgba(255, 176, 126, .22); --ray: rgba(255, 220, 180, .36); --size: 62px;
+  }
+  :global(:root[data-sky-phase="dusk"]) .sun {
+    --core: #ffeccb; --halo-1: rgba(255, 206, 156, .96); --halo-2: rgba(255, 162, 106, .5);
+    --halo-3: rgba(255, 138, 88, .2); --ray: rgba(255, 196, 142, .3); --size: 64px;
+  }
+  :global(:root[data-sky-phase="night"]) .sun { display: none; }
 
   /* clouds */
   .cloud { position: absolute; z-index: 2; pointer-events: none; will-change: transform; }
@@ -190,14 +297,16 @@ const birds = [
      viewport height (top padding clears the floating nav) */
   .hero-grid {
     position: relative; z-index: 10;
-    min-height: 100vh; box-sizing: border-box;
+    min-height: calc(100vh - 120px) ; box-sizing: border-box;
     display: flex; flex-direction: column; justify-content: center;
-    gap: 34px; padding: 130px 0 72px;
+    padding-top: 160px;
+    padding-bottom: 100px;
+    
   }
   .greet { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; color: #eaf3ff; text-shadow: 0 1px 3px rgba(18, 44, 84, .5); }
   .h1 {
     font-family: var(--display); font-weight: 600; font-size: clamp(40px, 5.6vw, 72px);
-    line-height: 1.04; letter-spacing: -.035em; color: #fff; max-width: 16ch;
+    line-height: 1.04; letter-spacing: -.035em; color: #fff; max-width: 18ch;
     text-shadow: 0 2px 10px rgba(18, 44, 84, .3);
   }
   .h1 em { font-style: italic; color: #fff9ec; }
@@ -234,10 +343,20 @@ const birds = [
     .hero-lower { grid-template-columns: 1fr; }
     /* stacked content is tall — anchor to top so it never hides under the nav */
     .hero-grid { justify-content: flex-start; padding-top: 116px; }
+    /* the copy starts 44px higher here (padding-top 116 vs 160), so the clear band
+       between the nav pill and the greet is only 84–116px — hence a small disc */
+    /* warmer than desktop so the disc separates from the photo's bright cloud, but
+       the outer wash is pulled back — the greet line is only 15px below the disc
+       here, and a wide bloom was costing it contrast it can't spare */
+    .sun { --band: 101px; --size: 28px; --corona: 190px; --halo-2: rgba(255, 228, 168, .46); --halo-3: rgba(255, 214, 140, .1); }
+    .sun::after { filter: blur(3px); }
+    :global(:root[data-sky-phase="dawn"]) .sun,
+    :global(:root[data-sky-phase="dusk"]) .sun { --size: 28px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .cloud, .cloud > .bob, .bird { animation: none; }
     .bird svg :global(animate) { display: none; }
     .hero::before { transition: none; }
+    .sun::before, .sun::after { animation: none; }
   }
 </style>

@@ -21,7 +21,7 @@ interface Layer {
   tex: 0 | 1; // which cloud texture
   x: number;
   y: number;
-  z: number; // deeper = smaller on screen + more parallax
+  z: number; // deeper = smaller on screen
   w: number; // world width (height derives from the texture aspect)
   speed: number; // per-layer drift multiplier
   opacity: number; // per-layer opacity multiplier
@@ -42,8 +42,6 @@ const LAYERS: Layer[] = [
 ];
 
 const WRAP = 22; // horizontal wrap-around half-width
-const LEAD_X = 0.55; // extra near-layer parallax on the fast spring (world units)
-const LEAD_Y = 0.3;
 
 export function Clouds() {
   const live = useSky();
@@ -69,16 +67,6 @@ export function Clouds() {
       mat.opacity = live.nums.cloudOpacity * layer.opacity;
       mat.color.copy(live.cols.cloudColor);
     }
-    // Parallax lead. The camera dolly (WeatherScene) already shifts these correctly
-    // by depth; this adds a little extra on the *fast* spring so the nearest layer
-    // arrives before the backdrop does. Offset is opposite the camera, so on screen
-    // it pushes the same way the dolly does rather than fighting it.
-    //
-    // This replaces a group rotation (rotation.y = parallax.x * 0.05) that swung the
-    // rafts back against the camera and cancelled almost all of their motion — the
-    // near layer was measuring ~20px of travel against the backdrop's ~126px.
-    g.position.x = -live.parallax.x * LEAD_X;
-    g.position.y = -live.parallax.y * LEAD_Y;
   });
 
   return (

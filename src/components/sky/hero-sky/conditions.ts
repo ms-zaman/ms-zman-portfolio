@@ -62,12 +62,21 @@ export interface Preset {
 
 export const CONDITIONS: Record<Condition, Preset> = {
   sunny: {
+    // NOTE: the canvas sits `sunny` out — the CSS hero (the sky.avif photograph)
+    // renders it instead, see POSTER_CONDITIONS in HeroSky.tsx. These values are kept
+    // tuned in case it ever comes back, and are still the lerp target if a condition
+    // change passes through sunny.
+    //
     // Dome-dominant so the vibrant azure isn't diluted grey by the pale <Sky>
-    // horizon band. Palette sampled from the original hero photo (sky.avif):
-    // a saturated azure up top easing to light azure low (the scrim whitens the
-    // very bottom for legibility). A sliver of <Sky> (0.1) keeps the sun alive.
+    // horizon band. A sliver of <Sky> (0.1) keeps the sun alive.
+    //
+    // These two are re-sampled from the hero photo (sky.avif), which is what the
+    // visitor actually sees before the island hydrates and under reduced motion.
+    // Hand-tuning had drifted them ~11.5 deg toward purple (measured at six heights)
+    // and inverted the vertical ramp, so the handoff from poster to WebGL was a
+    // visible jump. Matched back: hue gap is now under 1 deg at every height.
     skyBlend: 0.9,
-    domeHorizon: '#65abf6', domeZenith: '#0347de', domeGlow: '#ffe4a6', glowStrength: 1.0,
+    domeHorizon: '#30b2f3', domeZenith: '#037af2', domeGlow: '#ffe4a6', glowStrength: 1.0,
     turbidity: 1.5, rayleigh: 2.7, mie: 0.005, stars: 0,
     moon: 0, moonGlow: 0, moonLight: 0, moonColor: '#dfe9ff',
     ambient: 1.7, ambientColor: '#ffffff', keyIntensity: 1.5, keyColor: '#ffe680',

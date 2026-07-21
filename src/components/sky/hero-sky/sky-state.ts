@@ -7,9 +7,8 @@
  * copies the interpolated values onto its three.js objects. Nothing here triggers a
  * React re-render per frame — the interpolation happens entirely in mutable refs.
  */
-import { createContext, useContext, useEffect, useRef } from 'react';
+import { createContext, useContext } from 'react';
 import * as THREE from 'three';
-import type { MutableRefObject } from 'react';
 import type { Preset } from './conditions';
 
 // Numeric fields interpolate with MathUtils.lerp; colour fields with Color.lerp.
@@ -34,10 +33,6 @@ export interface Live {
   sunDir: THREE.Vector3;
   /** Moon direction in scene space; shared by the moon disc, the dome halo and the moonlight. */
   moonDir: THREE.Vector3;
-  /** Smoothed pointer/gyro offset in [-1, 1] — fast lane; leads, drives the near layer. */
-  parallax: THREE.Vector2;
-  /** The same input on a slower spring — trails, drives the camera dolly (far layer). */
-  parallaxSlow: THREE.Vector2;
   /** Lightning flash envelope (0..1), written by <Lightning>, read by the dome + key/point lights. */
   flash: number;
 }
@@ -60,8 +55,6 @@ export function makeLive(p: Preset): Live {
     cols: makeColors(p),
     sunDir: new THREE.Vector3(0.3, 0.6, -0.35).normalize(),
     moonDir: new THREE.Vector3(0.4, 0.31, -0.86).normalize(),
-    parallax: new THREE.Vector2(0, 0),
-    parallaxSlow: new THREE.Vector2(0, 0),
     flash: 0,
   };
 }
@@ -73,52 +66,6 @@ export function useSky(): Live {
   const v = useContext(SkyCtx);
   if (!v) throw new Error('useSky must be used inside <WeatherScene>');
   return v;
-}
-
-/**
- * Eased response curve. A straight `x` mapping makes the centre of the screen as
- * twitchy as the edges, so the sky lurches under the smallest hand movement;
- * squaring the magnitude keeps the middle calm and saves the travel for the edges.
- */
-const curve = (v: number) => v * Math.abs(v);
-
-/**
- * Track the pointer (and device gyro on mobile) as a target offset in [-1, 1].
- * Returns a stable ref; `WeatherScene` eases `Live.parallax` toward it so the
- * camera/cloud shift is damped rather than jumpy.
- *
- * The target returns to rest when the pointer leaves the document or the window
- * loses focus — otherwise parking the cursor in a corner leaves the sky
- * permanently tilted, which is the tell of a 2010s mousemove parallax.
- */
-export function useParallax(): MutableRefObject<THREE.Vector2> {
-  const target = useRef(new THREE.Vector2(0, 0));
-  useEffect(() => {
-    const onMove = (e: PointerEvent) => {
-      target.current.set(
-        curve((e.clientX / window.innerWidth) * 2 - 1),
-        curve((e.clientY / window.innerHeight) * 2 - 1),
-      );
-    };
-    const onOrient = (e: DeviceOrientationEvent) => {
-      // gamma = left/right tilt, beta = front/back tilt; ±45° maps to the full range
-      const gx = THREE.MathUtils.clamp((e.gamma ?? 0) / 45, -1, 1);
-      const gy = THREE.MathUtils.clamp((e.beta ?? 0) / 45, -1, 1);
-      target.current.set(curve(gx), curve(gy));
-    };
-    const rest = () => target.current.set(0, 0);
-    window.addEventListener('pointermove', onMove, { passive: true });
-    window.addEventListener('deviceorientation', onOrient, { passive: true });
-    document.addEventListener('pointerleave', rest);
-    window.addEventListener('blur', rest);
-    return () => {
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('deviceorientation', onOrient);
-      document.removeEventListener('pointerleave', rest);
-      window.removeEventListener('blur', rest);
-    };
-  }, []);
-  return target;
 }
 
 /** Frame-rate-independent easing factor: reaches ~98% of the target after ~4·tau seconds. */
