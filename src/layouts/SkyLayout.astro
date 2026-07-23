@@ -5,8 +5,13 @@
  * systems coexist during the incremental migration.
  */
 import { Font } from 'astro:assets';
+// CUBE CSS layer order (see src/styles/CUBE-CSS.md): tokens/axioms → composition → utility.
+// Utility loads last so it wins among the global sheets; component <style> Blocks
+// (Astro-scoped, higher specificity) still override both.
 import '../styles/sky-tokens.css';
 import '../styles/sky-base.css';
+import '../styles/sky-composition.css';
+import '../styles/sky-utilities.css';
 
 interface Props {
   title?: string;

@@ -60,6 +60,23 @@
   --sky-tint: transparent;   /* dawn/dusk/night overlay the engine fades in */
   --sky-tint-2: transparent;
   --wx-tint: transparent;    /* weather wash — set by the R3F hero island (see weather-css.ts) */
+
+  /* — spacing scale (CUBE) — a normalised rhythm the Composition primitives and
+     Utility helpers draw on. rem is relative to the 16px root (the .sky 17px is a
+     body font-size, not the root), so the px comments below are exact.
+     NOTE: per-primitive hooks (--flow-space, --cluster-space, --grid-space,
+     --region-space, --grid-min) are intentionally NOT set here — they live as
+     inline fallbacks inside each composition rule so nested layouts stay
+     independent (a value set on :root would inherit into every child). — */
+  --space-3xs: 0.25rem;  /* 4px  */
+  --space-2xs: 0.5rem;   /* 8px  */
+  --space-xs:  0.75rem;  /* 12px */
+  --space-s:   1rem;     /* 16px */
+  --space-m:   1.5rem;   /* 24px */
+  --space-l:   2rem;     /* 32px */
+  --space-xl:  3rem;     /* 48px */
+  --space-2xl: 4rem;     /* 64px */
+  --space-3xl: 6rem;     /* 96px */
 }
 
 @media (max-width: 900px) { :root { --section-y: 80px; } }

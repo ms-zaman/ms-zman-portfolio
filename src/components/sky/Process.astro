@@ -12,17 +12,17 @@ const steps = [
   { n: '4', title: 'Launch', body: 'Cross-browser testing, performance tuning, and deployment — plus a handover so you can edit and run the site yourself.' },
 ];
 ---
-<section class="section" id="process">
-  <div class="sky-wrap">
+<section class="[ region ] [ border-top-line ]" id="process">
+  <div class="[ wrapper ]">
     <SectionHead
       eyebrow="Process"
       title="How we'll work together"
       sub="A simple, transparent flow — you always know what's happening and see progress along the way."
     />
-    <div class="proc-grid">
+    <div class="[ proc-grid ] [ grid ]">
       {steps.map((s) => (
         <div class="proc reveal">
-          <div class="proc-n">{s.n}</div>
+          <div class="[ proc-n ] [ bg-accent-soft text-accent ]">{s.n}</div>
           <h3>{s.title}</h3>
           <p>{s.body}</p>
         </div>
@@ -32,19 +32,18 @@ const steps = [
 </section>
 
 <style>
-  .proc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 8px; }
+  /* Layout = .grid (markup) + border-top-line; accent chip colour = utilities. */
+  .proc-grid { --grid-space: 22px; grid-template-columns: repeat(4, 1fr); margin-top: 8px; }
   .proc { padding: 26px 22px; border-radius: 18px; border: 1px solid var(--line); background: var(--paper); }
   .proc-n {
     font-family: var(--display);
     font-weight: 600;
     font-size: 15px;
-    color: var(--accent);
     width: 36px;
     height: 36px;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    background: var(--accent-soft);
     margin-bottom: 16px;
   }
   .proc h3 { font-family: var(--display); font-weight: 600; font-size: 18px; letter-spacing: -.01em; margin-bottom: 8px; }

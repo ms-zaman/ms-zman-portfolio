@@ -1,0 +1,55 @@
+/* ============================================================
+   Sky design system — UTILITY  (the "U" in CUBE CSS)
+   ------------------------------------------------------------
+   Single-purpose helpers, each doing one job well and drawing on a
+   design token so the token stays the single source of truth. They
+   move small, repeated styling decisions out of Blocks and into the
+   markup.
+
+   Cascade contract (see CUBE-CSS.md): UNSCOPED, single-class (0,1,0),
+   loaded after Composition so they win among the global sheets. They
+   sit BELOW a component's scoped Block (0,2,0) — so apply a utility
+   only where the Block doesn't also set that property (when a property
+   is handed to a utility, delete it from the Block). No !important.
+   Loaded only on Sky pages via SkyLayout.
+   ============================================================ */
+
+/* — colour: text — */
+.text-ink    { color: var(--ink); }
+.text-ink-2  { color: var(--ink-2); }
+.text-ink-3  { color: var(--ink-3); }
+.text-accent { color: var(--accent); }
+
+/* — colour: surface — */
+.bg-card        { background: var(--card); }
+.bg-paper       { background: var(--paper); }
+.bg-accent-soft { background: var(--accent-soft); }
+
+/* — type — */
+.font-display { font-family: var(--display); }
+.font-sans    { font-family: var(--sans); }
+
+/* readable line length — cap measure so long copy stays comfortable */
+.measure        { max-width: 60ch; }
+.measure-narrow { max-width: 34ch; }
+
+/* — hairline divider between stacked regions/blocks — */
+.border-top-line { border-top: 1px solid var(--line); }
+
+/* — flow-space hooks: set a Flow container's rhythm from the scale — */
+.flow-space-s { --flow-space: var(--space-s); }
+.flow-space-m { --flow-space: var(--space-m); }
+.flow-space-l { --flow-space: var(--space-l); }
+
+/* — visually hidden but exposed to assistive tech (alias of .sr-only) — */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
