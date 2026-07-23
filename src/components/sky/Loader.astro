@@ -31,7 +31,7 @@
     overflow: hidden;
     background: linear-gradient(180deg, var(--sky-2) 0%, var(--sky-3) 58%, var(--sky-4) 100%);
     opacity: 1;
-    transition: opacity .7s ease;
+    transition: opacity .55s ease;
   }
   #loader.done { opacity: 0; pointer-events: none; }
 
@@ -65,7 +65,7 @@
   #loader.done .ld-in {
     opacity: 0;
     transform: translateY(-8px);
-    transition: opacity .7s ease, transform .7s ease;
+    transition: opacity .55s ease, transform .55s ease;
   }
 
   /* MZ mark ringed by a real progress arc */
@@ -123,7 +123,7 @@
     const badge = loader.querySelector<HTMLElement>('.ld-badge');
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
     const start = performance.now();
-    const MIN = reduce ? 0 : 600; // minimum beat so it never flash-blinks
+    const MIN = reduce ? 0 : 350; // minimum beat so it never flash-blinks
     const MAX = 4500; // hard cap — never trap the visitor behind the loader
     let p = 0.08;
     let done = false;
@@ -141,14 +141,14 @@
       loader.classList.add('done');
       const gone = () => loader.remove();
       loader.addEventListener('transitionend', gone, { once: true });
-      window.setTimeout(gone, 1100); // fallback if transitionend never fires
+      window.setTimeout(gone, 850); // fallback if transitionend never fires
     };
     const reveal = () => {
       if (done) return;
       done = true;
       window.clearInterval(trickleId);
       setP(1); // complete the ring…
-      const wait = Math.max(260, MIN - (performance.now() - start)); // …let it land, then reveal
+      const wait = Math.max(160, MIN - (performance.now() - start)); // …let it land, then reveal
       window.setTimeout(finish, wait);
     };
 
@@ -167,7 +167,7 @@
       if ((window as unknown as { __skyHeroReady?: boolean }).__skyHeroReady) reveal();
       else window.addEventListener('sky:hero-ready', reveal, { once: true });
       // …otherwise shortly after fonts + page are ready
-      Promise.all([fontsReady, pageLoaded]).then(() => window.setTimeout(reveal, 900));
+      Promise.all([fontsReady, pageLoaded]).then(() => window.setTimeout(reveal, 300));
     }
     window.setTimeout(reveal, MAX);
   }

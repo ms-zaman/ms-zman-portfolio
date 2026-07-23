@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import ThemeToggle from './ThemeToggle.jsx';
 
-const MobileMenu = ({ isHome = true }) => {
+const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const toggleRef = useRef(null);
   const menuId = 'mobile-navigation';
@@ -50,9 +50,9 @@ const MobileMenu = ({ isHome = true }) => {
         role="menu"
         style={{ position: 'fixed', top: '52px', left: 0, right: 0, zIndex: 99 }}
       >
-        <a href={isHome ? '#work' : '/#work'} onClick={closeMenu} role="menuitem">Work</a>
-        <a href={isHome ? '#experience' : '/#experience'} onClick={closeMenu} role="menuitem">Experience</a>
-        <a href={isHome ? '#contact' : '/#contact'} onClick={closeMenu} role="menuitem">Contact</a>
+        <a href="/#work" onClick={closeMenu} role="menuitem">Work</a>
+        <a href="/#experience" onClick={closeMenu} role="menuitem">Experience</a>
+        <a href="/#contact" onClick={closeMenu} role="menuitem">Contact</a>
         <a href="/blog" onClick={closeMenu} role="menuitem">Blog</a>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0' }}>
           <span className="status-badge">
