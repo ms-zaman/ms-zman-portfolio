@@ -1,25 +1,17 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import BlogLayout from '../layouts/BlogLayout.astro';
+import Button from '../components/sky/Button.astro';
 ---
 
-<BaseLayout
+<BlogLayout
   title="404 — Page Not Found"
   description="The page you're looking for doesn't exist or has been moved."
   canonicalPath="/404"
 >
-  <div style="text-align: center; padding-top: 4rem;">
-    <p class="section-label" style="margin-bottom: 1rem;">404</p>
-    <h1 style="font-size: clamp(24px, 5vw, 32px); font-weight: 500; letter-spacing: -0.02em; margin-bottom: 0.75rem; color: var(--text);">
-      Page not found
-    </h1>
-    <p style="font-size: 14px; color: var(--text-2); margin-bottom: 2rem; line-height: 1.6;">
-      The page you&apos;re looking for doesn&apos;t exist or has been moved.
-    </p>
-    <a href="/" class="btn btn-primary">
-      Back to Home
-      <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: inline-block; vertical-align: -0.125em;">
-        <path d="M5 12h14" /><path d="M13 18l6-6" /><path d="M13 6l6 6" />
-      </svg>
-    </a>
+  <div class="[ notfound ] [ wrapper ]">
+    <p class="nf-code">404</p>
+    <h1 class="nf-title">Page not found</h1>
+    <p class="nf-text">The page you&apos;re looking for doesn&apos;t exist or has been moved.</p>
+    <Button href="/" variant="solid">Back to Home <span aria-hidden="true">→</span></Button>
   </div>
-</BaseLayout>
+</BlogLayout>

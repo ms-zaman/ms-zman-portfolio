@@ -5,8 +5,8 @@ Exception), layered on the existing design tokens. CUBE _extends_ CSS — it lea
 on the cascade and inheritance rather than fighting them — so most work is done by
 the shared layers and Blocks stay small. Reference: <https://cube.fyi>.
 
-This applies to the **Sky theme only** (pages using `SkyLayout`). The blog's dark
-theme (`global.css` / `BaseLayout`) is a separate system, migrated later.
+This applies across the whole site — the homepage (`SkyLayout`) **and** the blog
+and 404 (`BlogLayout`), which now share the same light Sky design system.
 
 ## The layers, and where each lives
 
@@ -102,7 +102,10 @@ The delimiter is a convention, not a requirement — consistency is what matters
   `.section` aliases have been **retired** — use `.wrapper`, and `.region` +
   `.border-top-line`. `Loader` and the nav pill stay bespoke Blocks (no shared
   skeleton maps cleanly to their animated/stateful internals — that's fine).
-- **Later (separate):** apply the same layers to the blog's `global.css` / dark theme.
+- **Done — blog unified:** `/blog` and `/404` now use the light Sky system
+  (`BlogLayout` + `sky-blog.css`), sharing tokens/composition/utility, Inter fonts,
+  and `SkyNav` + `SiteFooter`. The old dark theme (`global.css`, `BaseLayout`,
+  `Navigation`, `Footer`, `ThemeToggle`, `MobileMenu`) was removed.
 
 ## Migrating a component — checklist
 

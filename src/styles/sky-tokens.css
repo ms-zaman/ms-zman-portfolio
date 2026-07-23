@@ -1,8 +1,8 @@
 /* ============================================================
    Sky design system — TOKENS
    Extracted from the redesign prototype (redesign/variant-g.html).
-   Loaded only on Sky pages (via SkyLayout), so it never collides
-   with the blog's dark theme in global.css.
+   Shared across the whole site — the homepage (SkyLayout) and the
+   blog/404 (BlogLayout), which are all the light Sky theme now.
    ============================================================ */
 :root {
   /* — sky palette (hero / immersive backgrounds) — */

@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogLayout from '../../layouts/BlogLayout.astro';
 import BlogSearch from '../../components/BlogSearch.jsx';
 import { getCollection } from 'astro:content';
 
@@ -22,14 +22,14 @@ const postsForSearch = sortedPosts.map((post) => ({
 }));
 ---
 
-<BaseLayout
+<BlogLayout
   title="Articles & Thoughts on Web Engineering — MS Zaman"
   description="Writing about React, Architecture, Performance, and the things I learn along the way."
   ogTitle="Articles & Thoughts on Web Engineering — MS Zaman"
   ogDescription="Writing about React, Architecture, Performance, and the things I learn along the way."
   canonicalPath="/blog"
 >
-  <div class="page-container blog-page">
+  <div class="[ blog-page ] [ wrapper ]">
     <header class="page-header">
       <h1 class="page-title">Thoughts & Engineering</h1>
       <p class="page-subtitle">
@@ -39,4 +39,4 @@ const postsForSearch = sortedPosts.map((post) => ({
 
     <BlogSearch client:load posts={postsForSearch} />
   </div>
-</BaseLayout>
+</BlogLayout>

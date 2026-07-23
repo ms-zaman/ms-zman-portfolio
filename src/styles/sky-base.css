@@ -1,8 +1,8 @@
 /* ============================================================
    Sky design system — BASE / AXIOMS  (the global foundation under CUBE)
    Reset, base element defaults, and a11y helpers. Everything is scoped
-   under `.sky` (set on <body> by SkyLayout) so these globals never leak
-   into the blog's dark theme.
+   under `.sky` (set on <body> by SkyLayout and BlogLayout), which keeps
+   these globals off any other document but applies them site-wide.
 
    New layout work goes in sky-composition.css (skeletons) and new
    single-purpose helpers in sky-utilities.css — see src/styles/CUBE-CSS.md.

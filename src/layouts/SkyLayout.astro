@@ -1,8 +1,8 @@
 ---
 /**
- * SkyLayout — the light "Sky" theme shell for the redesigned homepage.
- * Independent of BaseLayout (the blog's dark theme), so the two design
- * systems coexist during the incremental migration.
+ * SkyLayout — the light "Sky" theme shell for the homepage (and styleguide).
+ * The blog/404 use the sibling BlogLayout, which shares the same light Sky
+ * design system (tokens + composition + utility, Inter fonts, SkyNav/SiteFooter).
  */
 import { Font } from 'astro:assets';
 // CUBE CSS layer order (see src/styles/CUBE-CSS.md): tokens/axioms → composition → utility.
@@ -59,7 +59,7 @@ const jsonLd = {
   ],
 };
 
-// Preserve site-wide analytics on the redesigned homepage (same GA as BaseLayout).
+// Preserve site-wide analytics on the redesigned homepage (same GA as BlogLayout).
 const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
 ---
 
