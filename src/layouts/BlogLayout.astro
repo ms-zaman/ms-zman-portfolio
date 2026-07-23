@@ -1,0 +1,100 @@
+---
+/**
+ * BlogLayout — the light "Sky" shell for /blog and /404.
+ * Shares the homepage design system (sky-tokens + composition + utility, Inter
+ * fonts, SkyNav + SiteFooter) so the blog matches the redesign. Replaces the old
+ * dark BaseLayout. Keeps ClientRouter view transitions and GA.
+ */
+import type { ImageMetadata } from 'astro';
+import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+import defaultFeaturedImage from '../images/ms-zaman-featured-img.webp';
+import SkyNav from '../components/SkyNav.astro';
+import SiteFooter from '../components/sky/SiteFooter.astro';
+import '../styles/sky-tokens.css';
+import '../styles/sky-base.css';
+import '../styles/sky-composition.css';
+import '../styles/sky-utilities.css';
+import '../styles/sky-blog.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  canonicalPath?: string;
+  ogImage?: string | ImageMetadata;
+}
+
+const {
+  title = 'MS Zaman — Frontend Developer | React & WordPress Specialist',
+  description = 'MS Zaman — Frontend Developer based in Dhaka, Bangladesh. 5+ years building web interfaces across React, Tailwind CSS, WordPress, and Shopify.',
+  ogTitle = title,
+  ogDescription = description,
+  canonicalPath = '/',
+  ogImage = defaultFeaturedImage,
+} = Astro.props;
+
+const site = Astro.site ?? new URL('https://sharfuzzaman.com');
+const canonicalURL = new URL(canonicalPath, site);
+const ogImageSrc = typeof ogImage === 'string' ? ogImage : ogImage.src;
+const ogImageWidth = typeof ogImage === 'string' ? undefined : ogImage.width;
+const ogImageHeight = typeof ogImage === 'string' ? undefined : ogImage.height;
+const ogImageURL = new URL(ogImageSrc, site);
+
+const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    {gaId && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+        <script is:inline define:vars={{ gaId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#3f86cf" />
+    <meta name="description" content={description} />
+    <meta name="author" content="MS Zaman" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImageURL} />
+    {ogImageWidth && <meta property="og:image:width" content={ogImageWidth.toString()} />}
+    {ogImageHeight && <meta property="og:image:height" content={ogImageHeight.toString()} />}
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="MS Zaman" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <title>{title}</title>
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-inter-tight" preload />
+    <ClientRouter />
+  </head>
+  <body class="sky">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <SkyNav />
+    <main id="main-content" class="blog-main">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

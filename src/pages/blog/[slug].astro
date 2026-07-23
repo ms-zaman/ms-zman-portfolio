@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogLayout from '../../layouts/BlogLayout.astro';
 import { getCollection, render } from 'astro:content';
 
 // Generate a static page for every blog post at build time
@@ -23,14 +23,14 @@ const formattedDate = post.data.date.toLocaleDateString('en-US', {
 const slug = post.data.slug || post.id;
 ---
 
-<BaseLayout
+<BlogLayout
   title={`${post.data.title} — MS Zaman`}
   description={post.data.description}
   ogTitle={post.data.title}
   ogDescription={post.data.description}
   canonicalPath={`/blog/${slug}`}
 >
-  <article class="page-container blog-post-page">
+  <article class="[ blog-post-page ] [ wrapper ]">
     <a href="/blog" class="back-link">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -59,4 +59,4 @@ const slug = post.data.slug || post.id;
       <Content />
     </div>
   </article>
-</BaseLayout>
+</BlogLayout>

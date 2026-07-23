@@ -1,7 +1,8 @@
 ---
 /**
  * Button — pill CTA. Renders <a> when `href` is set, else <button>.
- * variants: solid (dark, default) · glass (over sky) · accent (blue)
+ * Block = the `.btn` pill; the variant is a CUBE Exception on `data-variant`:
+ *   solid (dark, default) · glass (over sky) · accent (blue).
  */
 interface Props {
   href?: string;
@@ -14,7 +15,8 @@ const { href, variant = 'solid', type = 'button', class: className = '', ...rest
 const Tag = href ? 'a' : 'button';
 ---
 <Tag
-  class:list={['btn', `btn-${variant}`, className]}
+  class:list={['btn', className]}
+  data-variant={variant}
   href={href}
   type={href ? undefined : type}
   {...rest}
@@ -37,18 +39,19 @@ const Tag = href ? 'a' : 'button';
     cursor: pointer;
     transition: .22s;
   }
-  .btn-solid { background: var(--ink); color: #fff; }
-  .btn-solid:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 26px rgba(30, 70, 130, .24); }
+  /* Exceptions — variant deviations, keyed on data-variant */
+  .btn[data-variant="solid"] { background: var(--ink); color: #fff; }
+  .btn[data-variant="solid"]:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 12px 26px rgba(30, 70, 130, .24); }
 
-  .btn-glass {
+  .btn[data-variant="glass"] {
     background: rgba(255, 255, 255, .78);
     border: 1px solid #fff;
     color: var(--ink);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
-  .btn-glass:hover { background: #fff; transform: translateY(-2px); }
+  .btn[data-variant="glass"]:hover { background: #fff; transform: translateY(-2px); }
 
-  .btn-accent { background: var(--accent); color: #fff; }
-  .btn-accent:hover { background: #255f9f; transform: translateY(-2px); box-shadow: 0 12px 26px rgba(30, 70, 130, .24); }
+  .btn[data-variant="accent"] { background: var(--accent); color: #fff; }
+  .btn[data-variant="accent"]:hover { background: #255f9f; transform: translateY(-2px); box-shadow: 0 12px 26px rgba(30, 70, 130, .24); }
 </style>

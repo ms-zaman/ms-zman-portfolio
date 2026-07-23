@@ -13,7 +13,7 @@ interface Props {
 }
 const { eyebrow, title, sub, class: className = '' } = Astro.props;
 ---
-<div class:list={['work-head', 'reveal', className]}>
+<div class:list={['work-head', 'repel', 'reveal', className]}>
   <div>
     {eyebrow && <Eyebrow class="wh-eyebrow">{eyebrow}</Eyebrow>}
     <h2 class="work-title">{title}</h2>
@@ -22,12 +22,10 @@ const { eyebrow, title, sub, class: className = '' } = Astro.props;
 </div>
 
 <style>
+  /* Layout = Composition .repel (aligned to the baseline, wide gutter). */
   .work-head {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 12px 32px;
-    flex-wrap: wrap;
+    --repel-align: flex-end;
+    --repel-space: 12px 32px;
     margin-bottom: 44px;
   }
   .wh-eyebrow { margin-bottom: 18px; }

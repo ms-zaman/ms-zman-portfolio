@@ -19,7 +19,7 @@
   <div class="cloud c" aria-hidden="true"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="lazy" /></div></div>
   <div class="sb-atmos" aria-hidden="true"></div>
 
-  <div class="sky-wrap">
+  <div class="[ wrapper ]">
     <div class="eyebrow reveal"><span class="s">✦</span> How I build</div>
     <h2 class="sb-title reveal" id="sb-heading">Great code should feel as good as it looks — and work even <em>better</em>.</h2>
     <p class="sb-sub reveal">That's the standard behind everything you've just seen — and everything I'll build with you next.</p>
@@ -54,7 +54,8 @@
       radial-gradient(46% 70% at var(--sun-x) var(--sun-y), var(--sun-glow), rgba(255, 240, 205, 0) 70%);
     transition: background 1.5s ease;
   }
-  .sky-wrap { position: relative; z-index: 3; }
+  /* the shared .wrapper (global) sits above the atmosphere/clouds here */
+  .wrapper { position: relative; z-index: 3; }
 
   /* eyebrow — reuse the shared markup but recolour for the dark band */
   .eyebrow {

@@ -55,18 +55,18 @@ const services: Service[] = [
   },
 ];
 ---
-<section class="section" id="services">
-  <div class="sky-wrap">
+<section class="[ region ] [ border-top-line ]" id="services">
+  <div class="[ wrapper ]">
     <SectionHead
       eyebrow="Services"
       title="What I can build for you"
       sub="From a single landing page to a full site or store — built to load fast, read clearly, and hold up on every screen."
     />
 
-    <div class="svc-grid">
+    <div class="[ svc-grid ] [ grid ]">
       {services.map((s) => (
-        <article class="svc reveal">
-          <span class="svc-ic">
+        <article class="[ svc ] [ bg-card ] [ reveal ]">
+          <span class="[ svc-ic ] [ bg-accent-soft text-accent ]">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" set:html={s.icon} />
           </span>
           <h3>{s.title}</h3>
@@ -82,10 +82,12 @@ const services: Service[] = [
 </section>
 
 <style>
+  /* Block = card visual treatment. Grid layout comes from .grid (markup),
+     the section divider from .border-top-line, and surface/accent colour from
+     the .bg-card / .bg-accent-soft / .text-accent utilities. */
   .svc-grid {
-    display: grid;
+    --grid-space: 22px;             /* .grid gutter (was gap: 22px) */
     grid-template-columns: repeat(3, 1fr);
-    gap: 22px;
     margin-top: 8px;
   }
   .svc {
@@ -94,8 +96,7 @@ const services: Service[] = [
     border: 1px solid var(--line);
     border-radius: 18px;
     padding: 26px 24px;
-    background: var(--card);
-    box-shadow: 0 10px 30px rgba(40, 80, 140, .05);
+    box-shadow: var(--shadow-sm);   /* was the identical literal — now the token */
     transition: transform .25s, border-color .25s, box-shadow .25s;
   }
   .svc:hover {
@@ -110,8 +111,6 @@ const services: Service[] = [
     display: grid;
     place-items: center;
     margin-bottom: 16px;
-    background: var(--accent-soft);
-    color: var(--accent);
   }
   .svc-ic svg { width: 22px; height: 22px; }
   .svc h3 {

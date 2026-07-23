@@ -38,17 +38,17 @@ const typeScale = [
 ---
 <SkyLayout title="Sky — Design Library" noindex={true}>
   <header class="dl-hero">
-    <div class="sky-wrap">
+    <div class="[ wrapper ]">
       <Eyebrow>Design library</Eyebrow>
       <h1 class="dl-title">Sky <em>system</em>.</h1>
       <p class="dl-lead">Tokens and primitive components for the redesign. Build sections on top of these — never one-off values.</p>
     </div>
   </header>
 
-  <section class="section">
-    <div class="sky-wrap">
+  <section class="[ region ] [ border-top-line ]">
+    <div class="[ wrapper ]">
       <SectionHead eyebrow="Tokens" title="Color" sub="Semantic names, not raw hex. Reference via var(--name)." />
-      <div class="dl-swatches">
+      <div class="[ dl-swatches ] [ grid ]">
         {colors.map((c) => (
           <div class="dl-sw">
             <div class="dl-chip" style={`background:${c.v}`}></div>
@@ -62,12 +62,12 @@ const typeScale = [
     </div>
   </section>
 
-  <section class="section">
-    <div class="sky-wrap">
+  <section class="[ region ] [ border-top-line ]">
+    <div class="[ wrapper ]">
       <SectionHead eyebrow="Tokens" title="Typography" sub="Inter Tight for display, Inter for body." />
       <div class="dl-type">
         {typeScale.map((t) => (
-          <div class="dl-type-row">
+          <div class="[ dl-type-row ] [ grid ]">
             <span class="dl-type-label">{t.label}</span>
             <div style={`font-family:${t.font};font-size:${t.size};font-weight:${t.weight};line-height:1.2;letter-spacing:-.01em`}>{t.text}</div>
           </div>
@@ -76,15 +76,15 @@ const typeScale = [
     </div>
   </section>
 
-  <section class="section">
-    <div class="sky-wrap">
+  <section class="[ region ] [ border-top-line ]">
+    <div class="[ wrapper ]">
       <SectionHead eyebrow="Primitives" title="Buttons" sub="Pill CTAs. Glass reads over the sky; solid & accent over white." />
-      <div class="dl-row">
+      <div class="[ dl-row ] [ cluster ]">
         <Button href="#">Solid button <span aria-hidden="true">→</span></Button>
         <Button variant="accent" href="#">Accent button</Button>
         <Button variant="solid" type="button">Real &lt;button&gt;</Button>
       </div>
-      <div class="dl-sky-panel">
+      <div class="[ dl-sky-panel ] [ cluster ]">
         <Button variant="glass" href="#">Glass button</Button>
         <Tag variant="glass">React</Tag>
         <Tag variant="glass">Shopify</Tag>
@@ -92,16 +92,16 @@ const typeScale = [
     </div>
   </section>
 
-  <section class="section">
-    <div class="sky-wrap">
+  <section class="[ region ] [ border-top-line ]">
+    <div class="[ wrapper ]">
       <SectionHead eyebrow="Primitives" title="Tags & eyebrow" sub="Soft chips over white; the eyebrow kicks off every section." />
-      <div class="dl-row">
+      <div class="[ dl-row ] [ cluster ]">
         <Tag>TypeScript</Tag>
         <Tag>Playwright</Tag>
         <Tag>Design tokens</Tag>
         <Tag>AI agents</Tag>
       </div>
-      <div class="dl-row" style="margin-top:24px">
+      <div class="[ dl-row ] [ cluster ]" style="margin-top:24px">
         <Eyebrow>Services</Eyebrow>
         <Eyebrow>Open source</Eyebrow>
         <Eyebrow>How I build</Eyebrow>
@@ -109,8 +109,8 @@ const typeScale = [
     </div>
   </section>
 
-  <section class="section">
-    <div class="sky-wrap">
+  <section class="[ region ] [ border-top-line ]">
+    <div class="[ wrapper ]">
       <SectionHead eyebrow="Composite" title="Section header" sub="Eyebrow + title + this supporting line — one component (SectionHead)." />
     </div>
   </section>
@@ -130,9 +130,8 @@ const typeScale = [
   .dl-lead { font-size: 18px; color: var(--ink-2); max-width: 54ch; }
 
   .dl-swatches {
-    display: grid;
+    --grid-space: 16px;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 16px;
   }
   .dl-sw {
     border: 1px solid var(--line);
@@ -148,21 +147,17 @@ const typeScale = [
 
   .dl-type { display: flex; flex-direction: column; gap: 22px; }
   .dl-type-row {
-    display: grid;
+    --grid-space: 24px;
     grid-template-columns: 190px 1fr;
-    gap: 24px;
     align-items: baseline;
     padding-bottom: 20px;
     border-bottom: 1px solid var(--line);
   }
   .dl-type-label { font-size: 12px; color: var(--ink-3); font-weight: 600; letter-spacing: .04em; }
 
-  .dl-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+  .dl-row { --cluster-space: 14px; }
   .dl-sky-panel {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 14px;
+    --cluster-space: 14px;
     margin-top: 22px;
     padding: 28px;
     border-radius: var(--r-lg);
@@ -170,6 +165,6 @@ const typeScale = [
   }
 
   @media (max-width: 620px) {
-    .dl-type-row { grid-template-columns: 1fr; gap: 6px; }
+    .dl-type-row { grid-template-columns: 1fr; --grid-space: 6px; }
   }
 </style>

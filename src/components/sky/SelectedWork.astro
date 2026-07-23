@@ -99,8 +99,8 @@ const moreLibrary = [
   { href: 'https://templately.com/pack/naturetreat-gutenberg-ecotourism-template', name: 'NatureTreat', cat: 'Ecotourism · Gutenberg' },
 ];
 ---
-<section class="section" id="work">
-  <div class="sky-wrap">
+<section class="[ region ] [ border-top-line ]" id="work">
+  <div class="[ wrapper ]">
     <SectionHead
       eyebrow="Selected work"
       title="A few things I've shipped"
@@ -108,16 +108,16 @@ const moreLibrary = [
     />
 
     {works.map((w) => (
-      <article class="work-row reveal">
+      <article class="[ work-row ] [ grid ] [ border-top-line reveal ]">
         <div class="wr-info">
-          <div class="wr-top">
+          <div class="[ wr-top ] [ cluster ]">
             <span class="wr-num">{w.num}</span>
-            <span class="wr-tags">{w.tags.map((t) => <span>{t}</span>)}</span>
+            <span class="[ wr-tags ] [ cluster ]">{w.tags.map((t) => <span>{t}</span>)}</span>
           </div>
           <h3 class="wr-name">{w.name}</h3>
           <div class="wr-sub">{w.sub}</div>
           <p class="wr-desc">{w.desc}</p>
-          <div class="wr-metrics">
+          <div class="[ wr-metrics ] [ cluster ]">
             {w.metrics.map((m) => <div><b>{m.b}</b> <span>{m.s}</span></div>)}
           </div>
           <a class="wr-link" href={w.href} target="_blank" rel="noopener">
@@ -150,14 +150,14 @@ const moreLibrary = [
       </article>
     ))}
 
-    <div class="more-tpl reveal">
-      <div class="mt-head">
+    <div class="[ more-tpl ] [ border-top-line ] [ reveal ]">
+      <div class="[ mt-head ] [ repel ]">
         <div class="mt-title">More from the library</div>
         <div class="mt-note">8 more of 45+ — all live on templately.com</div>
       </div>
-      <div class="mt-grid">
+      <div class="[ mt-grid ] [ grid ]">
         {moreLibrary.map((m) => (
-          <a class="mt-row" href={m.href} target="_blank" rel="noopener">
+          <a class="[ mt-row ] [ cluster ]" href={m.href} target="_blank" rel="noopener">
             <span class="mt-name">{m.name}</span>
             <span class="mt-cat">{m.cat}</span>
             <span class="mt-ar" aria-hidden="true">↗</span>
@@ -172,13 +172,13 @@ const moreLibrary = [
   /* distance from the wrap's content edge out to the viewport edge, so the
      rail can bleed off-screen; .sky has overflow-x:hidden so it can't add
      a horizontal scrollbar even when the scrollbar makes 100vw overshoot */
+  /* Layout = .grid (sticky-col + rail columns kept here) + .border-top-line;
+     the horizontal rail below is bespoke (must not wrap) and stays Block. */
   .work-row {
     --bleed: calc(max(0px, (100vw - var(--wrap)) / 2) + 40px);
-    display: grid;
+    --grid-space: 44px;
     grid-template-columns: minmax(260px, 340px) 1fr;
-    gap: 44px;
     padding: 48px 0;
-    border-top: 1px solid var(--line);
   }
 
   /* — left: sticky info column — */
@@ -187,9 +187,9 @@ const moreLibrary = [
     top: 96px;
     align-self: start;
   }
-  .wr-top { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .wr-top { --cluster-space: 12px; margin-bottom: 16px; }
   .wr-num { font-family: var(--display); font-size: 13px; color: var(--ink-3); letter-spacing: .08em; }
-  .wr-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .wr-tags { --cluster-space: 8px; }
   .wr-tags span {
     font-size: 12px;
     color: var(--accent);
@@ -214,9 +214,7 @@ const moreLibrary = [
     max-width: 46ch;
   }
   .wr-metrics {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 22px;
+    --cluster-space: 8px 22px;
     padding: 13px 0;
     border-top: 1px solid var(--line);
     border-bottom: 1px solid var(--line);
@@ -275,22 +273,18 @@ const moreLibrary = [
   }
 
   /* — more-from-the-library list — */
-  .more-tpl { margin-top: 56px; padding-top: 36px; border-top: 1px solid var(--line); }
+  /* More-list = .border-top-line + .repel head + .grid + .cluster rows. */
+  .more-tpl { margin-top: 56px; padding-top: 36px; }
   .mt-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 14px;
+    --repel-align: baseline;
+    --repel-space: 14px;
     margin-bottom: 8px;
-    flex-wrap: wrap;
   }
   .mt-title { font-family: var(--display); font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
   .mt-note { font-size: 13.5px; color: var(--ink-3); }
-  .mt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 44px; }
+  .mt-grid { --grid-space: 0 44px; grid-template-columns: 1fr 1fr; }
   .mt-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    --cluster-space: 12px;
     padding: 13px 0;
     border-bottom: 1px solid var(--line);
     transition: padding .2s;
@@ -304,7 +298,7 @@ const moreLibrary = [
 
   @media (max-width: 900px) {
     /* stack: info on top, rail below — no sticky, it fights a short column */
-    .work-row { grid-template-columns: 1fr; gap: 24px; padding: 38px 0; }
+    .work-row { grid-template-columns: 1fr; --grid-space: 24px; padding: 38px 0; }
     .wr-info { position: static; }
     .wr-desc { max-width: none; }
   }

@@ -1,0 +1,80 @@
+/* ============================================================
+   Sky design system — COMPOSITION  (the "C" in CUBE CSS)
+   ------------------------------------------------------------
+   Flexible, high-level layout skeletons — how elements sit and
+   flow relative to one another. They hint the browser rather than
+   micro-manage it, and carry NO visual treatment (no colour, type,
+   shadow, or border — those belong to Utility or Block).
+
+   Cascade contract (see CUBE-CSS.md): these are UNSCOPED, single-class
+   selectors on purpose. Their low specificity (0,1,0) means an Astro
+   component's scoped Block rule (0,2,0) always wins — so a Block can
+   override any layout decision locally. We deliberately avoid @layer
+   because Astro's scoped styles are unlayered and would otherwise leap
+   the whole cascade.
+
+   Every primitive exposes a --hook with an inline fallback, so a Block
+   can pin an exact value (e.g. --grid-space: 22px) without that value
+   inheriting down into nested layouts.
+   Loaded (with the Utility sheet) only on Sky pages via SkyLayout.
+   ============================================================ */
+
+/* — Wrapper — the page gutter: centred, max-width, inline padding.
+     (Replaced the legacy `.sky-wrap`, now fully migrated.) — */
+.wrapper {
+  max-width: var(--wrapper-max, var(--wrap));
+  margin-inline: auto;
+  padding-inline: var(--wrapper-pad, 40px);
+}
+@media (max-width: 680px) {
+  .wrapper { padding-inline: var(--wrapper-pad, 22px); }
+}
+
+/* — Flow (a.k.a. Stack) — vertical rhythm between direct siblings.
+     Owns the "space between" so children never set their own margins.
+     Override per container with --flow-space (or the utilities). — */
+.flow > * + * {
+  margin-block-start: var(--flow-space, 1em);
+}
+
+/* — Cluster — a row of items that wraps gracefully: tags, meta rows,
+     button groups, icon + label pairs. — */
+.cluster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--cluster-space, var(--space-s));
+  align-items: var(--cluster-align, center);
+}
+
+/* — Repel — push two groups to opposite ends, collapsing to a stack
+     when they no longer fit: header bars, footer rows. — */
+.repel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--repel-space, var(--space-s));
+  align-items: var(--repel-align, center);
+  justify-content: space-between;
+}
+
+/* — Grid — grid items with consistent gutters, columns left to the Block
+     (use when the column rule is bespoke, e.g. 1fr 1.6fr or 3→2→1). — */
+.grid {
+  display: grid;
+  gap: var(--grid-space, var(--space-m));
+}
+
+/* — Auto-grid — self-arranging card grid: as many equal columns as fit,
+     each at least --grid-min wide, wrapping without media queries. The
+     min() guard stops a single column overflowing on tiny screens. — */
+.auto-grid {
+  display: grid;
+  gap: var(--grid-space, var(--space-m));
+  grid-template-columns: repeat(auto-fit, minmax(min(var(--grid-min, 16rem), 100%), 1fr));
+}
+
+/* — Region — a page section's vertical spacing. Pure rhythm: the section
+     divider is a Utility (.border-top-line), not baked in here. Canonical
+     CUBE name; `.section` (in sky-base.css) stays as a legacy alias. — */
+.region {
+  padding-block: var(--region-space, var(--section-y));
+}

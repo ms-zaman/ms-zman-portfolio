@@ -23,8 +23,8 @@ const projectTypes = [
   'Something else',
 ];
 ---
-<section class="section contact" id="contact">
-  <div class="sky-wrap">
+<section class="[ contact ] [ region ]" id="contact">
+  <div class="[ wrapper ]">
     <div class="contact-panel reveal">
       <div class="c-cloud x1" aria-hidden="true"><img src="/sky/cloud-1.png" alt="" loading="lazy" /></div>
       <div class="c-cloud x2" aria-hidden="true"><img src="/sky/cloud-2.png" alt="" loading="lazy" /></div>
@@ -33,13 +33,13 @@ const projectTypes = [
       <h2 class="big">Let's build something <em>together.</em></h2>
       <p class="contact-note">Tell me about your project — I'll get back with a plan and a quote.</p>
 
-      <form class="c-form" name={FORM_NAME} method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+      <form class="[ c-form ] [ grid ]" name={FORM_NAME} method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value={FORM_NAME} />
         <p class="cf-hp" aria-hidden="true">
           <label>Don't fill this out if you're human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
         </p>
         <div class="cf-card">
-          <div class="cf-row">
+          <div class="[ cf-row ] [ grid ]">
             <div class="cf-field cf-field--flush"><label for="cf-name">Name</label><input id="cf-name" type="text" name="name" placeholder="Your name" autocomplete="name" required /></div>
             <div class="cf-field cf-field--flush"><label for="cf-email">Email</label><input id="cf-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required /></div>
           </div>
@@ -49,7 +49,7 @@ const projectTypes = [
             </select>
           </div>
           <div class="cf-field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" placeholder="A few lines about scope, timeline & budget…" required></textarea></div>
-          <div class="cf-actions">
+          <div class="[ cf-actions ] [ repel ]">
             <button type="submit" class="cf-submit">Send message <span aria-hidden="true">→</span></button>
             <span class="cf-note">No spam. Replies from a real person.</span>
           </div>
@@ -84,7 +84,8 @@ const projectTypes = [
 </section>
 
 <style>
-  .contact { padding: 40px 0 100px; border-top: none; }
+  /* Contact overrides the .region rhythm (no top divider, taller tail). */
+  .contact { padding: 40px 0 100px; }
   .contact-panel {
     position: relative;
     overflow: hidden;
@@ -120,16 +121,16 @@ const projectTypes = [
   .contact .big em { font-style: italic; color: var(--accent); }
   .contact-note { position: relative; margin-top: 22px; font-size: 13.5px; color: #56718e; }
 
+  /* Form layout = .grid (asymmetric card+side, and the name/email pair). */
   .c-form {
-    display: grid;
+    --grid-space: 22px;
     grid-template-columns: 1.4fr 1fr;
-    gap: 22px;
     max-width: 900px;
     margin: 34px auto 0;
     text-align: left;
   }
   .cf-card { background: #fff; border: 1px solid #e1edfa; border-radius: 18px; padding: 24px; box-shadow: 0 16px 40px rgba(40, 80, 140, .10); }
-  .cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .cf-row { --grid-space: 14px; grid-template-columns: 1fr 1fr; margin-bottom: 14px; }
   .cf-field { display: block; margin-bottom: 14px; }
   .cf-field--flush { margin: 0; }
   .cf-field label { display: block; font-size: 12px; font-weight: 600; color: #5a6b80; margin-bottom: 7px; }
@@ -154,7 +155,7 @@ const projectTypes = [
     box-shadow: 0 0 0 3px var(--accent-soft);
   }
   .cf-field textarea { min-height: 96px; resize: vertical; }
-  .cf-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .cf-actions { --repel-space: 12px; }
   .cf-submit {
     display: inline-flex;
     align-items: center;

@@ -1,0 +1,149 @@
+---
+/**
+ * SkyNav — the light Sky nav pill for pages without a hero (blog, 404).
+ * Mirrors the homepage nav (Hero.astro) but stands alone and always-solid,
+ * since there's no hero backdrop to transition over. Section links are
+ * cross-page (`/#work`) so they resolve from any route.
+ */
+const links = [
+  { href: '/#services', label: 'Services' },
+  { href: '/#work', label: 'Work' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/#faq', label: 'FAQ' },
+  { href: '/#contact', label: 'Contact' },
+];
+const path = Astro.url.pathname;
+const isBlog = path === '/blog' || path.startsWith('/blog/');
+---
+<nav class="nav" aria-label="Primary">
+  <div class="nav-in">
+    <a href="/" class="nav-brand"><span class="mono">MZ</span>MS Zaman</a>
+    <span class="nav-links">
+      {links.map((l) => (
+        <a href={l.href} aria-current={isBlog && l.href === '/blog' ? 'page' : undefined}>{l.label}</a>
+      ))}
+    </span>
+    <a href="/#contact" class="nav-cta">Let's talk</a>
+    <button type="button" class="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="skynav-menu">
+      <span class="nav-burger-box" aria-hidden="true"><span></span><span></span><span></span></span>
+    </button>
+    <div class="nav-menu" id="skynav-menu" hidden>
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: fixed; top: 26px; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: center;
+  }
+  .nav-in {
+    position: relative;
+    display: flex; align-items: center; gap: 26px;
+    padding: 7px 10px 7px 16px; border-radius: var(--r-pill);
+    background: rgba(255, 255, 255, .9);
+    border: 1px solid var(--glass-line);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: var(--shadow-md);
+  }
+  .nav-brand { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15px; color: var(--ink); }
+  .nav-brand .mono {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff;
+    display: grid; place-items: center; font-size: 11px; font-weight: 600;
+  }
+  .nav-links { display: flex; gap: 20px; }
+  .nav-links a { font-size: 14px; color: var(--ink-2); transition: color .2s; }
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] { color: var(--ink); }
+  .nav-cta { font-size: 13.5px; font-weight: 500; color: #fff; background: var(--ink); padding: 8px 15px; border-radius: var(--r-pill); transition: .2s; }
+  .nav-cta:hover { background: var(--accent); }
+
+  /* hamburger — revealed ≤760px */
+  .nav-burger {
+    display: none;
+    align-items: center; justify-content: center;
+    width: 38px; height: 38px; margin: -4px -4px -4px 0;
+    padding: 0; border: 0; background: none; cursor: pointer;
+    color: var(--ink); border-radius: 50%;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .2s;
+  }
+  .nav-burger:hover { background: rgba(40, 80, 140, .07); }
+  .nav-burger-box { position: relative; width: 18px; height: 12px; }
+  .nav-burger-box span {
+    position: absolute; left: 0; right: 0; height: 2px; border-radius: 2px;
+    background: currentColor;
+    transition: top .28s ease, transform .28s ease, opacity .18s ease;
+  }
+  .nav-burger-box span:nth-child(1) { top: 0; }
+  .nav-burger-box span:nth-child(2) { top: 5px; }
+  .nav-burger-box span:nth-child(3) { top: 10px; }
+  .nav-burger[aria-expanded="true"] .nav-burger-box span:nth-child(1) { top: 5px; transform: rotate(45deg); }
+  .nav-burger[aria-expanded="true"] .nav-burger-box span:nth-child(2) { opacity: 0; }
+  .nav-burger[aria-expanded="true"] .nav-burger-box span:nth-child(3) { top: 5px; transform: rotate(-45deg); }
+
+  .nav-menu {
+    position: absolute; top: calc(100% + 10px); right: 0;
+    min-width: 208px; padding: 8px;
+    display: flex; flex-direction: column;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .96); border: 1px solid rgba(255, 255, 255, .98);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 18px 44px rgba(40, 80, 140, .22);
+    animation: skynav-menu-in .18s ease both;
+  }
+  .nav-menu[hidden] { display: none; }
+  .nav-menu a {
+    padding: 11px 14px; border-radius: 10px;
+    font-size: 15px; color: var(--ink-2);
+    transition: background .15s, color .15s;
+  }
+  .nav-menu a:hover { background: rgba(40, 80, 140, .07); color: var(--ink); }
+  .nav-burger:focus-visible, .nav-menu a:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  @keyframes skynav-menu-in { from { opacity: 0; transform: translateY(-6px); } }
+
+  @media (max-width: 760px) {
+    .nav-in { gap: 12px; }
+    .nav-links { display: none; }
+    .nav-burger { display: inline-flex; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav-burger, .nav-burger-box span { transition: none; }
+    .nav-menu { animation: none; }
+  }
+</style>
+
+<script>
+  // Mobile hamburger — self-contained; re-runs after ClientRouter swaps.
+  function initSkyNav() {
+    const burger = document.querySelector<HTMLButtonElement>('.nav-burger');
+    const menu = document.getElementById('skynav-menu');
+    if (!burger || !menu || burger.dataset.bound) return;
+    burger.dataset.bound = '1';
+    const close = () => {
+      if (menu.hidden) return;
+      menu.hidden = true;
+      burger.setAttribute('aria-expanded', 'false');
+      burger.setAttribute('aria-label', 'Open menu');
+    };
+    const open = () => {
+      menu.hidden = false;
+      burger.setAttribute('aria-expanded', 'true');
+      burger.setAttribute('aria-label', 'Close menu');
+    };
+    burger.addEventListener('click', (e) => { e.stopPropagation(); menu.hidden ? open() : close(); });
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
+    document.addEventListener('click', (e) => {
+      if (!menu.hidden && !menu.contains(e.target as Node) && !burger.contains(e.target as Node)) close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.hidden) { close(); burger.focus(); }
+    });
+    window.matchMedia('(max-width: 760px)').addEventListener('change', (e) => { if (!e.matches) close(); });
+  }
+  initSkyNav();
+  document.addEventListener('astro:page-load', initSkyNav);
+</script>
