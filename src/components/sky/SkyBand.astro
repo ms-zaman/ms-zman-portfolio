@@ -1,22 +1,38 @@
 ---
 /**
  * SkyBand — a mid-page full-bleed immersive sky band that echoes the hero and
- * brings the brand motif back into the body. White type over the sky photo, a
- * center scrim for legibility, and a white feather top/bottom so the photo
- * dissolves into the white sections around it.
+ * brings the brand motif back into the body. White type over the sky, a
+ * white feather top/bottom so it dissolves into the white sections around it.
  * Ported from the frozen prototype (redesign/variant-g §How I build, .skyband).
  *
- * Enhancement over the prototype: an `.sb-atmos` layer reuses the SkyEngine's
- * state vars (--sky-tint / --sky-tint-2 / --sun-glow / --sun-x/-y) so the band
- * tracks time-of-day like the hero — no bright-noon band under a night hero.
- * It also blends `--wx-tint`, a weather wash the R3F hero island publishes
- * (see weather-css.ts), so the band tracks the current weather too — staying in
- * sync with the hero without a second WebGL canvas.
+ * Full weather transform: the band mirrors the hero's *actual* condition, not
+ * just a tint. It reads the same `data-sky-weather`/`data-sky-phase` the R3F
+ * hero island publishes (see weather-css.ts + sky-engine.ts) via the exact CSS
+ * idiom Hero.astro already uses (`:global(:root[data-sky-weather="…"])`), and
+ * repaints in CSS-only layers — no second WebGL context:
+ *   .sb-sky    — per-condition zenith→horizon gradient (hex lifted straight
+ *                from hero-sky/conditions.ts CONDITIONS, so the band's sky
+ *                colour matches the hero's exactly)
+ *   .sb-stars  — clear-night starfield + a fixed moon-glow wash
+ *   .sb-photo  — the sky.avif photo; it's the whole sky when sunny (hero also
+ *                keeps its CSS poster for sunny), and fades out for every
+ *                other condition so .sb-sky's real colour takes over — same
+ *                decisive poster→WebGL swap Hero.astro does
+ *   .cloud     — existing drifting clouds, filter-graded per condition
+ *   .sb-precip — falling snow (snow only; drizzle/drizzle-night stay dry —
+ *                the sky colour + darker clouds carry the mood)
+ *   .sb-atmos  — existing time-of-day (--sky-tint/--sun-*) + weather
+ *                (--wx-tint) wash, sitting above everything so it tints the
+ *                whole stack together, 1.5s cross-fade matching the hero's lerp
  */
 ---
 <section class="skyband" aria-labelledby="sb-heading">
+  <div class="sb-sky" aria-hidden="true"></div>
+  <div class="sb-stars" aria-hidden="true"></div>
+  <div class="sb-photo" aria-hidden="true"></div>
   <div class="cloud b" aria-hidden="true"><div class="bob"><img src="/sky/cloud-2.png" alt="" loading="lazy" /></div></div>
   <div class="cloud c" aria-hidden="true"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="lazy" /></div></div>
+  <div class="sb-precip" aria-hidden="true"></div>
   <div class="sb-atmos" aria-hidden="true"></div>
 
   <div class="[ wrapper ]">
@@ -34,19 +50,94 @@
     padding: 118px 0;
     text-align: center;
     color: #fff;
+    /* base fallback, painted under every layer below (guards against any gap
+       while .sb-photo/.sb-sky load) */
+    background: linear-gradient(180deg, var(--sky-2), var(--sky-1));
+  }
+
+  /* ── sky ────────────────────────────────────────────────────────────────
+     Transparent at rest (sunny) so the photo underneath shows through as the
+     sky. Every other condition paints its own zenith→horizon gradient here —
+     the exact hex hero-sky/conditions.ts uses for its dome. */
+  .sb-sky {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(180deg, transparent, transparent);
+    transition: background 1.5s ease;
+  }
+
+  /* ── stars (clear-night only) ──────────────────────────────────────────
+     A fixed moon glow (upper right, matching the hero's moon placement) plus
+     a tiled star field; a second, offset field on ::after twinkles gently. */
+  .sb-stars {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0;
     background:
-      url('/sky/sky.avif') center 42% / cover no-repeat,
-      linear-gradient(180deg, var(--sky-2), var(--sky-1));
+      radial-gradient(38% 46% at 82% 12%, rgba(219, 230, 255, .55), rgba(219, 230, 255, 0) 70%) no-repeat,
+      radial-gradient(1.6px 1.6px at 8% 22%, #fff 100%, transparent) repeat,
+      radial-gradient(1.2px 1.2px at 34% 62%, #fff 100%, transparent) repeat,
+      radial-gradient(1.4px 1.4px at 58% 14%, #fff 100%, transparent) repeat,
+      radial-gradient(1.1px 1.1px at 78% 50%, #fff 100%, transparent) repeat,
+      radial-gradient(1.3px 1.3px at 92% 78%, #fff 100%, transparent) repeat,
+      radial-gradient(1.1px 1.1px at 20% 86%, #fff 100%, transparent) repeat,
+      radial-gradient(1.5px 1.5px at 46% 38%, #fff 100%, transparent) repeat,
+      radial-gradient(1.1px 1.1px at 68% 94%, #fff 100%, transparent) repeat;
+    background-size:
+      auto,
+      240px 200px, 240px 200px, 240px 200px, 240px 200px,
+      240px 200px, 240px 200px, 240px 200px, 240px 200px;
+    transition: opacity 1.5s ease;
+  }
+  .sb-stars::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(1.3px 1.3px at 15% 45%, #fff 100%, transparent) repeat,
+      radial-gradient(1.1px 1.1px at 50% 78%, #fff 100%, transparent) repeat,
+      radial-gradient(1.4px 1.4px at 85% 30%, #fff 100%, transparent) repeat;
+    background-size: 240px 200px;
+    animation: sb-twinkle 4.5s ease-in-out infinite;
+  }
+
+  /* ── photo ──────────────────────────────────────────────────────────────
+     The sunny sky — full opacity at rest. Every non-sunny condition drops it
+     out entirely so .sb-sky's colour reads clean, not a dimmed day photo. */
+  .sb-photo {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: url('/sky/sky.avif') center 42% / cover no-repeat;
+    opacity: 1;
+    transition: opacity 1.5s ease;
+  }
+  :global(:root[data-sky-weather]:not([data-sky-weather="sunny"])) .skyband .sb-photo {
+    opacity: 0;
+  }
+
+  /* ── precipitation ──────────────────────────────────────────────────────
+     Falling snow only (snow condition). Off by default. */
+  .sb-precip {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.2s ease;
   }
 
   /* atmosphere — a weather wash (--wx-tint, published by the R3F hero island) over
      the SkyEngine's sun glow + time-of-day tint, so the band tracks both the hour
-     and the current weather. Sits above the clouds so they get tinted too, under
-     the scrim. 1.5s cross-fade matches the hero's condition lerp. */
+     and the current weather. Sits above every layer below (sky, stars, photo,
+     clouds, precipitation) so they all get tinted together, under the scrim.
+     1.5s cross-fade matches the hero's condition lerp. */
   .sb-atmos {
     position: absolute;
     inset: 0;
-    z-index: 1;
+    z-index: 5;
     pointer-events: none;
     background:
       linear-gradient(var(--wx-tint), var(--wx-tint)),
@@ -54,8 +145,8 @@
       radial-gradient(46% 70% at var(--sun-x) var(--sun-y), var(--sun-glow), rgba(255, 240, 205, 0) 70%);
     transition: background 1.5s ease;
   }
-  /* the shared .wrapper (global) sits above the atmosphere/clouds here */
-  .wrapper { position: relative; z-index: 3; }
+  /* the shared .wrapper (global) sits above every band layer here */
+  .wrapper { position: relative; z-index: 6; }
 
   /* eyebrow — reuse the shared markup but recolour for the dark band */
   .eyebrow {
@@ -114,8 +205,16 @@
     box-shadow: 0 0 0 4px rgba(16, 38, 72, .4);
   }
 
-  /* drifting clouds — sit behind the scrim so they get darkened like the hero */
-  .cloud { position: absolute; z-index: 0; pointer-events: none; will-change: transform; }
+  /* drifting clouds — sit above the sky/stars/photo so they read against
+     whatever's beneath, graded per condition below (they still sit under the
+     atmosphere scrim, so it darkens them like the hero) */
+  .cloud {
+    position: absolute;
+    z-index: 3;
+    pointer-events: none;
+    will-change: transform;
+    transition: filter 1.5s ease, opacity 1.5s ease;
+  }
   .cloud > .bob { will-change: transform; }
   .cloud img { width: 100%; height: auto; display: block; }
   @keyframes sb-drift { from { transform: translateX(-40vw); } to { transform: translateX(140vw); } }
@@ -125,9 +224,103 @@
   .cloud.b > .bob { animation: sb-bob 8s ease-in-out infinite; }
   .cloud.c > .bob { animation: sb-bob 13.5s ease-in-out infinite; }
 
+  @keyframes sb-twinkle { 0%, 100% { opacity: .25; } 50% { opacity: .9; } }
+  @keyframes sb-snow {
+    from { background-position: 0 0; }
+    to { background-position: 34px 260px; }
+  }
+
+  /* ── per-condition sky ──────────────────────────────────────────────────
+     Mirrors Hero.astro's data-sky-weather idiom exactly (see Hero.astro:142,
+     247–255, 542–551) and reuses the hero's own palette (CONDITIONS in
+     hero-sky/conditions.ts — domeHorizon/domeZenith/cloudColor/rainColor)
+     so the band's colour matches whatever the hero is showing. Sunny needs
+     no override: it's the default declared above, and also the safe
+     pre-hydration / reduced-motion fallback. */
+
+  :global(:root[data-sky-weather="cloudy"]) .skyband .sb-sky {
+    background: linear-gradient(180deg, #425269, #92a6bc);
+  }
+  :global(:root[data-sky-weather="cloudy"]) .skyband .cloud {
+    filter: brightness(.82) saturate(.85);
+  }
+
+  :global(:root[data-sky-weather="drizzle"]) .skyband .sb-sky {
+    background: linear-gradient(180deg, #2d3744, #485463);
+  }
+  :global(:root[data-sky-weather="drizzle"]) .skyband .cloud {
+    filter: brightness(.55) saturate(.8);
+  }
+
+  :global(:root[data-sky-weather="snow"]) .skyband .sb-sky {
+    background: linear-gradient(180deg, #6c7c93, #c6d4e5);
+  }
+  :global(:root[data-sky-weather="snow"]) .skyband .cloud {
+    filter: brightness(1.08) saturate(.8);
+  }
+  :global(:root[data-sky-weather="snow"]) .skyband .sb-precip {
+    opacity: .9;
+    background-image:
+      radial-gradient(2.4px 2.4px at 10% 10%, #fff 100%, transparent),
+      radial-gradient(1.8px 1.8px at 32% 40%, #fff 100%, transparent),
+      radial-gradient(2px 2px at 55% 15%, #fff 100%, transparent),
+      radial-gradient(1.6px 1.6px at 74% 55%, #fff 100%, transparent),
+      radial-gradient(2.2px 2.2px at 90% 25%, #fff 100%, transparent),
+      radial-gradient(1.8px 1.8px at 20% 75%, #fff 100%, transparent),
+      radial-gradient(2px 2px at 46% 88%, #fff 100%, transparent),
+      radial-gradient(1.6px 1.6px at 66% 68%, #fff 100%, transparent),
+      radial-gradient(2.4px 2.4px at 85% 92%, #fff 100%, transparent);
+    background-size: 220px 260px;
+    background-repeat: repeat;
+    animation: sb-snow 9s linear infinite;
+  }
+
+  :global(:root[data-sky-weather="overcast-night"]) .skyband .sb-sky {
+    background: linear-gradient(180deg, #010308, #040a1e);
+  }
+  :global(:root[data-sky-weather="overcast-night"]) .skyband .cloud {
+    filter: brightness(.32) saturate(1.15);
+  }
+
+  :global(:root[data-sky-weather="drizzle-night"]) .skyband .sb-sky {
+    background: linear-gradient(180deg, #010205, #030716);
+  }
+  :global(:root[data-sky-weather="drizzle-night"]) .skyband .cloud {
+    filter: brightness(.28) saturate(1.15);
+  }
+
+  :global(:root[data-sky-weather="clear-night"]) .skyband .sb-sky {
+    background: linear-gradient(180deg, #000104, #030922);
+  }
+  :global(:root[data-sky-weather="clear-night"]) .skyband .cloud {
+    filter: brightness(.4) saturate(1.05);
+    opacity: .55;
+  }
+  :global(:root[data-sky-weather="clear-night"]) .skyband .sb-stars {
+    opacity: 1;
+  }
+
+  /* pale skies (snow/cloudy) — lift the text shadow so white type stays
+     legible; no scrim over the sky, same approach as Hero.astro:542-551 */
+  :global(:root[data-sky-weather="snow"]) .skyband .eyebrow,
+  :global(:root[data-sky-weather="cloudy"]) .skyband .eyebrow {
+    text-shadow: 0 1px 2px rgba(14, 34, 68, .5);
+  }
+  :global(:root[data-sky-weather="snow"]) .skyband .sb-title,
+  :global(:root[data-sky-weather="cloudy"]) .skyband .sb-title {
+    text-shadow: 0 2px 4px rgba(14, 34, 68, .6), 0 6px 34px rgba(14, 34, 68, .48);
+  }
+  :global(:root[data-sky-weather="snow"]) .skyband .sb-sub,
+  :global(:root[data-sky-weather="cloudy"]) .skyband .sb-sub {
+    text-shadow: 0 1px 3px rgba(14, 34, 68, .5);
+  }
+
   @media (max-width: 680px) { .skyband { padding: 88px 0; } }
   @media (prefers-reduced-motion: reduce) {
     .cloud, .cloud > .bob { animation: none; }
+    .sb-sky, .sb-photo, .sb-stars, .cloud { transition: none; }
     .sb-atmos { transition: none; }
+    .sb-precip { animation: none; }
+    .sb-stars::after { animation: none; opacity: .5; }
   }
 </style>
