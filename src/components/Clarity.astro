@@ -1,0 +1,9 @@
+---
+// Site-wide Microsoft Clarity tag. Kept as a component (not a bare <script> in
+// each layout) because two layouts with byte-identical inline scripts get
+// deduped by Astro's hoisting and only one page ends up loading the bundle.
+---
+
+<script>
+  import '../scripts/clarity';
+</script>
