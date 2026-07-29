@@ -9,6 +9,7 @@ import type { ImageMetadata } from 'astro';
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import defaultFeaturedImage from '../images/ms-zaman-featured-img.webp';
+import Clarity from '../components/Clarity.astro';
 import SkyNav from '../components/SkyNav.astro';
 import SiteFooter from '../components/sky/SiteFooter.astro';
 import '../styles/sky-tokens.css';
@@ -59,6 +60,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
         </script>
       </>
     )}
+    <Clarity />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#3f86cf" />
