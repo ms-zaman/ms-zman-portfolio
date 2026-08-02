@@ -4,8 +4,9 @@
  * expands/collapses smoothly in both directions (the `.exp` class does the work).
  * Ported from the frozen prototype (redesign/variant-g §FAQ, #faq).
  *
- * NOTE(MS Zaman): the timeline / pricing / availability answers are sensible
- * defaults — review and edit them to match how you actually work.
+ * The timeline / pricing / availability answers are confirmed product facts
+ * (see PRODUCT.md § Capabilities and Constraints) — not placeholders. Keep them
+ * in sync with that file rather than editing one in isolation.
  */
 import SectionHead from './SectionHead.astro';
 
@@ -16,7 +17,7 @@ const faqs = [
   },
   {
     q: 'How long does a typical project take?',
-    a: "It depends on scope. A focused landing page is usually 1–2 weeks; a full site or store is typically 3–6 weeks. I'll give you a clear timeline up front during discovery, before anything starts.",
+    a: "It depends on scope. A focused landing page is usually 3–5 days; a full site or store is typically 2–4 weeks. I'll give you a clear timeline up front during discovery, before anything starts.",
   },
   {
     q: 'How do you charge?',
@@ -93,16 +94,18 @@ const faqs = [
   }
   .faq-ain { overflow: hidden; min-height: 0; }
   .faq details.exp .faq-a { grid-template-rows: 1fr; opacity: 1; }
+  /* Open state is already signalled three ways — the summary colour, the
+     plus folding to a minus, and this tinted rounded row. A fourth cue (a
+     3px accent bar down the left edge) was redundant, and nothing else in
+     the system uses a coloured edge bar; see DESIGN.md § Elevation & Depth. */
   .faq details.exp {
     background: #f6faff;
     border: 1px solid #e1edfa;
     border-radius: 12px;
-    position: relative;
     overflow: hidden;
     margin: 6px 0;
     padding: 0 16px;
   }
-  .faq details.exp::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); }
   .faq p { font-size: 15px; color: var(--ink-2); line-height: 1.65; padding: 0 4px 22px; max-width: 66ch; margin: 0; }
 </style>
 
