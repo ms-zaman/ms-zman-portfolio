@@ -67,6 +67,9 @@ redesign/
 
 # Local-only Claude Code working context (not for the public repo)
 CLAUDE.md
+PRODUCT.md
+DESIGN.md
+.impeccable/
 
 # Lighthouse
 lighthouse-report.*
