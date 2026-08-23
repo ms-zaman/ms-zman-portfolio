@@ -23,8 +23,8 @@ interface Props {
 }
 
 const {
-  title = 'MS Zaman — Web Developer · React, WordPress & Shopify',
-  description = 'MS Zaman — web developer in Dhaka building production sites in React, WordPress & Shopify, plus 45+ page-builder templates used by 700K+ people.',
+  title = 'MS Zaman — WordPress Developer | Elementor & Gutenberg',
+  description = 'WordPress Developer specializing in Elementor, Gutenberg and pixel-perfect frontend implementation. 5+ years of production experience building WordPress experiences and template systems. Open to remote roles.',
   image = '/og.jpg',
   noindex = false,
 } = Astro.props;
@@ -43,10 +43,26 @@ const jsonLd = {
       name: 'MS Zaman',
       url: site.origin,
       image: ogImage,
-      jobTitle: 'Web Developer',
+      jobTitle: 'WordPress Developer',
       description,
       sameAs: ['https://github.com/ms-zaman', 'https://www.linkedin.com/in/sharfuzzaman/'],
-      knowsAbout: ['React', 'WordPress', 'Shopify', 'Tailwind CSS', 'Web Performance', 'Frontend Development'],
+      knowsAbout: [
+        'WordPress',
+        'Elementor',
+        'Gutenberg',
+        'WooCommerce',
+        'WordPress Theme Development',
+        'Pixel-perfect UI Implementation',
+        'Frontend Development',
+        'React',
+        'PHP',
+        'Astro',
+      ],
+      worksFor: { '@type': 'Organization', name: 'Startise' },
+      seeks: {
+        '@type': 'Demand',
+        name: 'Remote WordPress / Web Developer role',
+      },
       address: { '@type': 'PostalAddress', addressLocality: 'Dhaka', addressCountry: 'BD' },
     },
     {
@@ -97,7 +113,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="MS Zaman — Building web experiences that just work." />
+    <meta property="og:image:alt" content="MS Zaman — WordPress Developer specializing in Elementor & Gutenberg." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />

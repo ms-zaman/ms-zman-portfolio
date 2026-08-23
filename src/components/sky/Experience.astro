@@ -1,8 +1,11 @@
 ---
 /**
- * Experience — a vertical timeline of four roles.
+ * Experience — a vertical timeline of three roles.
  * Ported from the frozen prototype (redesign/variant-g §Experience, #experience).
- * Job titles are kept factual; the current role carries a "now" dot + badge.
+ * The two Startise entries (Jr. Frontend Developer → Frontend Developer) are
+ * deliberately merged into one continuous role: the title change is a fact of
+ * the employment record, not a story a recruiter needs told in two rows.
+ * Everything here is factual; the current role carries a "now" dot + badge.
  */
 import SectionHead from './SectionHead.astro';
 
@@ -12,38 +15,50 @@ interface Role {
   role: string;
   co: string;
   desc: string;
+  points?: string[];
   tags: string[];
 }
 
 const roles: Role[] = [
   {
-    when: 'Sep 2025 — present',
+    when: 'Nov 2022 — present',
     now: true,
     role: 'Frontend Developer',
     co: 'Startise · Dhaka',
-    desc: 'Building production Elementor and Gutenberg templates for Templately. Template creation, review, and issue resolution across the library, plus marketing campaigns.',
-    tags: ['Elementor', 'Gutenberg', 'Templately'],
-  },
-  {
-    when: 'Nov 2022 — Sep 2025',
-    role: 'Jr. Frontend Developer',
-    co: 'Startise · Dhaka',
-    desc: 'Designed and shipped 40+ production templates, built custom responsive WordPress themes, and turned Figma mockups into pixel-perfect implementations.',
-    tags: ['WordPress', 'Figma', '40+ templates'],
+    desc: 'Building production WordPress template packs for Templately, split roughly 50/50 between Elementor and Gutenberg, in a workflow where pixel-perfect implementation is the baseline requirement.',
+    points: [
+      'Personally developed 40+ template packs and exported 500+ — the majority of the team’s pack exports.',
+      'Expert-level Templately Global Style & Typography work; the internal reference point for it.',
+      'Work directly with designers and QA to refine each build until it matches the design.',
+      'Supported and reviewed template migrations across the library.',
+      'Coordinate and review the work of a 4-member development team.',
+      'Own WordPress update and maintenance workflows across Startise’s site ecosystem.',
+      'Contributing to production WordPress → Astro migrations, including easy.jobs.',
+    ],
+    tags: ['Elementor', 'Gutenberg', 'Templately', 'Pixel-perfect', 'Astro'],
   },
   {
     when: 'Jan — Oct 2022',
-    role: 'Jr. Frontend Developer',
+    role: 'Frontend Developer',
     co: 'American Best IT · Dhaka',
-    desc: 'Built 15+ SEO-friendly lead-generation sites for US and Canada clients — clean code and Google PageSpeed optimization.',
-    tags: ['SEO', 'PageSpeed', '15+ sites'],
+    desc: 'Built functional websites for marketing-focused client projects, learning to structure sites with SEO in mind — content hierarchy, usability, and search-engine-friendly markup.',
+    points: [
+      'Applied on-page SEO principles to site structure and content hierarchy.',
+      'Client projects included Alpha Omega Restoration Pros and Dera Resort.',
+    ],
+    tags: ['SEO-aware development', 'Frontend', 'Client sites'],
   },
   {
     when: 'Jan — Oct 2021',
     role: 'Jr. Web Developer',
     co: 'Technofelia · Dhaka',
-    desc: 'Worked across Yoda (online learning platform) and Hisabee (NDA), plus freelance fixes and end-to-end deployments.',
-    tags: ['Deployment', 'Freelance'],
+    desc: 'Developed websites and web applications, working inside existing PHP codebases and turning designs into pixel-perfect frontends.',
+    points: [
+      'Customised CodeCanyon scripts and fixed bugs in existing PHP applications.',
+      'Handled Fiverr client work involving script customisation and bug fixing.',
+      'Worked on YodaBD.',
+    ],
+    tags: ['PHP', 'CodeCanyon', 'Pixel-perfect frontend'],
   },
 ];
 ---
@@ -51,8 +66,8 @@ const roles: Role[] = [
   <div class="[ wrapper ]">
     <SectionHead
       eyebrow="Experience"
-      title="Where I've worked"
-      sub="Four roles across five years — agency sites to a template marketplace serving 700K+ users."
+      title="Where I’ve worked"
+      sub="Five-plus years of frontend work, the last three-plus of it building production WordPress at the scale of a template marketplace serving 700K+ users."
     />
 
     <div class="xp-list">
@@ -63,6 +78,11 @@ const roles: Role[] = [
           <div class="xp-role">{r.role}</div>
           <div class="[ xp-co ] [ text-accent ]">{r.co}</div>
           <p class="xp-desc">{r.desc}</p>
+          {r.points && (
+            <ul class="xp-points">
+              {r.points.map((pt) => <li>{pt}</li>)}
+            </ul>
+          )}
           <div class="[ xp-tags ] [ cluster ]">{r.tags.map((t) => <span>{t}</span>)}</div>
         </div>
       ))}
@@ -107,6 +127,35 @@ const roles: Role[] = [
   .xp-role { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
   .xp-co { font-size: 14px; font-weight: 500; margin: 2px 0 9px; }
   .xp-desc { font-size: 14.5px; color: var(--ink-2); line-height: 1.6; max-width: 66ch; }
+  /* achievement bullets under the role summary — a quiet marker rather than a
+     disc, so the list reads as continuous with .xp-desc */
+  .xp-points {
+    list-style: none;
+    margin: 10px 0 0;
+    padding: 0;
+    max-width: 66ch;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .xp-points li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+  .xp-points li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: .62em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: .55;
+  }
   .xp-tags { --cluster-space: 7px; margin-top: 12px; }
   .xp-tags span { font-size: 12px; color: var(--ink-2); background: #f2f6fb; padding: 4px 10px; border-radius: 7px; }
 

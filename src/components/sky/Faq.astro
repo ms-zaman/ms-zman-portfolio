@@ -4,36 +4,37 @@
  * expands/collapses smoothly in both directions (the `.exp` class does the work).
  * Ported from the frozen prototype (redesign/variant-g §FAQ, #faq).
  *
- * The timeline / pricing / availability answers are confirmed product facts
- * (see PRODUCT.md § Capabilities and Constraints) — not placeholders. Keep them
- * in sync with that file rather than editing one in isolation.
+ * Rewritten for a recruiter/hiring audience rather than a client one — the
+ * questions are the ones that come up in a first screening call. Every answer
+ * is factual; nothing here states a salary, a notice period, or an availability
+ * date that has not actually been agreed.
  */
 import SectionHead from './SectionHead.astro';
 
 const faqs = [
   {
-    q: 'What kind of projects do you take on?',
-    a: "React web apps and UIs, custom WordPress sites (Elementor or the block editor), Shopify storefronts, landing pages, and template or design-system work. If it lives on the web and needs to look sharp and load fast, it's probably a fit.",
+    q: 'What kind of role are you looking for?',
+    a: 'A remote WordPress / Web Developer role, full-time. My day-to-day is production WordPress — Elementor and Gutenberg — and that is the work I want to keep doing on a product or agency team.',
   },
   {
-    q: 'How long does a typical project take?',
-    a: "It depends on scope. A focused landing page is usually 3–5 days; a full site or store is typically 2–4 weeks. I'll give you a clear timeline up front during discovery, before anything starts.",
+    q: 'Elementor or Gutenberg — which do you actually use?',
+    a: 'Both, at roughly a 50/50 split across the 40+ template packs I have developed. I am equally comfortable being handed either, and comfortable saying which one fits a given build better.',
   },
   {
-    q: 'How do you charge?',
-    a: 'Fixed price per project when the scope is well-defined, or hourly for ongoing and open-ended work. We agree on it together before I begin — no surprises on the invoice.',
+    q: 'What does "pixel-perfect" mean in your workflow?',
+    a: 'I implement from the design reference rather than designing it myself, then work directly with the designer and QA through review rounds until the build matches at every breakpoint. Design → development → responsive implementation → QA → refinement.',
   },
   {
-    q: 'Are you available for new work?',
-    a: "Yes — I'm currently open to freelance and contract projects. I'm based in Dhaka (GMT+6) and regularly work with clients across time zones.",
+    q: 'What is your experience with Templately Global Style & Typography?',
+    a: 'Expert-level, and it is the area I am the internal reference for on my team — implementing and maintaining Global Style and Typography systems consistently across template packs.',
   },
   {
-    q: 'Can you work with my existing team or codebase?',
-    a: 'Absolutely. I can join an existing team, build from your Figma, or pick up and extend an existing WordPress, Shopify, or React codebase.',
+    q: 'How do you work across time zones?',
+    a: 'I am based in Dhaka (GMT+6) and I overlap comfortably with EU mornings and early US hours. My current work is already collaborative across designers, QA, and a 4-member development team I coordinate.',
   },
   {
-    q: 'Will I be able to edit the site myself afterward?',
-    a: "Yes — especially on WordPress and Shopify, I build things to be client-editable and hand over with a short walkthrough so you're never dependent on me for small changes.",
+    q: 'What else do you work with beyond WordPress?',
+    a: 'HTML, CSS, JavaScript and React on the frontend; PHP and MySQL on the back; Git and GitHub day to day. I also build internal automation, and I am contributing to production WordPress-to-Astro migrations.',
   },
 ];
 ---
@@ -42,7 +43,7 @@ const faqs = [
     <SectionHead
       eyebrow="FAQ"
       title="Good questions"
-      sub="The things clients usually want to know before we start."
+      sub="The things a hiring team usually wants to know first."
     />
     <div class="faq reveal">
       {faqs.map((f) => (

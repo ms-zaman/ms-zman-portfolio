@@ -13,13 +13,13 @@
 const FORM_NAME = 'contact';
 const EMAIL = 'dev.mszaman@gmail.com';
 
-const projectTypes = [
-  'Web app / UI (React)',
-  'WordPress site',
-  'Shopify store',
-  'Landing page',
-  'Templates / design system',
-  'Performance & polish',
+/* Kept as the `project_type` field name so existing Netlify submissions stay on
+   one key; the label and options are what changed. */
+const enquiryTypes = [
+  'Full-time remote role',
+  'Contract / part-time role',
+  'WordPress project (Elementor / Gutenberg)',
+  'Recruiter enquiry',
   'Something else',
 ];
 ---
@@ -30,8 +30,8 @@ const projectTypes = [
       <div class="c-cloud x2" aria-hidden="true"><img src="/sky/cloud-2.png" alt="" loading="lazy" /></div>
 
       <div class="eyebrow c-eyebrow"><span class="s">✦</span> Contact</div>
-      <h2 class="big">Let's build something <em>together.</em></h2>
-      <p class="contact-note">Tell me about your project — I'll get back with a plan and a quote.</p>
+      <h2 class="big">Let's talk about the <em>role.</em></h2>
+      <p class="contact-note">Currently looking for a remote WordPress / Web Developer position. Send over the details and I'll reply quickly.</p>
 
       <form class="[ c-form ] [ grid ]" name={FORM_NAME} method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value={FORM_NAME} />
@@ -43,15 +43,15 @@ const projectTypes = [
             <div class="cf-field cf-field--flush"><label for="cf-name">Name</label><input id="cf-name" type="text" name="name" placeholder="Your name" autocomplete="name" required /></div>
             <div class="cf-field cf-field--flush"><label for="cf-email">Email</label><input id="cf-email" type="email" name="email" placeholder="you@company.com" autocomplete="email" required /></div>
           </div>
-          <div class="cf-field"><label for="cf-type">Project type</label>
+          <div class="cf-field"><label for="cf-type">Reason for reaching out</label>
             <select id="cf-type" name="project_type">
-              {projectTypes.map((t) => <option>{t}</option>)}
+              {enquiryTypes.map((t) => <option>{t}</option>)}
             </select>
           </div>
-          <div class="cf-field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" placeholder="A few lines about scope, timeline & budget…" required></textarea></div>
+          <div class="cf-field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" placeholder="A few lines about the role, the team & the stack…" required></textarea></div>
           <div class="[ cf-actions ] [ repel ]">
             <button type="submit" class="cf-submit">Send message <span aria-hidden="true">→</span></button>
-            <span class="cf-note">No spam. Replies from a real person.</span>
+            <span class="cf-note">Open to remote opportunities. Replies from a real person.</span>
           </div>
           <p class="cf-err" role="alert" hidden>Couldn't send just now — please email <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.</p>
           <div class="cf-sent" role="status" aria-live="polite" tabindex="-1">

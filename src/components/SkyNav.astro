@@ -6,10 +6,10 @@
  * cross-page (`/#work`) so they resolve from any route.
  */
 const links = [
-  { href: '/#services', label: 'Services' },
+  { href: '/#services', label: 'Expertise' },
   { href: '/#work', label: 'Work' },
+  { href: '/#experience', label: 'Experience' },
   { href: '/blog', label: 'Blog' },
-  { href: '/#faq', label: 'FAQ' },
   { href: '/#contact', label: 'Contact' },
 ];
 const path = Astro.url.pathname;
@@ -23,7 +23,7 @@ const isBlog = path === '/blog' || path.startsWith('/blog/');
         <a href={l.href} aria-current={isBlog && l.href === '/blog' ? 'page' : undefined}>{l.label}</a>
       ))}
     </span>
-    <a href="/#contact" class="nav-cta">Let's talk</a>
+    <a href="/#contact" class="nav-cta">Get in touch</a>
     <button type="button" class="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="skynav-menu">
       <span class="nav-burger-box" aria-hidden="true"><span></span><span></span><span></span></span>
     </button>
