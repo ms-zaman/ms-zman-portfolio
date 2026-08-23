@@ -1,7 +1,7 @@
 ---
 /**
  * Loader — a load-aware brand entrance (replaces the old "Daybreak" sunrise).
- * A living-sky panel: soft drifting clouds, the MZ mark ringed by a real progress
+ * A living-sky panel: soft drifting clouds, the monogram ringed by a real progress
  * arc (trickles through fonts → page → hero milestones), and the wordmark. It HOLDS
  * until the fonts and the WebGL hero are actually ready, then completes the ring and
  * fades + lifts away in one smooth reveal — no fixed-timer wipe, no cut-off, no
@@ -15,9 +15,9 @@
         <circle class="ld-trk" cx="26" cy="26" r="23" />
         <circle class="ld-prg" cx="26" cy="26" r="23" />
       </svg>
-      <span class="ld-mz">MZ</span>
+      <span class="ld-mz">S</span>
     </span>
-    <span class="ld-name">MS Zaman</span>
+    <span class="ld-name">Sharfuzzaman</span>
   </div>
 </div>
 
@@ -68,7 +68,7 @@
     transition: opacity .55s ease, transform .55s ease;
   }
 
-  /* MZ mark ringed by a real progress arc */
+  /* monogram ringed by a real progress arc */
   .ld-badge { position: relative; width: 52px; height: 52px; }
   .ld-ring { position: absolute; inset: 0; transform: rotate(-90deg); overflow: visible; }
   .ld-trk { fill: none; stroke: rgba(255, 255, 255, .28); stroke-width: 2.5; }
@@ -91,7 +91,7 @@
     place-items: center;
     font-family: var(--display);
     font-weight: 600;
-    font-size: 14px;
+    font-size: 16px;
     letter-spacing: -.3px;
     box-shadow: 0 10px 28px rgba(20, 44, 84, .25);
     animation: ld-glow 2.6s ease-in-out infinite;

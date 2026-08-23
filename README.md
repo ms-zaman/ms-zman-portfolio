@@ -1,4 +1,4 @@
-# MS Zaman — Frontend Developer Portfolio
+# Sharfuzzaman — WordPress Developer Portfolio
 
 A time- and weather-aware single-page portfolio with a WebGL "Sky" hero, built
 with Astro and a small amount of React.

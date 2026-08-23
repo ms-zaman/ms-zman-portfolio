@@ -8,7 +8,7 @@
  *   --sky-tint / -2     overlay wash the hero fades over the photo
  * It also stamps `data-sky-phase` on <html> so CSS can key off the phase.
  *
- * Location defaults to Dhaka — MS Zaman is a "web developer in Dhaka", so every
+ * Location defaults to Dhaka — Sharfuzzaman is a Dhaka-based developer, so every
  * visitor sees the sky over Dhaka. If the visitor has *already* granted
  * geolocation permission we silently upgrade to their own sky; we never prompt
  * on load. A UI control can call requestVisitorLocation() to ask explicitly.

@@ -23,8 +23,8 @@ interface Props {
 }
 
 const {
-  title = 'MS Zaman — WordPress Developer | Elementor & Gutenberg',
-  description = 'WordPress Developer specializing in Elementor, Gutenberg and pixel-perfect frontend implementation. 5+ years of production experience building WordPress experiences and template systems. Open to remote roles.',
+  title = 'Sharfuzzaman — WordPress Developer | Elementor & Gutenberg',
+  description = 'WordPress Developer specializing in Elementor, Gutenberg and pixel-perfect frontend implementation, with 5+ years of production web development experience.',
   image = '/og.jpg',
   noindex = false,
 } = Astro.props;
@@ -40,7 +40,8 @@ const jsonLd = {
     {
       '@type': 'Person',
       '@id': `${site.origin}/#person`,
-      name: 'MS Zaman',
+      name: 'Sharfuzzaman',
+      alternateName: 'MS Zaman',
       url: site.origin,
       image: ogImage,
       jobTitle: 'WordPress Developer',
@@ -68,7 +69,7 @@ const jsonLd = {
     {
       '@type': 'WebSite',
       '@id': `${site.origin}/#website`,
-      name: 'MS Zaman',
+      name: 'Sharfuzzaman',
       url: site.origin,
       author: { '@id': `${site.origin}/#person` },
       inLanguage: 'en',
@@ -99,13 +100,13 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     <Clarity />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="author" content="MS Zaman" />
+    <meta name="author" content="Sharfuzzaman" />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
     <meta name="theme-color" content="#3f86cf" />
     <link rel="canonical" href={canonical} />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="MS Zaman" />
+    <meta property="og:site_name" content="Sharfuzzaman" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -113,7 +114,7 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="MS Zaman — WordPress Developer specializing in Elementor & Gutenberg." />
+    <meta property="og:image:alt" content="Sharfuzzaman — WordPress Developer specializing in Elementor & Gutenberg." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
