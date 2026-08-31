@@ -5,18 +5,16 @@
  *     own pick (a ?skyWeather preview link, or the choice they made in the sky
  *     picker and we remembered), else live Open-Meteo weather × the SkyEngine
  *     day/night phase (re-evaluated each minute so the sky flips at dusk/dawn);
- *   • renders the <Canvas> (dpr 1–2, AdaptiveDpr) with <WeatherScene> under Suspense;
+ *   • lazy-loads <WeatherCanvas> (dpr 1–2, AdaptiveDpr + <WeatherScene>) — only
+ *     when the sky is one WebGL actually draws, so the poster path costs no three.js;
  *   • fades itself in once the first frame is ready and hides the CSS poster clouds,
  *     so the instant-painting photo poster covers the pre-hydration gap;
  *   • pauses the render loop when the hero is offscreen or the tab is hidden;
  *   • falls back to the poster on WebGL failure (error boundary) or reduced motion;
  *   • renders the <SkyPicker> chip, which is how a visitor discovers any of this.
  */
-import { Canvas } from '@react-three/fiber';
-import { AdaptiveDpr } from '@react-three/drei';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react';
 import { CanvasErrorBoundary } from './ErrorBoundary';
-import { WeatherScene } from './WeatherScene';
 import { SkyPicker, savedCondition } from './SkyPicker';
 import type { Condition } from './conditions';
 import { computeState, DHAKA, resolveVisitorLocation } from '../../../scripts/sky-engine';
@@ -46,6 +44,13 @@ const POSTER_CONDITIONS: ReadonlySet<Condition> = new Set<Condition>(['sunny']);
 function markWebglReady() {
   document.querySelector('.hero')?.classList.add('sky-webgl');
 }
+
+/**
+ * The canvas — and with it three/r3f/drei — is fetched only when one is actually
+ * going to mount. On the poster path (`sunny`, or reduced motion) this import
+ * never fires, so those visits skip the ~270 kB gz WebGL chunk entirely.
+ */
+const WeatherCanvas = lazy(() => import('./WeatherCanvas'));
 
 interface Props {
   /** Force a condition (skips live weather, the visitor's pick, and the picker). */
@@ -153,34 +158,33 @@ export default function HeroSky({ condition: forced }: Props) {
     };
   }, []);
 
+  // Runs inside the canvas's onCreated: hide the CSS poster's clouds/glow, then
+  // (one frame later, so the sky is genuinely painted) fade the canvas in and let
+  // the Loader reveal in sync.
+  const handleCanvasCreated = useCallback(() => {
+    markWebglReady();
+    requestAnimationFrame(() => {
+      setReady(true);
+      // tell the Loader the live sky is up, so it can reveal in sync
+      (window as unknown as { __skyHeroReady?: boolean }).__skyHeroReady = true;
+      window.dispatchEvent(new Event('sky:hero-ready'));
+    });
+  }, []);
+
   return (
     <>
       {/* reduced motion, or a condition the CSS hero owns → no canvas at all */}
       {!usePoster && (
         <div ref={containerRef} className={`hero-sky${ready ? ' ready' : ''}`} aria-hidden="true">
           <CanvasErrorBoundary>
-            <Canvas
-              dpr={[1, 2]}
-              frameloop={active ? 'always' : 'never'}
-              gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-              camera={{ position: [0, 0.1, 6], fov: 60, near: 0.1, far: 1_000_000 }}
-              onCreated={({ gl }) => {
-                gl.setClearColor(0x000000, 0);
-                markWebglReady();
-                requestAnimationFrame(() => {
-                  setReady(true);
-                  // tell the Loader the live sky is up, so it can reveal in sync
-                  (window as unknown as { __skyHeroReady?: boolean }).__skyHeroReady = true;
-                  window.dispatchEvent(new Event('sky:hero-ready'));
-                });
-              }}
-            >
-              <Suspense fallback={null}>
-                <WeatherScene condition={condition} locationRef={locationRef} />
-              </Suspense>
-              {/* auto-drop resolution under sustained load to protect 60 FPS */}
-              <AdaptiveDpr pixelated={false} />
-            </Canvas>
+            <Suspense fallback={null}>
+              <WeatherCanvas
+                condition={condition}
+                locationRef={locationRef}
+                active={active}
+                onCreated={handleCanvasCreated}
+              />
+            </Suspense>
           </CanvasErrorBoundary>
         </div>
       )}

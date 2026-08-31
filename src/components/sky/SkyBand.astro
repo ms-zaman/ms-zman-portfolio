@@ -30,8 +30,8 @@
   <div class="sb-sky" aria-hidden="true"></div>
   <div class="sb-stars" aria-hidden="true"></div>
   <div class="sb-photo" aria-hidden="true"></div>
-  <div class="cloud b" aria-hidden="true"><div class="bob"><img src="/sky/cloud-2.png" alt="" loading="lazy" /></div></div>
-  <div class="cloud c" aria-hidden="true"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="lazy" /></div></div>
+  <div class="cloud b" aria-hidden="true"><div class="bob"><picture><source srcset="/sky/cloud-2.avif" type="image/avif" /><img src="/sky/cloud-2.png" alt="" loading="lazy" /></picture></div></div>
+  <div class="cloud c" aria-hidden="true"><div class="bob"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" loading="lazy" /></picture></div></div>
   <div class="sb-precip" aria-hidden="true"></div>
   <div class="sb-atmos" aria-hidden="true"></div>
 
@@ -216,6 +216,7 @@
     transition: filter 1.5s ease, opacity 1.5s ease;
   }
   .cloud > .bob { will-change: transform; }
+  .cloud picture { display: contents; }
   .cloud img { width: 100%; height: auto; display: block; }
   @keyframes sb-drift { from { transform: translateX(-40vw); } to { transform: translateX(140vw); } }
   @keyframes sb-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-13px); } }

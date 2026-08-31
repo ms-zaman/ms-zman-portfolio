@@ -86,18 +86,6 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {gaId && (
-      <>
-        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
-        <script is:inline define:vars={{ gaId }}>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', gaId);
-        </script>
-      </>
-    )}
-    <Clarity />
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="author" content="Sharfuzzaman" />
@@ -124,9 +112,37 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline></script>
 
+    <!-- Warm the third-party origins the page will reach for anyway: the two
+         analytics tags, the live-weather API the hero calls after hydration, and
+         the CDN behind the lazy work thumbnails. DNS only, deliberately — not one
+         of the four is on the critical path (GA is async, Clarity waits for idle,
+         the weather call is post-hydration, the thumbnails are lazy), so a real
+         preconnect would spend a handshake competing with the CSS and the fonts
+         for a narrow uplink and leave the socket idle until it times out. -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.clarity.ms" />
+    <link rel="dns-prefetch" href="https://api.open-meteo.com" />
+    <link rel="dns-prefetch" href="https://items.templately.com" />
+
     <link rel="preload" as="image" href="/sky/sky.avif" />
     <Font cssVariable="--font-inter" preload />
     <Font cssVariable="--font-inter-tight" preload />
+
+    <!-- Analytics last: both tags are async/idle, so moving them behind the font
+         preloads and the hero poster costs them nothing, but stops them being the
+         first thing the preload scanner finds inside the LCP window. -->
+    {gaId && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+        <script is:inline define:vars={{ gaId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
+    <Clarity />
   </head>
 
   <body class="sky">

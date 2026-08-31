@@ -49,18 +49,6 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
 <!doctype html>
 <html lang="en">
   <head>
-    {gaId && (
-      <>
-        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
-        <script is:inline define:vars={{ gaId }}>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', gaId);
-        </script>
-      </>
-    )}
-    <Clarity />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#3f86cf" />
@@ -87,9 +75,28 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.clarity.ms" />
+
     <Font cssVariable="--font-inter" preload />
     <Font cssVariable="--font-inter-tight" preload />
     <ClientRouter />
+
+    <!-- Analytics last: both tags are async/idle, so moving them behind the font
+         preloads and the hero poster costs them nothing, but stops them being the
+         first thing the preload scanner finds inside the LCP window. -->
+    {gaId && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
+        <script is:inline define:vars={{ gaId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
+    <Clarity />
   </head>
   <body class="sky">
     <a href="#main-content" class="skip-link">Skip to main content</a>

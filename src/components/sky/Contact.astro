@@ -26,8 +26,8 @@ const enquiryTypes = [
 <section class="[ contact ] [ region ]" id="contact">
   <div class="[ wrapper ]">
     <div class="contact-panel reveal">
-      <div class="c-cloud x1" aria-hidden="true"><img src="/sky/cloud-1.png" alt="" loading="lazy" /></div>
-      <div class="c-cloud x2" aria-hidden="true"><img src="/sky/cloud-2.png" alt="" loading="lazy" /></div>
+      <div class="c-cloud x1" aria-hidden="true"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" loading="lazy" /></picture></div>
+      <div class="c-cloud x2" aria-hidden="true"><picture><source srcset="/sky/cloud-2.avif" type="image/avif" /><img src="/sky/cloud-2.png" alt="" loading="lazy" /></picture></div>
 
       <div class="eyebrow c-eyebrow"><span class="s">✦</span> Contact</div>
       <h2 class="big">Let's talk about the <em>role.</em></h2>
@@ -103,6 +103,7 @@ const enquiryTypes = [
     background: radial-gradient(42% 46% at 82% 0%, rgba(255, 244, 214, .75), rgba(255, 244, 214, 0) 62%);
   }
   .c-cloud { position: absolute; pointer-events: none; opacity: .55; }
+  .c-cloud picture { display: contents; }
   .c-cloud img { width: 100%; height: auto; display: block; }
   .c-cloud.x1 { width: 300px; top: 10%; left: -40px; animation: c-bob 12s ease-in-out infinite; }
   .c-cloud.x2 { width: 220px; bottom: 14%; right: -30px; opacity: .45; animation: c-bob 9.5s ease-in-out infinite; }
