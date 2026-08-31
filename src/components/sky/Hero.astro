@@ -23,6 +23,9 @@ const birds = [
   { cls: 'b3', dur: '0.55s' },
   { cls: 'b4', dur: '0.46s' },
 ];
+
+/** Résumé served straight from public/ — a recruiter's first ask. */
+const RESUME = '/Sharfuzzaman-Resume.pdf';
 ---
 <header class="hero">
   <!-- R3F weather island: renders the live sky in WebGL above the CSS photo poster.
@@ -77,8 +80,14 @@ const birds = [
       <div>
         <p class="intro"><b>5+ years</b> building pixel-perfect, production-ready WordPress experiences — <b>40+</b> template packs personally developed for an ecosystem of <b>700K+</b> users.</p>
         <div class="[ cta-row ] [ cluster ]">
-          {/* TODO(résumé): placeholder — restore the real "Résumé (PDF)" button once the PDF exists */}
           <Button href="#contact" variant="solid">Get in touch <span aria-hidden="true">→</span></Button>
+          <Button
+            href={RESUME}
+            variant="glass"
+            class="cta-resume"
+            target="_blank"
+            rel="noopener"
+          >Résumé <span class="cta-meta" aria-hidden="true">PDF</span></Button>
           <Button href="#work" variant="glass">View work</Button>
           <span class="[ socials ] [ cluster ]">
             <a href="https://github.com/ms-zaman" target="_blank" rel="noopener" aria-label="GitHub"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21" /></svg></a>
@@ -565,6 +574,16 @@ const birds = [
   }
 
   .cta-row { --cluster-space: 14px; }
+  /* the format, stated quietly — a recruiter should know it's a download, not a page */
+  .cta-meta {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    padding: 3px 6px;
+    border-radius: 5px;
+    background: rgba(30, 70, 130, .1);
+    color: var(--accent);
+  }
   /* CTA hierarchy — one clear primary. The solid "View work" is lifted and a touch
      larger so it plainly leads; "Get in touch" recedes to a quieter glass. Both keep
      a light fill so their labels stay legible over every sky (a bare text link would
