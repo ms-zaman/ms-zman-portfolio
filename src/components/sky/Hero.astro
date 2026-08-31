@@ -551,7 +551,22 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
   }
   .h1 em { font-style: italic; color: #fff9ec; }
   .h1 .u { position: relative; white-space: nowrap; }
-  .h1 .u::after { content: ""; position: absolute; left: 0; right: 0; bottom: .06em; height: .09em; background: var(--sun); border-radius: 2px; opacity: .9; }
+  /* Accent mark under the two product names. Deliberately NOT a link underline:
+     a solid rule tight to the baseline is the exact grammar of a hyperlink, and
+     Clarity showed visitors clicking the headline and getting nothing (dead
+     clicks on 39% of August sessions). Thicker, dropped below the baseline and
+     faded at both ends, it reads as a drawn mark instead. */
+  .h1 .u::after {
+    content: "";
+    position: absolute;
+    left: -.02em;
+    right: -.02em;
+    bottom: -.02em;
+    height: .16em;
+    background: linear-gradient(90deg, rgba(246, 179, 82, 0), var(--sun) 18%, var(--sun) 82%, rgba(246, 179, 82, 0));
+    border-radius: 99px;
+    opacity: .75;
+  }
 
   /* hero-lower = .grid (columns kept here); the copy/glance blocks stay bespoke */
   .hero-lower { --grid-space: 44px; grid-template-columns: 1.5fr 1fr; align-items: end; }
