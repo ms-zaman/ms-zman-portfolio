@@ -1,6 +1,7 @@
 ---
 import BlogLayout from '../../layouts/BlogLayout.astro';
 import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
 
 // Generate a static page for every blog post at build time
 export async function getStaticPaths() {
@@ -28,6 +29,7 @@ const slug = post.data.slug || post.id;
   description={post.data.description}
   ogTitle={post.data.title}
   ogDescription={post.data.description}
+  {...(post.data.cover ? { ogImage: post.data.cover } : {})}
   canonicalPath={`/blog/${slug}`}
 >
   <article class="[ blog-post-page ] [ wrapper ]">
@@ -54,6 +56,19 @@ const slug = post.data.slug || post.id;
         ))}
       </div>
     </header>
+
+    {post.data.cover && (
+      <figure class="post-cover">
+        <Image
+          src={post.data.cover}
+          alt={post.data.coverAlt ?? ''}
+          widths={[640, 960, 1536]}
+          sizes="(max-width: 800px) 100vw, 760px"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </figure>
+    )}
 
     <div class="post-content-wrapper markdown-content">
       <Content />

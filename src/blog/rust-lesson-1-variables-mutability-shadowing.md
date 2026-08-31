@@ -5,6 +5,8 @@ date: 2026-08-31
 tags: ["Rust", "Fundamentals", "Learning in Public"]
 readTime: "6 min read"
 slug: "learning-rust-variables-mutability-shadowing"
+cover: "../images/blog/learning-rust-lesson-1.jpg"
+coverAlt: "Learning Rust, Lesson 1 — the Rust crab beside a terminal showing let x = 10 shadowed by let x = 40, and let mut y mutated from 20 to 30, printing x = 40, y = 30."
 ---
 
 আমি Rust শেখা শুরু করেছি একটি নির্দিষ্ট উদ্দেশ্য নিয়ে—শুধু আরেকটি programming language শেখার জন্য নয়।
