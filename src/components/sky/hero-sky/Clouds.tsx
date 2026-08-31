@@ -1,5 +1,5 @@
 /**
- * Clouds — the brand cloud cut-outs (/sky/cloud-1.png, cloud-2.png) as billboarded
+ * Clouds — the brand cloud cut-outs (/sky/cloud-1.avif, cloud-2.avif) as billboarded
  * planes, scattered across the sky at varied heights & depths so each reads as a
  * distinct fluffy raft (মেঘের ভেলা) rather than a merged haze band. Each plane is
  * sized to its texture's NATIVE aspect (no vertical squash), soft-edged (no alphaTest
@@ -46,7 +46,10 @@ const WRAP = 22; // horizontal wrap-around half-width
 export function Clouds() {
   const live = useSky();
   const groupRef = useRef<THREE.Group>(null!);
-  const textures = useTexture(['/sky/cloud-1.png', '/sky/cloud-2.png']);
+  // AVIF, matching the CSS poster's <picture> source — so the hero downloads each
+  // cut-out once and three.js reuses the already-cached decode. TextureLoader goes
+  // through the browser decoder, and the WebGL path implies a browser that has AVIF.
+  const textures = useTexture(['/sky/cloud-1.avif', '/sky/cloud-2.avif']);
 
   useEffect(() => {
     for (const t of textures) t.colorSpace = THREE.SRGBColorSpace;

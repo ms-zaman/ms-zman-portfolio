@@ -33,11 +33,11 @@ const birds = [
   <div class="sun" aria-hidden="true"><span class="sun-core"></span></div>
 
   <!-- drifting cloud cut-outs (CSS poster; hidden once WebGL owns the sky) -->
-  <div class="cloud a"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="eager" /></div></div>
-  <div class="cloud b"><div class="bob"><img src="/sky/cloud-2.png" alt="" loading="eager" /></div></div>
-  <div class="cloud c"><div class="bob"><img src="/sky/cloud-2.png" alt="" loading="eager" /></div></div>
-  <div class="cloud d"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="eager" /></div></div>
-  <div class="cloud e"><div class="bob"><img src="/sky/cloud-1.png" alt="" loading="eager" /></div></div>
+  <div class="cloud a"><div class="bob"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" loading="eager" /></picture></div></div>
+  <div class="cloud b"><div class="bob"><picture><source srcset="/sky/cloud-2.avif" type="image/avif" /><img src="/sky/cloud-2.png" alt="" loading="eager" /></picture></div></div>
+  <div class="cloud c"><div class="bob"><picture><source srcset="/sky/cloud-2.avif" type="image/avif" /><img src="/sky/cloud-2.png" alt="" loading="eager" /></picture></div></div>
+  <div class="cloud d"><div class="bob"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" loading="eager" /></picture></div></div>
+  <div class="cloud e"><div class="bob"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" loading="eager" /></picture></div></div>
 
   <!-- flapping birds (SMIL) -->
   {birds.map((b) => (
@@ -387,6 +387,7 @@ const birds = [
   /* clouds */
   .cloud { position: absolute; z-index: 2; pointer-events: none; will-change: transform; }
   .cloud > .bob { will-change: transform; }
+  .cloud picture { display: contents; }
   .cloud img { width: 100%; height: auto; display: block; }
   @keyframes cdrift { from { transform: translateX(-40vw); } to { transform: translateX(140vw); } }
   @keyframes cbob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-13px); } }

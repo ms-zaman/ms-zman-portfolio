@@ -3,9 +3,11 @@
  * Loader — a load-aware brand entrance (replaces the old "Daybreak" sunrise).
  * A living-sky panel: soft drifting clouds, the monogram ringed by a real progress
  * arc (trickles through fonts → page → hero milestones), and the wordmark. It HOLDS
- * until the fonts and the WebGL hero are actually ready, then completes the ring and
- * fades + lifts away in one smooth reveal — no fixed-timer wipe, no cut-off, no
- * disjointed poster→WebGL pop. Reduced-motion safe; removed from the DOM when done.
+ * until the DOM and the fonts are ready — and, when it beats the 1.5s cap, until the
+ * WebGL hero's first frame — then completes the ring and fades + lifts away in one
+ * smooth reveal: no cut-off, no disjointed poster→WebGL pop. Deliberately does NOT
+ * wait on `load`; see the gating notes in the script below.
+ * Reduced-motion safe; removed from the DOM when done.
  */
 ---
 <div id="loader" aria-hidden="true">
@@ -124,7 +126,7 @@
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
     const start = performance.now();
     const MIN = reduce ? 0 : 350; // minimum beat so it never flash-blinks
-    const MAX = 4500; // hard cap — never trap the visitor behind the loader
+    const MAX = 1500; // hard cap — never trap the visitor behind the loader
     let p = 0.08;
     let done = false;
     let trickleId = 0;
@@ -152,22 +154,34 @@
       window.setTimeout(finish, wait);
     };
 
-    const fontsReady = document.fonts?.ready ?? Promise.resolve();
-    fontsReady.then(() => setP(0.5));
-    const pageLoaded =
-      document.readyState === 'complete'
-        ? Promise.resolve()
-        : new Promise<void>((r) => window.addEventListener('load', () => r(), { once: true }));
-    pageLoaded.then(() => setP(0.8));
+    // Give the webfonts a moment to land so the wordmark doesn't swap mid-fade,
+    // but never let them set the pace: they are ~141 kB of preloads, which on a
+    // slow uplink resolved a full second after the page itself was ready. The
+    // fallback faces are metric-matched (size-adjust/ascent-override), so
+    // revealing ahead of them costs a glyph swap and no layout shift.
+    const fonts = document.fonts?.ready ?? Promise.resolve();
+    fonts.then(() => setP(0.5));
+    const fontsReady = Promise.race([fonts, new Promise((r) => window.setTimeout(r, 600))]);
+    // DOM-ready, not `load`: `load` waits on every eager image, the analytics
+    // tags and the WebGL vendor chunk, which held the splash ~3.5s longer than
+    // the page actually needed on a mid-tier phone. The hero itself still gets
+    // to gate the reveal below, via `sky:hero-ready`.
+    const domReady =
+      document.readyState === 'loading'
+        ? new Promise<void>((r) =>
+            document.addEventListener('DOMContentLoaded', () => r(), { once: true }),
+          )
+        : Promise.resolve();
+    domReady.then(() => setP(0.8));
 
     if (reduce) {
-      Promise.all([fontsReady, pageLoaded]).then(reveal);
+      Promise.all([fontsReady, domReady]).then(reveal);
     } else {
       // reveal in sync with the WebGL hero's first frame when it arrives…
       if ((window as unknown as { __skyHeroReady?: boolean }).__skyHeroReady) reveal();
       else window.addEventListener('sky:hero-ready', reveal, { once: true });
-      // …otherwise shortly after fonts + page are ready
-      Promise.all([fontsReady, pageLoaded]).then(() => window.setTimeout(reveal, 300));
+      // …otherwise shortly after fonts + DOM are ready
+      Promise.all([fontsReady, domReady]).then(() => window.setTimeout(reveal, 120));
     }
     window.setTimeout(reveal, MAX);
   }

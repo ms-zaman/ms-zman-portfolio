@@ -37,6 +37,6 @@ const postsForSearch = sortedPosts.map((post) => ({
       </p>
     </header>
 
-    <BlogSearch client:load posts={postsForSearch} />
+    <BlogSearch client:visible posts={postsForSearch} />
   </div>
 </BlogLayout>

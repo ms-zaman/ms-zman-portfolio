@@ -32,6 +32,14 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Brand sky assets (hero poster + cloud cut-outs). A week, not `immutable`:
+# these live in public/ so they are NOT content-hashed, and a stale copy pinned
+# for a year would survive any future re-export.
+[[headers]]
+  for = "/sky/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
 # Cache fonts from Google (served through preconnect, but also for any self-hosted)
 [[headers]]
   for = "*.woff2"
