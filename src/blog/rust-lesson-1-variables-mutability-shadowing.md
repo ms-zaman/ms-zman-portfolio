@@ -1,25 +1,25 @@
 ---
-title: "Learning Rust — Lesson 1: Variables, Mutability & Shadowing"
+title: "Learning Rust – Lesson 1: Variables, Mutability & Shadowing"
 description: "Starting Rust from a JavaScript background: why bindings are immutable by default, what mut actually changes, and how shadowing is not mutation."
 date: 2026-08-31
 tags: ["Rust", "Fundamentals", "Learning in Public"]
 readTime: "6 min read"
 slug: "learning-rust-variables-mutability-shadowing"
 cover: "../images/blog/learning-rust-lesson-1.jpg"
-coverAlt: "Learning Rust, Lesson 1 — the Rust crab beside a terminal showing let x = 10 shadowed by let x = 40, and let mut y mutated from 20 to 30, printing x = 40, y = 30."
+coverAlt: "Learning Rust, Lesson 1 – the Rust crab beside a terminal showing let x = 10 shadowed by let x = 40, and let mut y mutated from 20 to 30, printing x = 40, y = 30."
 ---
 
-আমি Rust শেখা শুরু করেছি একটি নির্দিষ্ট উদ্দেশ্য নিয়ে—শুধু আরেকটি programming language শেখার জন্য নয়।
+আমি Rust শেখা শুরু করেছি একটি নির্দিষ্ট উদ্দেশ্য নিয়ে–শুধু আরেকটি programming language শেখার জন্য নয়।
 
-আমি একজন Web Developer এবং এতদিন মূলত JavaScript ecosystem-এর সাথেই কাজ করেছি। React, WordPress, Shopify, frontend development—এসব আমার পরিচিত জায়গা।
+আমি একজন Web Developer এবং এতদিন মূলত JavaScript ecosystem-এর সাথেই কাজ করেছি। React, WordPress, Shopify, frontend development–এসব আমার পরিচিত জায়গা।
 
-কিন্তু একটা সময় মনে হলো, শুধু application-এর উপরিভাগটা জানলেই হবে না। আমি আরও ভালোভাবে বুঝতে চাই—**programming language, memory, performance, concurrency এবং computer-এর ভিতরের জিনিসগুলো আসলে কীভাবে কাজ করে।**
+কিন্তু একটা সময় মনে হলো, শুধু application-এর উপরিভাগটা জানলেই হবে না। আমি আরও ভালোভাবে বুঝতে চাই–**programming language, memory, performance, concurrency এবং computer-এর ভিতরের জিনিসগুলো আসলে কীভাবে কাজ করে।**
 
 সেখান থেকেই Rust শেখার শুরু।
 
 আর প্রথম lesson-এই Rust আমাকে একটা ছোট কিন্তু গুরুত্বপূর্ণ বিষয় শেখালো:
 
-> **কোন data পরিবর্তন হতে পারে, আর কোনটা পরিবর্তন হবে না—এটা code-এর মধ্যেই explicitly প্রকাশ করা ভালো।**
+> **কোন data পরিবর্তন হতে পারে, আর কোনটা পরিবর্তন হবে না–এটা code-এর মধ্যেই explicitly প্রকাশ করা ভালো।**
 
 ---
 
@@ -83,7 +83,7 @@ age = 34;
 
 ---
 
-## `mut` — When I Want Mutation
+## `mut` – When I Want Mutation
 
 Rust-এ mutable binding তৈরি করতে `mut` ব্যবহার করতে হয়।
 
@@ -310,7 +310,7 @@ name = name.to_uppercase();
 name = name.trim().to_string();
 ```
 
-দুই approach-এর মধ্যে কোনটা কখন ভালো—সেটা context-এর উপর নির্ভর করবে।
+দুই approach-এর মধ্যে কোনটা কখন ভালো–সেটা context-এর উপর নির্ভর করবে।
 
 কিন্তু Rust আমাকে দুটো concept আলাদা করে দিয়েছে:
 
@@ -361,7 +361,7 @@ let x = 20;
 
 > আমি পুরোনোটাকে mutate করছি না; নতুন binding তৈরি করছি।
 
-এই ছোট distinction-গুলোই পরবর্তীতে Rust-এর আরও বড় concept—বিশেষ করে **ownership এবং borrowing**—বোঝার foundation তৈরি করবে।
+এই ছোট distinction-গুলোই পরবর্তীতে Rust-এর আরও বড় concept–বিশেষ করে **ownership এবং borrowing**–বোঝার foundation তৈরি করবে।
 
 ---
 
@@ -380,7 +380,7 @@ let x = 20;
 
 সবচেয়ে গুরুত্বপূর্ণভাবে, আমি বুঝতে শুরু করেছি যে Rust শেখা শুধু syntax শেখা নয়।
 
-এটা আসলে **কীভাবে এবং কেন code কাজ করে—সেটা আরও গভীরভাবে বোঝার একটি journey।**
+এটা আসলে **কীভাবে এবং কেন code কাজ করে–সেটা আরও গভীরভাবে বোঝার একটি journey।**
 
 আর আমার পরের lesson-এর প্রশ্ন সম্ভবত আরও interesting:
 

@@ -49,6 +49,6 @@ For instance, I added active states and hover effects using CSS, and a tiny bit 
 
 ## The Verdict
 
-By dropping the heavy JS dependency, the BloggerZen template's Lighthouse performance score jumped significantly. The scrolling feels native because it *is* native—handled entirely by the browser's compositor thread. 
+By dropping the heavy JS dependency, the BloggerZen template's Lighthouse performance score jumped significantly. The scrolling feels native because it *is* native–handled entirely by the browser's compositor thread. 
 
 Before you `npm install` another massive UI library, ask yourself: *Can I do this with CSS?* You'd be surprised how often the answer is yes.

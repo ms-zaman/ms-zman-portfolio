@@ -24,7 +24,7 @@ If you are using `useEffect` just to update a piece of state based on another pi
 
 ## The Dependency Array is a Contract
 
-The second argument to `useEffect`—the dependency array—is a contract you make with React. You are saying: *"Only re-run this synchronization if one of these specific variables has changed since the last render."*
+The second argument to `useEffect`–the dependency array–is a contract you make with React. You are saying: *"Only re-run this synchronization if one of these specific variables has changed since the last render."*
 
 ```javascript
 useEffect(() => {

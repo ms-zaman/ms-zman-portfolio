@@ -330,12 +330,12 @@ export function SkyPicker({ condition, manual, onPick, location }: Props) {
             <span>
               {place} {clockLabel(location)}
             </span>
-            <span className="sr-only">— live weather. Change the hero sky</span>
+            <span className="sr-only">– live weather. Change the hero sky</span>
           </>
         ) : (
           <>
             <span>{active.label}</span>
-            <span className="sr-only">— chosen. Change the hero sky</span>
+            <span className="sr-only">– chosen. Change the hero sky</span>
           </>
         )}
         {/* hover/focus-only affordance — see .sky-cue in Hero.astro */}
