@@ -16,6 +16,35 @@
   to = "/"
   status = 301
 
+# @astrojs/sitemap emits /sitemap-index.xml, but /sitemap.xml is the URL every
+# crawler and scanner actually probes (and the one robots.txt advertised while
+# it 404'd). Serve the index at both, as a rewrite so there is no redirect hop.
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap-index.xml"
+  status = 200
+
+# RFC 9727 fixes this path as extensionless, but Netlify derives Content-Type
+# from the file extension and ignores a [[headers]] override of it — an
+# extensionless file ships as application/octet-stream. Keep the real file as
+# .json (served as application/json) and rewrite the well-known path onto it.
+[[redirects]]
+  from = "/.well-known/api-catalog"
+  to = "/.well-known/api-catalog.json"
+  status = 200
+
+# Markdown content negotiation for agents: rewrites `/` and `/blog/<slug>` to
+# their .md twins when the client sends `Accept: text/markdown` (or ?format=md).
+# Scoped to these two routes only — the rest of the site never touches the edge
+# runtime. Everything else falls through untouched.
+[[edge_functions]]
+  function = "markdown"
+  path = "/"
+
+[[edge_functions]]
+  function = "markdown"
+  path = "/blog/*"
+
 # Security headers
 [[headers]]
   for = "/*"
@@ -25,6 +54,9 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains"
     Permissions-Policy = "geolocation=(self), camera=(), microphone=(), payment=()"
+    # Agent discovery: point at the llms.txt summary and the RFC 9727 catalog
+    # without needing the client to parse the HTML first.
+    Link = "</llms.txt>; rel=\"describedby\"; type=\"text/plain\", </.well-known/api-catalog>; rel=\"api-catalog\""
 
 # Cache hashed static assets immutably (Astro emits content-hashed files under /_astro/)
 [[headers]]
@@ -55,4 +87,28 @@
 [[headers]]
   for = "/*.xml"
   [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# The markdown mirrors of the pages (built by src/pages/*.md.ts). Netlify already
+# serves .md as text/markdown from its own MIME table and ignores a Content-Type
+# set here (verified against `netlify dev`) — the type is declared anyway so the
+# intent is explicit, but the Cache-Control is what actually takes effect.
+[[headers]]
+  for = "/*.md"
+  [headers.values]
+    Content-Type = "text/markdown; charset=utf-8"
+    Cache-Control = "public, max-age=3600"
+
+# Extensionless, so Netlify has no extension to infer a type from and would
+# serve application/octet-stream. RFC 9727 wants a linkset.
+[[headers]]
+  for = "/.well-known/api-catalog"
+  [headers.values]
+    Content-Type = "application/linkset+json"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/.well-known/api-catalog.json"
+  [headers.values]
+    Content-Type = "application/linkset+json"
     Cache-Control = "public, max-age=3600"

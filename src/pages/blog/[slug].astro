@@ -36,6 +36,7 @@ const slug = post.data.slug || post.id;
   ogDescription={post.data.description}
   {...(post.data.cover ? { ogImage: post.data.cover } : {})}
   canonicalPath={`/blog/${slug}`}
+  markdownPath={`/blog/${slug}.md`}
 >
   <article class="[ blog-post-page ] [ wrapper ]">
     <a href="/blog" class="back-link">

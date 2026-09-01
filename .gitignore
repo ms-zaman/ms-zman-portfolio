@@ -73,3 +73,10 @@ DESIGN.md
 
 # Lighthouse
 lighthouse-report.*
+
+# Local Netlify folder
+.netlify
+# `netlify dev` writes this when it bundles the edge function locally; it pins
+# Netlify's own edge bootstrap hashes, which they rotate. Production builds
+# bundle edge functions server-side and never read it.
+deno.lock
