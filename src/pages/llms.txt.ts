@@ -31,7 +31,7 @@ export const GET: APIRoute = async () => {
 
 ## Start here
 
-- [Homepage (markdown)](${SITE}/index.md): full profile – expertise, selected work, experience and contact details, as plain markdown.
+- [Homepage (markdown)](${SITE}/index.md): full profile: expertise, selected work, experience and contact details, as plain markdown.
 - [Homepage (HTML)](${SITE}/): the site itself.
 - [Résumé (PDF)](${SITE}/Sharfuzzaman-Resume.pdf): the CV a recruiter would ask for.
 
@@ -43,7 +43,7 @@ ${writing}
 
 ## Contact
 
-- [Email](mailto:${EMAIL}): ${EMAIL} – currently looking for a remote WordPress / Web Developer position.
+- [Email](mailto:${EMAIL}): ${EMAIL}, currently looking for a remote WordPress / Web Developer position.
 - [GitHub](https://github.com/ms-zaman): open-source work, including DesignScan and Redline.
 - [LinkedIn](https://www.linkedin.com/in/sharfuzzaman/): professional profile.
 
