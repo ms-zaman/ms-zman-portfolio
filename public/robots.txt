@@ -2,10 +2,10 @@
 # Everything here is public and meant to be read, by people and by agents alike.
 
 # ── Content Signals (contentsignals.org) ─────────────────────────────────────
-# Declared on the wildcard group, which is where the policy's own example puts
-# it. Note the robots.txt matching rule: an agent with its own group below reads
-# only that group, so it sees no signal — which the policy defines as "neither
-# grants nor restricts", not as a denial. Nothing here is restricted anyway.
+# Repeated on EVERY group, not just the wildcard. An agent that has its own
+# group reads only that group — so a signal declared once on `*` would reach
+# none of the named crawlers below, which are precisely the ones it is meant
+# for. The repetition is the cost of robots.txt group semantics, not clutter.
 
 # As a condition of accessing this website, you agree to abide by the following content signals:
 
@@ -30,71 +30,90 @@ Allow: /
 
 # OpenAI
 User-agent: GPTBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 User-agent: OAI-SearchBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 User-agent: ChatGPT-User
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Anthropic
 User-agent: ClaudeBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 User-agent: Claude-User
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 User-agent: Claude-SearchBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Perplexity
 User-agent: PerplexityBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 User-agent: Perplexity-User
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Google (Gemini / Vertex training + grounding)
 User-agent: Google-Extended
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Apple Intelligence
 User-agent: Applebot-Extended
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Meta
 User-agent: meta-externalagent
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Amazon
 User-agent: Amazonbot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Common Crawl — the dataset behind many models
 User-agent: CCBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # ByteDance
 User-agent: Bytespider
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Cohere
 User-agent: cohere-ai
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Diffbot
 User-agent: Diffbot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # Others
 User-agent: Timpibot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 User-agent: omgili
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 User-agent: YouBot
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # ── Discovery ────────────────────────────────────────────────────────────────
