@@ -9,7 +9,7 @@ slug: "migrating-swiper-to-splide"
 
 Performance optimization is an ongoing journey. In a recent project, I had to take a hard look at my dependency graph, and one culprit stood out: **Swiper.js**.
 
-Don't get me wrong, Swiper is an incredible library. It's feature-rich and heavily documented. But for the specific task I had—a simple responsive category slider—it was massive overkill.
+Don't get me wrong, Swiper is an incredible library. It's feature-rich and heavily documented. But for the specific task I had–a simple responsive category slider–it was massive overkill.
 
 ## The Audit
 

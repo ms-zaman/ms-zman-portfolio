@@ -43,4 +43,4 @@ Instead of just listing technologies, I rewrote my bullet points to focus on imp
 
 Finally, I added this very blog you are reading. Why? Because the ability to communicate technical concepts clearly is just as important as the ability to write code. 
 
-By taking a user-centric approach to my portfolio—treating the recruiter as the user—I've transformed it from a mere code repository into a professional marketing tool.
+By taking a user-centric approach to my portfolio–treating the recruiter as the user–I've transformed it from a mere code repository into a professional marketing tool.

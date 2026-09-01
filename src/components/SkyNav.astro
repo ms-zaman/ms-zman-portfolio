@@ -37,7 +37,11 @@ const isBlog = path === '/blog' || path.startsWith('/blog/');
   .nav {
     position: fixed; top: 26px; left: 0; right: 0; z-index: 100;
     display: flex; justify-content: center;
+    transition: transform .3s ease;
   }
+  /* Scrolling down tucks the pill off-screen (nav-tuck.ts); the first upward
+     scroll brings it back — same behavior as the homepage nav. */
+  .nav.nav-tucked { transform: translateY(calc(-100% - 48px)); pointer-events: none; }
   .nav-in {
     position: relative;
     display: flex; align-items: center; gap: 26px;
@@ -111,12 +115,15 @@ const isBlog = path === '/blog' || path.startsWith('/blog/');
     .nav-burger { display: inline-flex; }
   }
   @media (prefers-reduced-motion: reduce) {
+    .nav { transition: none; } /* the tuck/return still happens, just instantly */
     .nav-burger, .nav-burger-box span { transition: none; }
     .nav-menu { animation: none; }
   }
 </style>
 
 <script>
+  import { initNavTuck } from '../scripts/nav-tuck';
+
   // Mobile hamburger — self-contained; re-runs after ClientRouter swaps.
   function initSkyNav() {
     const burger = document.querySelector<HTMLButtonElement>('.nav-burger');
@@ -145,5 +152,9 @@ const isBlog = path === '/blog' || path.startsWith('/blog/');
     window.matchMedia('(max-width: 760px)').addEventListener('change', (e) => { if (!e.matches) close(); });
   }
   initSkyNav();
-  document.addEventListener('astro:page-load', initSkyNav);
+  initNavTuck();
+  document.addEventListener('astro:page-load', () => {
+    initSkyNav();
+    initNavTuck(); // resets scroll state for the swapped-in page
+  });
 </script>
