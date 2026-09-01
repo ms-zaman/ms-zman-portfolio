@@ -13,7 +13,7 @@ When I set out to redesign my portfolio, I knew I wanted a sleek, premium dark t
 
 One of the biggest mistakes developers make with dark mode is using pure black (`#000000`) backgrounds with pure white (`#FFFFFF`) text. While this creates maximum contrast, it actually causes eye strain (halation) for many users. 
 
-Instead, I opted for a dark grey surface palette (like `#121212`) combined with off-white text (`#E0E0E0`). But I couldn't just guess these colors. I needed to ensure they met the **WCAG AA standard**, which requires a contrast ratio of at least 4.5:1 for normal text.
+Instead, I opted for a dark grey surface palette (like `#121212`) combined with off white text (`#E0E0E0`). But I couldn't just guess these colors. I needed to ensure they met the **WCAG AA standard**, which requires a contrast ratio of at least 4.5:1 for normal text.
 
 ## Automating the Audit
 

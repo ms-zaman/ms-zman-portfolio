@@ -1,13 +1,13 @@
 ---
 title: "The Art of Clean React Architecture"
-description: "How separating the UI from the data layer makes your application scalable and future-proof. A deep dive into abstraction."
+description: "How separating the UI from the data layer makes your application scalable and future proof. A deep dive into abstraction."
 date: 2026-04-10
 tags: ["React", "Architecture", "Best Practices"]
 readTime: "4 min read"
 slug: "clean-react-architecture"
 ---
 
-When I first started building React applications, I shoved everything into `App.jsx`. State, UI, API calls: it was all one giant, tangled mess. Over the years, and specifically while building large-scale applications at Startise, I learned the incredible value of clean architecture.
+When I first started building React applications, I shoved everything into `App.jsx`. State, UI, API calls: it was all one giant, tangled mess. Over the years, and specifically while building large scale applications at Startise, I learned the incredible value of clean architecture.
 
 ## Why Abstraction Matters
 
@@ -32,13 +32,13 @@ export async function getPostBySlug(slug) {
 By decoupling the data source from the view, my React components become "dumb" (in a good way). They only care about receiving a `post` object and rendering it.
 
 ### The Benefits
-- **Future-Proofing:** Switching to a Headless CMS tomorrow requires zero UI changes.
+- **Future Proofing:** Switching to a Headless CMS tomorrow requires zero UI changes.
 - **Testing:** I can easily mock the service layer in unit tests.
 - **Readability:** Junior developers can look at my components and immediately understand what's happening without getting bogged down by fetch logic.
 
 > "Code is read much more often than it is written." - Python's PEP 8
 
-### A Real-World Example
+### A Real World Example
 Let's look at how we render lists dynamically:
 
 * First item in a bulleted list
