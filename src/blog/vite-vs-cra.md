@@ -23,7 +23,7 @@ Vite takes a fundamentally different approach. It leverages native ES modules in
 
 When you start a Vite development server, it doesn't bundle your app. It simply serves the source code directly to the browser, and the browser handles the module imports. 
 
-### The Real-World Benefits
+### The Real World Benefits
 
 1. **Instant Server Start:** My portfolio development server starts in less than 300 milliseconds. 
 2. **Lightning Fast HMR:** When I change a CSS color token or a React component, the update is reflected in the browser instantly, regardless of how large the app gets.

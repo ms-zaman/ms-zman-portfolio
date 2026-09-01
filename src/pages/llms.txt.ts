@@ -44,7 +44,7 @@ ${writing}
 ## Contact
 
 - [Email](mailto:${EMAIL}): ${EMAIL}, currently looking for a remote WordPress / Web Developer position.
-- [GitHub](https://github.com/ms-zaman): open-source work, including DesignScan and Redline.
+- [GitHub](https://github.com/ms-zaman): open source work, including DesignScan and Redline.
 - [LinkedIn](https://www.linkedin.com/in/sharfuzzaman/): professional profile.
 
 ## Optional

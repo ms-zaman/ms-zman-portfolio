@@ -1,6 +1,6 @@
 ---
-title: "Why I Prefer Native CSS Scroll-Snap Over Heavy JS Libraries"
-description: "How I dropped heavy JavaScript slider dependencies in favor of native, performant CSS scroll-snap."
+title: "Why I Prefer Native CSS Scroll Snap Over Heavy JS Libraries"
+description: "How I dropped heavy JavaScript slider dependencies in favor of native, performant CSS scroll snap."
 date: 2026-02-14
 tags: ["CSS", "Performance", "UI"]
 readTime: "3 min read"
@@ -14,11 +14,11 @@ If you've ever tried to build a "Browse By Category" slider or an image carousel
 JavaScript sliders (like Slick or older versions of Swiper) come with a cost:
 1. **Bundle Size:** They can add 30kb - 100kb+ of JavaScript to your page.
 2. **Performance:** They constantly monitor touch events, mouse movements, and window resizing, causing layout thrashing.
-3. **Jank:** On low-end mobile devices, dragging the slider can feel disconnected from the user's finger.
+3. **Jank:** On low end mobile devices, dragging the slider can feel disconnected from the user's finger.
 
-## The CSS Scroll-Snap Solution
+## The CSS Scroll Snap Solution
 
-Modern CSS has given us `scroll-snap`. It allows us to create perfectly smooth, native-feeling sliders using only CSS. 
+Modern CSS has given us `scroll-snap`. It allows us to create perfectly smooth, native feeling sliders using only CSS. 
 
 Here is the core structure I implemented for the BloggerZen category slider:
 

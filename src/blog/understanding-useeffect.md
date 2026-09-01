@@ -18,13 +18,13 @@ The official React documentation puts it best: `useEffect` is for synchronizing 
 *External systems* include:
 - Network requests (APIs)
 - Browser DOM (document.title, event listeners)
-- Third-party libraries (like initializing a chart or a slider)
+- Third party libraries (like initializing a chart or a slider)
 
 If you are using `useEffect` just to update a piece of state based on another piece of state, you are probably using it wrong.
 
 ## The Dependency Array is a Contract
 
-The second argument to `useEffect`, the dependency array, is a contract you make with React. You are saying: *"Only re-run this synchronization if one of these specific variables has changed since the last render."*
+The second argument to `useEffect`, the dependency array, is a contract you make with React. You are saying: *"Only rerun this synchronization if one of these specific variables has changed since the last render."*
 
 ```javascript
 useEffect(() => {
@@ -36,7 +36,7 @@ useEffect(() => {
 }, []); // Empty array means: only run on mount and unmount
 ```
 
-## A Real-World Portfolio Example
+## A Real World Portfolio Example
 
 In this portfolio, when you search for a blog post, I use `useEffect` to synchronize the search query state with the `fuse.js` filtering logic. However, I added a `setTimeout` inside the effect to "debounce" the search. 
 
