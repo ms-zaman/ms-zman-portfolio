@@ -27,6 +27,11 @@ const formattedDate = post.data.date.toLocaleDateString('en-US', {
 });
 
 const slug = post.data.slug || post.id;
+
+// Rough but honest: the markdown body minus fences, for schema.org wordCount.
+const wordCount = post.body
+  ? post.body.replace(/```[\s\S]*?```/g, ' ').split(/\s+/).filter(Boolean).length
+  : 0;
 ---
 
 <BlogLayout
@@ -37,6 +42,14 @@ const slug = post.data.slug || post.id;
   {...(post.data.cover ? { ogImage: post.data.cover } : {})}
   canonicalPath={`/blog/${slug}`}
   markdownPath={`/blog/${slug}.md`}
+  article={{
+    title: post.data.title,
+    description: post.data.description,
+    date: post.data.date,
+    tags: post.data.tags,
+    readTime: post.data.readTime,
+    wordCount,
+  }}
 >
   <article class="[ blog-post-page ] [ wrapper ]">
     <a href="/blog" class="back-link">
