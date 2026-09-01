@@ -13,14 +13,14 @@ When I set out to redesign my portfolio, I knew I wanted a sleek, premium dark t
 
 One of the biggest mistakes developers make with dark mode is using pure black (`#000000`) backgrounds with pure white (`#FFFFFF`) text. While this creates maximum contrast, it actually causes eye strain (halation) for many users. 
 
-Instead, I opted for a dark grey surface palette (like `#121212`) combined with off-white text (`#E0E0E0`). But I couldn't just guess these colors–I needed to ensure they met the **WCAG AA standard**, which requires a contrast ratio of at least 4.5:1 for normal text.
+Instead, I opted for a dark grey surface palette (like `#121212`) combined with off-white text (`#E0E0E0`). But I couldn't just guess these colors. I needed to ensure they met the **WCAG AA standard**, which requires a contrast ratio of at least 4.5:1 for normal text.
 
 ## Automating the Audit
 
 To ensure my entire React application was compliant, I didn't rely on manual checking. Here was my process:
 
 1. **Tokenization:** I extracted all my colors into CSS variables (`var(--bg)`, `var(--surface)`, `var(--text)`, `var(--text-muted)`).
-2. **Contrast Checking:** I ran automated contrast audits on all UI elements–from buttons and borders to disabled text states.
+2. **Contrast Checking:** I ran automated contrast audits on all UI elements, from buttons and borders to disabled text states.
 3. **Refining the Palette:** When my `var(--text-muted)` failed the 4.5:1 ratio against `var(--surface)`, I systematically lightened the hex value until it passed, without losing the visual hierarchy.
 
 ```css
