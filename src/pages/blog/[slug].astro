@@ -6,13 +6,18 @@ import { Image } from 'astro:assets';
 // Generate a static page for every blog post at build time
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
-  return posts.map((post) => ({
+  // newest first, so "previous" reads as older and "next" as newer
+  const ordered = posts.sort(
+    (a, b) => new Date(b.data.date).valueOf() - new Date(a.data.date).valueOf(),
+  );
+  return ordered.map((post, i) => ({
     params: { slug: post.data.slug || post.id },
-    props: { post },
+    props: { post, newer: ordered[i - 1] ?? null, older: ordered[i + 1] ?? null },
   }));
 }
 
-const { post } = Astro.props;
+const { post, newer, older } = Astro.props;
+const linkTo = (p: (typeof newer)) => (p ? `/blog/${p.data.slug || p.id}` : null);
 const { Content } = await render(post);
 
 const formattedDate = post.data.date.toLocaleDateString('en-US', {
@@ -73,5 +78,42 @@ const slug = post.data.slug || post.id;
     <div class="post-content-wrapper markdown-content">
       <Content />
     </div>
+
+    {/* A reader who finishes a post used to hit nothing at all — no next post, no
+        author, no way to get in touch. This is the only place the blog can turn a
+        reader into a conversation, so it says who wrote it and offers both. */}
+    <footer class="post-end">
+      {(newer || older) && (
+        <nav class="post-nav" aria-label="More articles">
+          {older && (
+            <a class="post-nav-link" href={linkTo(older)} rel="prev">
+              <span class="post-nav-dir">← Older</span>
+              <span class="post-nav-title">{older.data.title}</span>
+            </a>
+          )}
+          {newer && (
+            <a class="post-nav-link post-nav-link--next" href={linkTo(newer)} rel="next">
+              <span class="post-nav-dir">Newer →</span>
+              <span class="post-nav-title">{newer.data.title}</span>
+            </a>
+          )}
+        </nav>
+      )}
+
+      <div class="post-author">
+        <span class="post-author-mark" aria-hidden="true">S</span>
+        <div class="post-author-text">
+          <p class="post-author-name">Sharfuzzaman</p>
+          <p class="post-author-role">
+            WordPress Developer specializing in Elementor &amp; Gutenberg, in Dhaka (GMT+6).
+            <strong>Open to remote opportunities.</strong>
+          </p>
+        </div>
+        <div class="post-author-cta">
+          <a class="post-cta post-cta--solid" href="/#contact">Get in touch</a>
+          <a class="post-cta" href="/Sharfuzzaman-Resume.pdf" target="_blank" rel="noopener">Résumé</a>
+        </div>
+      </div>
+    </footer>
   </article>
 </BlogLayout>
