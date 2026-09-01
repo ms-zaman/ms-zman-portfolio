@@ -18,6 +18,62 @@
 .blog-page,
 .blog-post-page { --wrapper-max: 860px; }
 
+/* ── sky band ────────────────────────────────────────────────
+   The blog used to be a plain white page with no trace of the homepage's
+   identity — someone arriving on a post straight from a shared link would never
+   guess it was the same site. This is the homepage sky, quietened right down:
+   the gradient, one off-frame sun glow, and the same two brand cloud cut-outs
+   (already in the visitor's cache from the homepage, so it costs nothing).
+   It sits behind the page header only and has faded out well before the reading
+   column starts, so it never competes with body copy.
+   Applied on .blog-main so the index and every post get it together. */
+.blog-main { position: relative; isolation: isolate; }
+.blog-main > * { position: relative; z-index: 1; }
+
+.blog-main::before,
+.blog-main::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 0;
+  pointer-events: none;
+}
+/* wash + sun */
+.blog-main::before {
+  height: 460px;
+  background:
+    radial-gradient(420px 300px at 88% -8%, rgba(246, 179, 82, .38), rgba(246, 179, 82, 0) 70%),
+    linear-gradient(180deg, var(--sky-3) 0%, var(--sky-4) 40%, rgba(255, 255, 255, 0) 100%);
+}
+/* the two brand clouds, drifting off both edges */
+.blog-main::after {
+  height: 460px;
+  background-image: url("/sky/cloud-1.avif"), url("/sky/cloud-2.avif");
+  background-repeat: no-repeat, no-repeat;
+  background-position: -70px 46px, calc(100% + 46px) 172px;
+  background-size: 300px auto, 210px auto;
+  opacity: .8;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 92%);
+  mask-image: linear-gradient(180deg, #000 0%, #000 55%, transparent 92%);
+}
+@media (max-width: 700px) {
+  .blog-main::before { height: 380px; }
+  .blog-main::after {
+    height: 380px;
+    background-position: -96px 34px, calc(100% + 60px) 150px;
+    background-size: 230px auto, 160px auto;
+    opacity: .65;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* a very slow drift — the homepage clouds move, so these should breathe too */
+  .blog-main::after { animation: blog-cloud-drift 90s ease-in-out infinite alternate; }
+}
+@keyframes blog-cloud-drift {
+  from { background-position: -70px 46px, calc(100% + 46px) 172px; }
+  to   { background-position: -34px 52px, calc(100% + 12px) 164px; }
+}
+
 /* ── list header ─────────────────────────────────────────── */
 .page-header {
   text-align: center;
