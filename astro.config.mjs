@@ -5,8 +5,16 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://sharfuzzaman.com',
-  // Self-hosted, subset, preloaded fonts with auto metric-matched fallbacks
-  // (eliminates the font-swap layout shift and the Google CDN round-trip).
+  // Self-hosted, subset, preloaded fonts with auto metric-matched fallbacks.
+  //
+  // `display: 'optional'` is doing real work here. The generated fallback faces are
+  // metric-matched vertically (size-adjust / ascent-override), which fixes line
+  // height — but not per-glyph advance widths, so a late swap can still re-wrap a
+  // line. Measured on a throttled first load: the fonts landed ~1.1 s after first
+  // paint and re-wrapped the hero's glance card, 185px → 157px — CLS 0.20 in one
+  // shift. `optional` gives the preloads a short window and then commits to whatever
+  // it has for that page load, so a swap can never shift the layout. Repeat visits
+  // (the files are immutably cached) always get the real faces.
   fonts: [
     {
       provider: fontProviders.google(),
@@ -15,6 +23,7 @@ export default defineConfig({
       weights: [400, 500, 600],
       styles: ['normal'],
       subsets: ['latin'],
+      display: 'optional',
     },
     {
       provider: fontProviders.google(),
@@ -23,6 +32,7 @@ export default defineConfig({
       weights: [500, 600],
       styles: ['normal', 'italic'],
       subsets: ['latin'],
+      display: 'optional',
     },
   ],
   integrations: [
@@ -36,6 +46,13 @@ export default defineConfig({
     shikiConfig: {
       theme: 'github-dark',
     },
+  },
+  build: {
+    // Inline the stylesheets rather than linking them. The homepage sheet is ~60 kB
+    // raw / 10 kB gz, and as an external <link> it was a render-blocking round-trip
+    // in front of first paint (PSI: ~300 ms on mobile). Inlined it rides the HTML's
+    // own brotli and costs no extra request.
+    inlineStylesheets: 'always',
   },
   vite: {
     build: {

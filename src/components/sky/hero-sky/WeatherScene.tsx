@@ -40,13 +40,32 @@ const TAU_SUN = 1.2; // the sun moves slowly; ease location upgrades gently
 /** Fixed moon elevation on portrait viewports — see the note in the frame loop. */
 const PORTRAIT_MOON_EL = 0.36;
 
+/**
+ * Frame-budget watchdog. `canAffordWebgl` catches the devices it can identify up
+ * front, but `WEBGL_debug_renderer_info` isn't exposed everywhere and a weak GPU
+ * doesn't announce itself. So the scene also measures itself: if the median gap
+ * between frames over the first stretch is worse than SLOW_MS, the hero hands the
+ * sky back to the CSS poster.
+ *
+ * The threshold sits well clear of the 30 fps cap the FrameDriver imposes (~33 ms):
+ * the driver can't outrun the renderer, so a gap past 80 ms means the device is
+ * genuinely painting below ~12 fps, not merely being paced.
+ */
+const WARMUP_FRAMES = 6; // shader compile + texture upload — not representative
+const SAMPLE_FRAMES = 24;
+const SLOW_MS = 80;
+
 interface Props {
   condition: Condition;
   /** Live-updated by HeroSky as geolocation resolves; read each frame for the sun arc. */
   locationRef: MutableRefObject<Location>;
+  /** Called once if this device can't hold a usable frame rate. */
+  onTooSlow: () => void;
 }
 
-export function WeatherScene({ condition, locationRef }: Props) {
+export function WeatherScene({ condition, locationRef, onTooSlow }: Props) {
+  const samples = useRef<number[]>([]);
+  const verdict = useRef(false);
   const live = useMemo(() => makeLive(CONDITIONS[condition]), []); // eslint-disable-line react-hooks/exhaustive-deps
   const targetNums = useRef<Record<NumKey, number>>(pickNums(CONDITIONS[condition]));
   const targetCols = useRef<Record<ColKey, THREE.Color>>(makeColors(CONDITIONS[condition]));
@@ -61,6 +80,17 @@ export function WeatherScene({ condition, locationRef }: Props) {
   }, [condition]);
 
   useFrame((state, dt) => {
+    // — frame-budget watchdog (see the note above) —
+    if (!verdict.current) {
+      const s = samples.current;
+      s.push(dt * 1000);
+      if (s.length >= WARMUP_FRAMES + SAMPLE_FRAMES) {
+        const gaps = s.slice(WARMUP_FRAMES).sort((a, b) => a - b);
+        verdict.current = true;
+        if (gaps[gaps.length >> 1] > SLOW_MS) onTooSlow();
+      }
+    }
+
     const kState = easeK(dt, TAU_STATE);
     for (const n of NUM_KEYS) {
       live.nums[n] = THREE.MathUtils.lerp(live.nums[n], targetNums.current[n], kState);

@@ -1,0 +1,10 @@
+---
+// Site-wide Google Analytics tag. Kept as a component (not a bare <script> in
+// each layout) for the same reason as Clarity.astro: two layouts with
+// byte-identical inline scripts get deduped by Astro's hoisting and only one
+// page ends up loading the bundle.
+---
+
+<script>
+  import '../scripts/ga';
+</script>
