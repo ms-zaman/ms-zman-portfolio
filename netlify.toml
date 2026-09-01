@@ -24,10 +24,16 @@
   to = "/sitemap-index.xml"
   status = 200
 
-# RFC 9727 fixes this path as extensionless, but Netlify derives Content-Type
-# from the file extension and ignores a [[headers]] override of it — an
-# extensionless file ships as application/octet-stream. Keep the real file as
-# .json (served as application/json) and rewrite the well-known path onto it.
+# RFC 9727 fixes this path as extensionless. The real file is kept as .json and
+# the well-known path rewritten onto it, so the response is correctly typed even
+# from the extension alone — the [[headers]] override below is then belt and
+# braces rather than the only thing holding the type up.
+#
+# (This started as a workaround: `netlify dev` ignores a Content-Type set in
+#  [[headers]] and served the extensionless file as application/octet-stream.
+#  Production does NOT ignore it — verified live, application/linkset+json — so
+#  the rewrite was never strictly required. Kept because it is one less thing
+#  depending on header handling. See also the note on /*.md below.)
 [[redirects]]
   from = "/.well-known/api-catalog"
   to = "/.well-known/api-catalog.json"
@@ -89,18 +95,22 @@
   [headers.values]
     Cache-Control = "public, max-age=3600"
 
-# The markdown mirrors of the pages (built by src/pages/*.md.ts). Netlify already
-# serves .md as text/markdown from its own MIME table and ignores a Content-Type
-# set here (verified against `netlify dev`) — the type is declared anyway so the
-# intent is explicit, but the Cache-Control is what actually takes effect.
+# The markdown mirrors of the pages (built by src/pages/*.md.ts). Netlify serves
+# .md as text/markdown from its own MIME table anyway, so this block is mostly
+# about the Cache-Control; the type is declared to make the intent explicit.
+#
+# ⚠️ Do not conclude from `netlify dev` that a Content-Type set here is ignored.
+# Local dev drops it and falls back to the extension; production applies it.
+# Verify response headers against the deployed site, not locally.
 [[headers]]
   for = "/*.md"
   [headers.values]
     Content-Type = "text/markdown; charset=utf-8"
     Cache-Control = "public, max-age=3600"
 
-# Extensionless, so Netlify has no extension to infer a type from and would
-# serve application/octet-stream. RFC 9727 wants a linkset.
+# The extensionless RFC 9727 path (rewritten to the .json above). Production
+# does apply this override — the deployed site returns application/linkset+json,
+# which is what RFC 9727 wants rather than a bare application/json.
 [[headers]]
   for = "/.well-known/api-catalog"
   [headers.values]
