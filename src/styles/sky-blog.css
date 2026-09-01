@@ -41,7 +41,7 @@
 }
 
 /* ── search + tag filter ─────────────────────────────────── */
-.blog-controls-section { margin-bottom: 40px; }
+.blog-controls-section { margin-bottom: 26px; }
 .blog-search-container {
   display: flex;
   flex-direction: column;
@@ -73,28 +73,9 @@
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
-.tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
-.tag-btn {
-  font: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ink-2);
-  background: var(--paper);
-  border: 1px solid var(--line);
-  padding: 7px 14px;
-  border-radius: var(--r-pill);
-  cursor: pointer;
-  transition: color .2s, background .2s, border-color .2s, transform .2s;
-}
-.tag-btn:hover { color: var(--ink); border-color: #bcd7f2; transform: translateY(-1px); }
-.tag-btn.active {
-  color: #fff;
-  background: var(--accent);
-  border-color: var(--accent);
-}
 
 /* ── post cards (list) ───────────────────────────────────── */
-.posts-grid { display: grid; gap: 20px; }
+.posts-grid { display: grid; gap: 14px; }
 .post-card {
   background: var(--card);
   border: 1px solid var(--line);
@@ -104,12 +85,12 @@
   transition: transform .25s, border-color .25s, box-shadow .25s;
 }
 .post-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-2px);
   border-color: #bcd7f2;
   box-shadow: var(--shadow-lg);
 }
 .post-card-link { display: block; color: inherit; }
-.post-card-content { padding: 26px 28px; }
+.post-card-content { padding: 20px 24px; }
 .post-meta {
   display: flex;
   flex-wrap: wrap;
@@ -145,27 +126,88 @@
   border-radius: var(--r-sm);
 }
 
-/* ── load-more + empty state ─────────────────────────────── */
-.load-more-container { display: flex; justify-content: center; margin-top: 32px; }
-.load-more-btn {
-  font: inherit;
-  font-size: 15px;
+/* ── end of post: where to go next, and who wrote it ─────── */
+.post-end {
+  margin-top: 56px;
+  padding-top: 34px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 26px;
+}
+.post-nav {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 720px) {
+  .post-nav { grid-template-columns: 1fr 1fr; }
+}
+.post-nav-link {
+  display: grid;
+  gap: 5px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--card);
+  color: inherit;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.post-nav-link:hover {
+  border-color: #bcd7f2;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+/* when there is no older post, the newer one still sits on the right */
+.post-nav-link--next { text-align: right; grid-column: -2; }
+.post-nav-dir { font-size: 12.5px; color: var(--ink-3); }
+.post-nav-title { font-weight: 500; line-height: 1.35; }
+
+.post-author {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--card);
+}
+.post-author-mark {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: 17px;
+}
+.post-author-text { flex: 1 1 260px; }
+.post-author-name { margin: 0 0 3px; font-weight: 600; }
+.post-author-role { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--ink-2); }
+.post-author-cta { display: flex; flex-wrap: wrap; gap: 9px; }
+/* Scoped through the parent on purpose: sky-base sets `.sky a { color: inherit }`,
+   which at (0,1,1) outranks a single-class rule — a bare `.post-cta--solid` lost,
+   and the solid button rendered its label in the background colour. */
+.post-author-cta .post-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  font-size: 14px;
   font-weight: 500;
   color: var(--ink);
-  background: var(--card);
-  border: 1px solid var(--line);
-  padding: 12px 26px;
-  border-radius: var(--r-pill);
-  cursor: pointer;
   transition: .2s;
 }
-.load-more-btn:hover {
-  color: #fff;
-  background: var(--accent);
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
+.post-author-cta .post-cta:hover { border-color: #bcd7f2; background: #fff; }
+.post-author-cta .post-cta--solid { background: var(--ink); border-color: var(--ink); color: #fff; }
+.post-author-cta .post-cta--solid:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ── empty state ─────────────────────────────────────────── */
 .no-results {
   text-align: center;
   padding: 56px 24px;

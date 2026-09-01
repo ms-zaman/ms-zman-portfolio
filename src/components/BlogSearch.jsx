@@ -1,10 +1,17 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import Fuse from 'fuse.js';
 
 /**
- * BlogSearch — React island for interactive blog search, tag filtering, and load-more pagination.
+ * BlogSearch — React island for the blog list: a single search field over the
+ * whole archive, then every matching post.
+ *
+ * Deliberately does NOT filter by tag or paginate. With 8 posts and 17 tags — 12
+ * of them on exactly one post — a tag cloud was larger than the archive it
+ * filtered and pushed the first article below the fold, and "Load More" hid four
+ * posts behind a click for no reason. Both come back when the archive is big
+ * enough to need them (roughly 25+ posts); until then, scrolling is the feature.
+ *
  * Receives post metadata as a prop (no body content — keeps the payload small).
- * Used as <BlogSearch client:load posts={posts} /> in the blog list Astro page.
  */
 
 const fuseOptions = {
@@ -15,47 +22,15 @@ const fuseOptions = {
 
 const BlogSearch = ({ posts }) => {
   const [query, setQuery] = useState('');
-  const [selectedTag, setSelectedTag] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(4);
 
-  // Extract all unique tags from posts
-  const allTags = useMemo(() => {
-    const tagSet = new Set();
-    posts.forEach((post) => {
-      if (post.tags) post.tags.forEach((tag) => tagSet.add(tag));
-    });
-    return Array.from(tagSet).sort();
-  }, [posts]);
-
-  // Create fuse instance
   const fuse = useMemo(() => new Fuse(posts, fuseOptions), [posts]);
 
-  // Filter and search posts
   const filteredPosts = useMemo(() => {
-    let results = [...posts];
-
-    // 1. Filter by tag
-    if (selectedTag) {
-      results = results.filter((post) => post.tags.includes(selectedTag));
+    if (query.trim() === '') {
+      return [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
     }
-
-    // 2. Fuzzy search
-    if (query && query.trim() !== '') {
-      const tempFuse = new Fuse(results, fuseOptions);
-      const fuseResults = tempFuse.search(query);
-      results = fuseResults.map((result) => result.item);
-    } else {
-      // Sort by date (newest first) when not searching
-      results.sort((a, b) => new Date(b.date) - new Date(a.date));
-    }
-
-    return results;
-  }, [posts, query, selectedTag, fuse]);
-
-  // Reset visible count when search/filter changes
-  useEffect(() => {
-    setVisibleCount(4);
-  }, [query, selectedTag]);
+    return fuse.search(query).map((result) => result.item);
+  }, [posts, query, fuse]);
 
   const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -93,26 +68,6 @@ const BlogSearch = ({ posts }) => {
               className="search-input"
             />
           </div>
-
-          {allTags.length > 0 && (
-            <div className="tags-container">
-              <button
-                className={`tag-btn ${selectedTag === null ? 'active' : ''}`}
-                onClick={() => setSelectedTag(null)}
-              >
-                All
-              </button>
-              {allTags.map((tag) => (
-                <button
-                  key={tag}
-                  className={`tag-btn ${selectedTag === tag ? 'active' : ''}`}
-                  onClick={() => setSelectedTag(tag)}
-                >
-                  #{tag}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
       </section>
 
@@ -121,7 +76,7 @@ const BlogSearch = ({ posts }) => {
         {filteredPosts.length > 0 ? (
           <>
             <div className="posts-grid">
-              {filteredPosts.slice(0, visibleCount).map((post) => (
+              {filteredPosts.map((post) => (
                 <article className="post-card" key={post.slug}>
                   <a href={`/blog/${post.slug}`} className="post-card-link">
                     <div className="post-card-content">
@@ -143,28 +98,14 @@ const BlogSearch = ({ posts }) => {
                 </article>
               ))}
             </div>
-
-            {visibleCount < filteredPosts.length && (
-              <div className="load-more-container">
-                <button
-                  className="load-more-btn"
-                  onClick={() => setVisibleCount((prev) => prev + 4)}
-                >
-                  Load More Articles
-                </button>
-              </div>
-            )}
           </>
         ) : (
           <div className="no-results">
             <h3>No posts found</h3>
-            <p>Try adjusting your search query or removing filters.</p>
+            <p>Nothing matched that search — try a different word.</p>
             <button
               className="btn-primary"
-              onClick={() => {
-                setQuery('');
-                setSelectedTag(null);
-              }}
+              onClick={() => setQuery('')}
             >
               Clear Search
             </button>
