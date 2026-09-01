@@ -3,7 +3,11 @@
  *
  *   <Sky>       drei/Preetham atmospheric scattering (physically-correct golden
  *               hour). sunPosition/turbidity/rayleigh/mie are pushed as lerped
- *               uniforms each frame — no React re-renders. Dominant when skyBlend→0.
+ *               uniforms each frame — no React re-renders. Dominant when skyBlend→0,
+ *               but load-bearing at every value: it is the only OPAQUE layer here,
+ *               so it is what the semi-transparent dome composites onto. Deleting it
+ *               as "82-100% covered dead weight" makes a cloudy sky read blue —
+ *               the hero's sky.avif poster shows through the dome's missing 18%.
  *   <SkyDome>   a BackSide sphere with a custom gradient shader that reproduces the
  *               brand --sky-* palette (+ navy at night) and a sun-glow term. Its
  *               uOpacity = skyBlend, so it fades *over* <Sky> for overcast/drizzle/night.

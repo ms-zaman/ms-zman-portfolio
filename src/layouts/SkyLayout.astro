@@ -5,6 +5,7 @@
  * design system (tokens + composition + utility, Inter fonts, SkyNav/SiteFooter).
  */
 import { Font } from 'astro:assets';
+import Analytics from '../components/Analytics.astro';
 import Clarity from '../components/Clarity.astro';
 // CUBE CSS layer order (see src/styles/CUBE-CSS.md): tokens/axioms → composition → utility.
 // Utility loads last so it wins among the global sheets; component <style> Blocks
@@ -31,6 +32,9 @@ const {
 
 const site = Astro.site ?? new URL('https://sharfuzzaman.com');
 const canonical = new URL(Astro.url.pathname, site).href;
+// Only the homepage has a markdown twin (src/pages/index.md.ts) — the styleguide
+// that also uses this layout has none, so it must not advertise one.
+const markdownHref = Astro.url.pathname === '/' ? new URL('/index.md', site).href : null;
 const ogImage = new URL(image, site).href;
 
 // Structured data — Person + WebSite (helps search engines model the site owner).
@@ -76,9 +80,6 @@ const jsonLd = {
     },
   ],
 };
-
-// Preserve site-wide analytics on the redesigned homepage (same GA as BlogLayout).
-const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
 ---
 
 <!doctype html>
@@ -110,12 +111,20 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
 
     <link rel="icon" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Agent discovery: the markdown twin of this page, and the API catalog
+         describing every machine-readable endpoint. Mirrored as a Link response
+         header in netlify.toml for clients that never parse the HTML. -->
+    {markdownHref && <link rel="alternate" type="text/markdown" href={markdownHref} />}
+    <link rel="api-catalog" href="/.well-known/api-catalog" />
+    <link rel="describedby" type="text/plain" href="/llms.txt" />
+
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline></script>
 
     <!-- Warm the third-party origins the page will reach for anyway: the two
          analytics tags, the live-weather API the hero calls after hydration, and
          the CDN behind the lazy work thumbnails. DNS only, deliberately — not one
-         of the four is on the critical path (GA is async, Clarity waits for idle,
+         of the four is on the critical path (GA and Clarity both wait for idle,
          the weather call is post-hydration, the thumbnails are lazy), so a real
          preconnect would spend a handshake competing with the CSS and the fonts
          for a narrow uplink and leave the socket idle until it times out. -->
@@ -124,24 +133,14 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     <link rel="dns-prefetch" href="https://api.open-meteo.com" />
     <link rel="dns-prefetch" href="https://items.templately.com" />
 
-    <link rel="preload" as="image" href="/sky/sky.avif" />
+    <link rel="preload" as="image" href="/sky/sky.avif" type="image/avif" fetchpriority="high" />
     <Font cssVariable="--font-inter" preload />
     <Font cssVariable="--font-inter-tight" preload />
 
-    <!-- Analytics last: both tags are async/idle, so moving them behind the font
-         preloads and the hero poster costs them nothing, but stops them being the
-         first thing the preload scanner finds inside the LCP window. -->
-    {gaId && (
-      <>
-        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
-        <script is:inline define:vars={{ gaId }}>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', gaId);
-        </script>
-      </>
-    )}
+    <!-- Both tags now load themselves on requestIdleCallback (see src/scripts/ga.ts
+         and clarity.ts), so neither competes with the CSS, the fonts or the hero
+         poster for the LCP window. -->
+    <Analytics />
     <Clarity />
   </head>
 

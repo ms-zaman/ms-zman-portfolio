@@ -36,11 +36,11 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
   <div class="sun" aria-hidden="true"><span class="sun-core"></span></div>
 
   <!-- drifting cloud cut-outs (CSS poster; hidden once WebGL owns the sky) -->
-  <div class="cloud a"><div class="bob"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" loading="eager" /></picture></div></div>
-  <div class="cloud b"><div class="bob"><picture><source srcset="/sky/cloud-2.avif" type="image/avif" /><img src="/sky/cloud-2.png" alt="" loading="eager" /></picture></div></div>
-  <div class="cloud c"><div class="bob"><picture><source srcset="/sky/cloud-2.avif" type="image/avif" /><img src="/sky/cloud-2.png" alt="" loading="eager" /></picture></div></div>
-  <div class="cloud d"><div class="bob"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" loading="eager" /></picture></div></div>
-  <div class="cloud e"><div class="bob"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" loading="eager" /></picture></div></div>
+  <div class="cloud a"><div class="bob"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" width="2048" height="729" loading="eager" fetchpriority="low" /></picture></div></div>
+  <div class="cloud b"><div class="bob"><picture><source srcset="/sky/cloud-2.avif" type="image/avif" /><img src="/sky/cloud-2.png" alt="" width="1024" height="393" loading="eager" fetchpriority="low" /></picture></div></div>
+  <div class="cloud c"><div class="bob"><picture><source srcset="/sky/cloud-2.avif" type="image/avif" /><img src="/sky/cloud-2.png" alt="" width="1024" height="393" loading="eager" fetchpriority="low" /></picture></div></div>
+  <div class="cloud d"><div class="bob"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" width="2048" height="729" loading="eager" fetchpriority="low" /></picture></div></div>
+  <div class="cloud e"><div class="bob"><picture><source srcset="/sky/cloud-1.avif" type="image/avif" /><img src="/sky/cloud-1.png" alt="" width="2048" height="729" loading="eager" fetchpriority="low" /></picture></div></div>
 
   <!-- flapping birds (SMIL) -->
   {birds.map((b) => (
@@ -178,7 +178,7 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
      The daytime counterpart to the WebGL moon: a core disc, a corona, and two
      counter-rotating ray fans. Four things worth knowing:
 
-     • Horizontal position is the real solar arc (--sun-x, 6% → 94% between
+     • Horizontal position is the real solar arc (--sun-x-vw, 6 → 94vw between
        sunrise and sunset), so the sun genuinely tracks the visitor's day.
      • Vertical position is *not* --sun-y. That runs to 60% at sunrise, which
        lands the disc in the middle of the headline. The hero photo looks
@@ -203,12 +203,18 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
     position: absolute;
     z-index: 1;
     pointer-events: none;
-    left: var(--sun-x);
+    /* Driven by transform, not `left`. The engine writes the arc after first paint,
+       so a 1.2s `left` transition animated a *layout* property across ~40 frames —
+       measured, that was 100% of the page's CLS (0.16 on desktop, where the corona
+       is 380px). translateX is composited and shifts nothing. See --sun-x-vw in
+       sky-engine.ts; `left: 0` + the negative margin keeps the disc centred on it. */
+    left: 0;
     top: var(--band);
     width: var(--corona);
     height: var(--corona);
     margin: calc(var(--corona) / -2) 0 0 calc(var(--corona) / -2);
-    transition: opacity 1.2s ease, left 1.2s ease;
+    transform: translateX(var(--sun-x-vw));
+    transition: opacity 1.2s ease, transform 1.2s ease;
   }
   /* corona — the wide warm bloom the disc sits inside. It deliberately starts at
      the *mid* halo, not the bright one: filling the centre with --halo-1 makes the

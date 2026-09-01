@@ -5,10 +5,11 @@
  *     own pick (a ?skyWeather preview link, or the choice they made in the sky
  *     picker and we remembered), else live Open-Meteo weather × the SkyEngine
  *     day/night phase (re-evaluated each minute so the sky flips at dusk/dawn);
- *   • lazy-loads <WeatherCanvas> (dpr 1–2, AdaptiveDpr + <WeatherScene>) — only
- *     when the sky is one WebGL actually draws, so the poster path costs no three.js;
+ *   • lazy-loads <WeatherCanvas> — only once the page has finished loading, only on
+ *     hardware that can carry it (capability.ts), and only when the sky is one WebGL
+ *     actually draws, so every other visit costs no three.js at all;
  *   • fades itself in once the first frame is ready and hides the CSS poster clouds,
- *     so the instant-painting photo poster covers the pre-hydration gap;
+ *     so the instant-painting photo poster covers the wait;
  *   • pauses the render loop when the hero is offscreen or the tab is hidden;
  *   • falls back to the poster on WebGL failure (error boundary) or reduced motion;
  *   • renders the <SkyPicker> chip, which is how a visitor discovers any of this.
@@ -22,6 +23,7 @@ import type { Location } from '../../../scripts/sky-engine';
 import { fetchWeather, type WeatherKind } from '../../../scripts/weather';
 import { conditionOverride, resolveCondition } from '../../../scripts/resolve-condition';
 import { applyWeatherVars } from '../../../scripts/weather-css';
+import { canAffordWebgl, rememberTooSlow, whenIdle } from './capability';
 
 const prefersReducedMotion = () =>
   typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -47,8 +49,9 @@ function markWebglReady() {
 
 /**
  * The canvas — and with it three/r3f/drei — is fetched only when one is actually
- * going to mount. On the poster path (`sunny`, or reduced motion) this import
- * never fires, so those visits skip the ~270 kB gz WebGL chunk entirely.
+ * going to mount. On any poster path (`sunny`, reduced motion, a device that fails
+ * `canAffordWebgl`, or simply before the page has finished loading) this import
+ * never fires, so those visits skip the ~216 kB gz WebGL chunk entirely.
  */
 const WeatherCanvas = lazy(() => import('./WeatherCanvas'));
 
@@ -68,13 +71,31 @@ export default function HeroSky({ condition: forced }: Props) {
     () => conditionOverride() ?? savedCondition(),
   );
   const [ready, setReady] = useState(false);
+  // Whether WebGL is allowed to mount yet. False until the page has loaded and gone
+  // idle, and permanently false on hardware that can't afford it — the render loop
+  // used to start inside the load window and keep the main thread from ever going
+  // quiet, which is what put TBT into the seconds.
+  const [armed, setArmed] = useState(false);
   const [location, setLocation] = useState<Location>(DHAKA);
   const locationRef = useRef<Location>(DHAKA);
   const containerRef = useRef<HTMLDivElement>(null);
   // drive the render loop: "always" when the hero is visible, "never" when it isn't
   const [active, setActive] = useState(true);
   const condition = forced ?? manual ?? autoCondition;
-  const usePoster = reduced || POSTER_CONDITIONS.has(condition);
+  const usePoster = reduced || !armed || POSTER_CONDITIONS.has(condition);
+
+  // Arm the canvas after `load` + idle, if this device can carry it at all.
+  useEffect(() => {
+    if (reduced) return;
+    whenIdle(() => setArmed(canAffordWebgl()));
+  }, [reduced]);
+
+  // The scene measured itself and couldn't hold a frame rate: retire the canvas for
+  // good and let the CSS poster have the sky back.
+  const handleTooSlow = useCallback(() => {
+    rememberTooSlow();
+    setArmed(false);
+  }, []);
 
   // track the live weather (skipped when a caller forces the condition outright)
   useEffect(() => {
@@ -124,15 +145,13 @@ export default function HeroSky({ condition: forced }: Props) {
     (window as unknown as { __setSkyCondition?: typeof setManual }).__setSkyCondition = setManual;
   }, []);
 
-  // Hand the sky back to the CSS hero: drop the class that hides its clouds/glow,
-  // and tell the Loader it can reveal now — otherwise it waits on a WebGL first
-  // frame that will never arrive and only reveals on its 900ms fallback.
+  // Hand the sky back to the CSS hero: drop the class that hides its clouds/glow.
+  // (The Loader no longer waits on the hero — WebGL now arrives well after the
+  // reveal, so gating the splash on a first frame only held the page back.)
   useEffect(() => {
     if (!usePoster) return;
     document.querySelector('.hero')?.classList.remove('sky-webgl');
     setReady(false);
-    (window as unknown as { __skyHeroReady?: boolean }).__skyHeroReady = true;
-    window.dispatchEvent(new Event('sky:hero-ready'));
   }, [usePoster]);
 
   // Pause the WebGL loop when the hero is offscreen (scrolled past) or the tab is
@@ -159,16 +178,11 @@ export default function HeroSky({ condition: forced }: Props) {
   }, []);
 
   // Runs inside the canvas's onCreated: hide the CSS poster's clouds/glow, then
-  // (one frame later, so the sky is genuinely painted) fade the canvas in and let
-  // the Loader reveal in sync.
+  // (one frame later, so the sky is genuinely painted) fade the canvas in. The
+  // .hero-sky opacity transition covers the handoff.
   const handleCanvasCreated = useCallback(() => {
     markWebglReady();
-    requestAnimationFrame(() => {
-      setReady(true);
-      // tell the Loader the live sky is up, so it can reveal in sync
-      (window as unknown as { __skyHeroReady?: boolean }).__skyHeroReady = true;
-      window.dispatchEvent(new Event('sky:hero-ready'));
-    });
+    requestAnimationFrame(() => setReady(true));
   }, []);
 
   return (
@@ -183,6 +197,7 @@ export default function HeroSky({ condition: forced }: Props) {
                 locationRef={locationRef}
                 active={active}
                 onCreated={handleCanvasCreated}
+                onTooSlow={handleTooSlow}
               />
             </Suspense>
           </CanvasErrorBoundary>

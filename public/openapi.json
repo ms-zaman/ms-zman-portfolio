@@ -1,0 +1,154 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "sharfuzzaman.com",
+    "version": "1.0.0",
+    "summary": "Read-only content endpoints for Sharfuzzaman's portfolio and blog.",
+    "description": "This is a static personal site, not a service. It exposes no write operations, no authentication and no private data — every path below is a public document that can be fetched anonymously. The endpoints are described here so an agent can retrieve the content directly as markdown instead of scraping the rendered HTML.",
+    "contact": {
+      "name": "Sharfuzzaman",
+      "email": "dev.mszaman@gmail.com",
+      "url": "https://sharfuzzaman.com"
+    }
+  },
+  "servers": [{ "url": "https://sharfuzzaman.com" }],
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "getHome",
+        "summary": "The homepage",
+        "description": "Returns HTML by default. Send `Accept: text/markdown` (or append `?format=md`) to get the markdown mirror instead.",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Set to `md` to receive markdown without setting an Accept header.",
+            "schema": { "type": "string", "enum": ["md"] }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": false,
+            "description": "Send `text/markdown` to receive the markdown mirror.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The homepage, negotiated by Accept.",
+            "headers": {
+              "Vary": {
+                "description": "`Accept`, when the markdown mirror is served.",
+                "schema": { "type": "string" }
+              }
+            },
+            "content": {
+              "text/html": { "schema": { "type": "string" } },
+              "text/markdown": { "schema": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "/index.md": {
+      "get": {
+        "operationId": "getHomeMarkdown",
+        "summary": "The homepage as markdown",
+        "description": "Profile, expertise, selected work, experience and contact details in one markdown document.",
+        "responses": {
+          "200": {
+            "description": "Markdown document.",
+            "content": { "text/markdown": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/llms.txt": {
+      "get": {
+        "operationId": "getLlmsTxt",
+        "summary": "llms.txt site summary",
+        "description": "An llmstxt.org document: a one-paragraph summary plus linked sections covering the profile, every article, and contact routes.",
+        "responses": {
+          "200": {
+            "description": "Plain-text llms.txt document.",
+            "content": { "text/plain": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/blog": {
+      "get": {
+        "operationId": "listArticles",
+        "summary": "The article archive",
+        "responses": {
+          "200": {
+            "description": "HTML listing of every published article.",
+            "content": { "text/html": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/blog/{slug}.md": {
+      "get": {
+        "operationId": "getArticleMarkdown",
+        "summary": "One article as markdown",
+        "description": "The raw markdown source of a post, prefixed with a YAML frontmatter block (title, description, date, tags, readTime, canonical, author). Slugs are listed in /llms.txt and /sitemap.xml.",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "The post slug, e.g. `learning-rust-variables-mutability-shadowing`.",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Markdown document with YAML frontmatter.",
+            "content": { "text/markdown": { "schema": { "type": "string" } } }
+          },
+          "404": { "description": "No article with that slug." }
+        }
+      }
+    },
+    "/sitemap.xml": {
+      "get": {
+        "operationId": "getSitemap",
+        "summary": "XML sitemap index",
+        "description": "Sitemap index listing every indexable URL. Also served at /sitemap-index.xml.",
+        "responses": {
+          "200": {
+            "description": "Sitemap XML.",
+            "content": { "application/xml": { "schema": { "type": "string" } } }
+          }
+        }
+      }
+    },
+    "/.well-known/api-catalog": {
+      "get": {
+        "operationId": "getApiCatalog",
+        "summary": "RFC 9727 API catalog",
+        "description": "A linkset pointing at this OpenAPI description and at /llms.txt.",
+        "responses": {
+          "200": {
+            "description": "Linkset document.",
+            "content": { "application/linkset+json": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    },
+    "/Sharfuzzaman-Resume.pdf": {
+      "get": {
+        "operationId": "getResume",
+        "summary": "Résumé (PDF)",
+        "responses": {
+          "200": {
+            "description": "The CV as a PDF.",
+            "content": { "application/pdf": { "schema": { "type": "string", "format": "binary" } } }
+          }
+        }
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@ import type { ImageMetadata } from 'astro';
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import defaultFeaturedImage from '../images/ms-zaman-featured-img.webp';
+import Analytics from '../components/Analytics.astro';
 import Clarity from '../components/Clarity.astro';
 import SkyNav from '../components/SkyNav.astro';
 import SiteFooter from '../components/sky/SiteFooter.astro';
@@ -25,6 +26,9 @@ interface Props {
   ogDescription?: string;
   canonicalPath?: string;
   ogImage?: string | ImageMetadata;
+  /** Path of this page's markdown twin, e.g. `/blog/some-post.md`. Only the
+   *  posts have one — the archive index and 404 pass nothing. */
+  markdownPath?: string;
 }
 
 const {
@@ -34,6 +38,7 @@ const {
   ogDescription = description,
   canonicalPath = '/',
   ogImage = defaultFeaturedImage,
+  markdownPath,
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://sharfuzzaman.com');
@@ -42,8 +47,8 @@ const ogImageSrc = typeof ogImage === 'string' ? ogImage : ogImage.src;
 const ogImageWidth = typeof ogImage === 'string' ? undefined : ogImage.width;
 const ogImageHeight = typeof ogImage === 'string' ? undefined : ogImage.height;
 const ogImageURL = new URL(ogImageSrc, site);
+const markdownURL = markdownPath ? new URL(markdownPath, site).href : null;
 
-const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
 ---
 
 <!doctype html>
@@ -75,6 +80,12 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Agent discovery — see the matching block in SkyLayout. -->
+    {markdownURL && <link rel="alternate" type="text/markdown" href={markdownURL} />}
+    <link rel="api-catalog" href="/.well-known/api-catalog" />
+    <link rel="describedby" type="text/plain" href="/llms.txt" />
+
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://www.clarity.ms" />
 
@@ -82,20 +93,9 @@ const gaId = import.meta.env.PUBLIC_GA_ID || 'G-FL57VDMLD8';
     <Font cssVariable="--font-inter-tight" preload />
     <ClientRouter />
 
-    <!-- Analytics last: both tags are async/idle, so moving them behind the font
-         preloads and the hero poster costs them nothing, but stops them being the
-         first thing the preload scanner finds inside the LCP window. -->
-    {gaId && (
-      <>
-        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
-        <script is:inline define:vars={{ gaId }}>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', gaId);
-        </script>
-      </>
-    )}
+    <!-- Both tags now load themselves on requestIdleCallback (see src/scripts/ga.ts
+         and clarity.ts), so neither competes with the CSS or the fonts. -->
+    <Analytics />
     <Clarity />
   </head>
   <body class="sky">

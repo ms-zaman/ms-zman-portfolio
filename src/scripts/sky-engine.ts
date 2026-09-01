@@ -207,6 +207,14 @@ export function moonVector(loc: Location, now: Date = new Date()): [number, numb
 
 function apply(root: HTMLElement, s: SkyState): void {
   root.style.setProperty('--sun-x', `${s.sunX.toFixed(1)}%`);
+  // The same position as a viewport length, for the one consumer that *moves* an
+  // element rather than a gradient stop: Hero's .sun disc. It used to ride on
+  // `left: var(--sun-x)` with a 1.2s transition — and since this runs after first
+  // paint, that animated a layout property across ~40 frames. Measured, it was
+  // 100% of the page's CLS (0.16 on desktop, where the corona is 380px wide).
+  // As a vw length it can drive `translateX` instead, which is composited and
+  // shifts nothing. .hero spans the viewport, so vw and % of the hero agree.
+  root.style.setProperty('--sun-x-vw', `${s.sunX.toFixed(1)}vw`);
   root.style.setProperty('--sun-y', `${s.sunY.toFixed(1)}%`);
   root.style.setProperty('--sun-glow', s.glow);
   root.style.setProperty('--sky-tint', s.tint);

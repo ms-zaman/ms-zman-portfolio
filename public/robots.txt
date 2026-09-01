@@ -1,4 +1,84 @@
+# https://sharfuzzaman.com — personal portfolio + blog.
+# Everything here is public and meant to be read, by people and by agents alike.
+
 User-agent: *
 Allow: /
 
-Sitemap: https://sharfuzzaman.com/sitemap.xml
+# ── AI crawlers ──────────────────────────────────────────────────────────────
+# Named explicitly rather than left to the wildcard above: this site's job is to
+# put a WordPress developer in front of people hiring one, and those people
+# increasingly ask an assistant first. All allowed, deliberately.
+
+# OpenAI
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Google (Gemini / Vertex training + grounding)
+User-agent: Google-Extended
+Allow: /
+
+# Apple Intelligence
+User-agent: Applebot-Extended
+Allow: /
+
+# Meta
+User-agent: meta-externalagent
+Allow: /
+
+# Amazon
+User-agent: Amazonbot
+Allow: /
+
+# Common Crawl — the dataset behind many models
+User-agent: CCBot
+Allow: /
+
+# ByteDance
+User-agent: Bytespider
+Allow: /
+
+# Cohere
+User-agent: cohere-ai
+Allow: /
+
+# Diffbot
+User-agent: Diffbot
+Allow: /
+
+# Others
+User-agent: Timpibot
+Allow: /
+
+User-agent: omgili
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+# ── Discovery ────────────────────────────────────────────────────────────────
+# @astrojs/sitemap emits sitemap-index.xml; /sitemap.xml is rewritten to it in
+# netlify.toml, so both URLs resolve.
+Sitemap: https://sharfuzzaman.com/sitemap-index.xml
