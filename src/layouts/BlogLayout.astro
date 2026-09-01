@@ -29,6 +29,20 @@ interface Props {
   /** Path of this page's markdown twin, e.g. `/blog/some-post.md`. Only the
    *  posts have one — the archive index and 404 pass nothing. */
   markdownPath?: string;
+  /** Keep this page out of search indexes (the 404, which is reachable at a
+   *  real URL and was otherwise indexable by default). */
+  noindex?: boolean;
+  /** Present only on a post. Drives the BlogPosting structured data, which is
+   *  how a search engine or an AI assistant attributes the writing to a person
+   *  and a date — without it the posts are anonymous, undated prose. */
+  article?: {
+    title: string;
+    description: string;
+    date: Date;
+    tags: string[];
+    readTime: string;
+    wordCount: number;
+  };
 }
 
 const {
@@ -39,6 +53,8 @@ const {
   canonicalPath = '/',
   ogImage = defaultFeaturedImage,
   markdownPath,
+  noindex = false,
+  article,
 } = Astro.props;
 
 const site = Astro.site ?? new URL('https://sharfuzzaman.com');
@@ -48,6 +64,39 @@ const ogImageWidth = typeof ogImage === 'string' ? undefined : ogImage.width;
 const ogImageHeight = typeof ogImage === 'string' ? undefined : ogImage.height;
 const ogImageURL = new URL(ogImageSrc, site);
 const markdownURL = markdownPath ? new URL(markdownPath, site).href : null;
+
+// "6 min read" -> "PT6M". Schema.org wants an ISO 8601 duration; the human
+// string stays in the UI. Falls back to undefined rather than emitting a
+// malformed value if the frontmatter ever stops leading with a number.
+const readMinutes = article?.readTime.match(/\d+/)?.[0];
+
+// BlogPosting, linked by @id to the Person and WebSite that SkyLayout defines
+// on the homepage, so the graph resolves to one author entity across the site
+// rather than a separate anonymous author per post.
+const articleLd = article && {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  '@id': `${canonicalURL.href}#post`,
+  headline: article.title,
+  description: article.description,
+  datePublished: article.date.toISOString(),
+  dateModified: article.date.toISOString(),
+  author: {
+    '@type': 'Person',
+    '@id': `${site.origin}/#person`,
+    name: 'Sharfuzzaman',
+    url: site.origin,
+  },
+  publisher: { '@id': `${site.origin}/#person` },
+  isPartOf: { '@id': `${site.origin}/#website` },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalURL.href },
+  url: canonicalURL.href,
+  image: ogImageURL.href,
+  keywords: article.tags,
+  wordCount: article.wordCount,
+  inLanguage: 'en',
+  ...(readMinutes ? { timeRequired: `PT${readMinutes}M` } : {}),
+};
 
 ---
 
@@ -59,6 +108,7 @@ const markdownURL = markdownPath ? new URL(markdownPath, site).href : null;
     <meta name="theme-color" content="#3f86cf" />
     <meta name="description" content={description} />
     <meta name="author" content="Sharfuzzaman" />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
     <link rel="canonical" href={canonicalURL} />
 
     <meta property="og:title" content={ogTitle} />
@@ -85,6 +135,7 @@ const markdownURL = markdownPath ? new URL(markdownPath, site).href : null;
     {markdownURL && <link rel="alternate" type="text/markdown" href={markdownURL} />}
     <link rel="api-catalog" href="/.well-known/api-catalog" />
     <link rel="describedby" type="text/plain" href="/llms.txt" />
+    {articleLd && <script type="application/ld+json" set:html={JSON.stringify(articleLd)} is:inline></script>}
 
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://www.clarity.ms" />
