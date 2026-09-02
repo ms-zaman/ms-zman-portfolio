@@ -37,6 +37,18 @@ const faqs = [
     a: 'HTML, CSS, JavaScript and React on the frontend; PHP and MySQL on the back; Git and GitHub day to day. I also build internal automation, and I am contributing to production WordPress to Astro migrations.',
   },
 ];
+
+// The same array feeds the visible accordion and the FAQPage structured data,
+// so the two can never drift apart.
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
 ---
 <section class="[ region ] [ border-top-line ]" id="faq">
   <div class="[ wrapper ]">
@@ -54,11 +66,24 @@ const faqs = [
       ))}
     </div>
   </div>
+  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} is:inline></script>
 </section>
 
 <style>
   .faq { max-width: 760px; margin: 8px auto 0; }
-  .faq details { border-bottom: 1px solid var(--line); }
+  /* The transparent border and radius live on the base state so the open-state
+     chrome (tint, border, margin, indent) can transition instead of snapping;
+     the timing matches the grid-rows animation below. */
+  .faq details {
+    border: 1px solid transparent;
+    border-bottom-color: var(--line);
+    border-radius: 12px;
+    transition:
+      background-color .36s cubic-bezier(.4, 0, .2, 1),
+      border-color .36s cubic-bezier(.4, 0, .2, 1),
+      margin .36s cubic-bezier(.4, 0, .2, 1),
+      padding .36s cubic-bezier(.4, 0, .2, 1);
+  }
   .faq summary {
     list-style: none;
     cursor: pointer;
@@ -78,13 +103,17 @@ const faqs = [
   .faq details:not(.exp) summary { color: var(--ink-2); }
   .faq details:not(.exp):hover summary { color: var(--accent); }
 
-  /* plus/minus toggle */
-  .faq summary .pl { flex: none; width: 22px; height: 22px; position: relative; transition: transform .25s; }
+  /* plus/minus toggle — the vertical bar folds 90° down onto the horizontal
+     one while fading, so the plus visibly becomes the minus. */
+  .faq summary .pl { flex: none; width: 22px; height: 22px; position: relative; }
   .faq summary .pl::before,
   .faq summary .pl::after { content: ""; position: absolute; background: var(--accent); border-radius: 2px; }
   .faq summary .pl::before { left: 0; right: 0; top: 10px; height: 2px; }
-  .faq summary .pl::after { top: 0; bottom: 0; left: 10px; width: 2px; transition: opacity .25s; }
-  .faq details.exp summary .pl::after { opacity: 0; }
+  .faq summary .pl::after {
+    top: 0; bottom: 0; left: 10px; width: 2px;
+    transition: transform .25s cubic-bezier(.4, 0, .2, 1), opacity .25s ease;
+  }
+  .faq details.exp summary .pl::after { transform: rotate(90deg); opacity: 0; }
 
   /* animated body */
   .faq-a {
@@ -101,34 +130,65 @@ const faqs = [
      the system uses a coloured edge bar; see DESIGN.md § Elevation & Depth. */
   .faq details.exp {
     background: #f6faff;
-    border: 1px solid #e1edfa;
-    border-radius: 12px;
+    border-color: #e1edfa;
     overflow: hidden;
     margin: 6px 0;
     padding: 0 16px;
   }
   .faq p { font-size: 15px; color: var(--ink-2); line-height: 1.65; padding: 0 4px 22px; max-width: 66ch; margin: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq details,
+    .faq-a,
+    .faq summary .pl::after { transition: none; }
+  }
 </style>
 
 <script>
-  // Animate expand/collapse in both directions via the `.exp` class.
-  document.querySelectorAll('.faq details').forEach((d) => {
-    const sum = d.querySelector('summary');
-    sum?.addEventListener('click', (e) => {
+  // Animate expand/collapse in both directions via the `.exp` class. The class
+  // is what animates; `open` is the source of truth, and a pending close must
+  // be cancelled on reopen or its transitionend fires after the reopen
+  // transition and closes the details underneath the open styling.
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll('.faq details').forEach((el) => {
+    const d = el as HTMLDetailsElement;
+    const a = d.querySelector('.faq-a');
+    let closing: ((ev: Event) => void) | null = null;
+    const cancelClose = () => {
+      if (closing) {
+        a?.removeEventListener('transitionend', closing);
+        closing = null;
+      }
+    };
+    // A browser-initiated open (find-in-page auto-expand) sets `open` without a
+    // click; sync the class so the answer is actually visible.
+    d.addEventListener('toggle', () => {
+      if (d.open && !d.classList.contains('exp')) {
+        requestAnimationFrame(() => d.classList.add('exp'));
+      }
+    });
+    d.querySelector('summary')?.addEventListener('click', (e) => {
       e.preventDefault();
       if (d.classList.contains('exp')) {
         // closing — wait for the row animation, then actually close
         d.classList.remove('exp');
-        const a = d.querySelector('.faq-a');
-        const onEnd = (ev: Event) => {
+        if (reduceMotion.matches) {
+          // transitions are off, so no transitionend would ever arrive
+          d.open = false;
+          return;
+        }
+        closing = (ev: Event) => {
           if ((ev as TransitionEvent).propertyName !== 'grid-template-rows') return;
-          a?.removeEventListener('transitionend', onEnd);
-          (d as HTMLDetailsElement).open = false;
+          cancelClose();
+          if (!d.classList.contains('exp')) d.open = false;
         };
-        a?.addEventListener('transitionend', onEnd);
+        a?.addEventListener('transitionend', closing);
       } else {
-        // opening — open first, then add the class on the next frame to transition
-        (d as HTMLDetailsElement).open = true;
+        // opening — open first, then add the class on the next frame to
+        // transition. On a reopen mid-close `open` is still true and no toggle
+        // fires, so the class is added here rather than left to the handler.
+        cancelClose();
+        d.open = true;
         requestAnimationFrame(() => d.classList.add('exp'));
       }
     });
