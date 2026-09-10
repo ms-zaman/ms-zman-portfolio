@@ -56,7 +56,7 @@ for rain, snow, clouds, fog, and lightning. It degrades to a static poster under
 │   └── content.config.ts           # Content collections config
 ├── public/
 │   ├── sky/                        # Hero textures (clouds, sky poster)
-│   ├── favicon.svg, apple-touch-icon.png, og.jpg
+│   ├── favicon.ico, apple-touch-icon.png, og.jpg
 │   └── robots.txt
 ├── astro.config.mjs                # Integrations, fonts, WebGL vendor chunk
 ├── netlify.toml                    # Netlify deploy config, redirects, headers
