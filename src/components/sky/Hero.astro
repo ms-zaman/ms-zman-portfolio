@@ -28,7 +28,12 @@ const birds = [
 const RESUME = '/Sharfuzzaman-Resume.pdf';
 ---
 <header class="hero">
-  <!-- R3F weather island: renders the live sky in WebGL above the CSS photo poster.
+  <!-- The condition's own sky, painted beneath the canvas. The photo on .hero is the
+       *sunny* poster and sits under every condition, so without this a pick from
+       sunny meant watching a clear blue sky until the lazy WebGL chunk arrived. -->
+  <div class="hero-base" aria-hidden="true"></div>
+
+  <!-- R3F weather island: renders the live sky in WebGL above the photo poster.
        client:only (no SSR) — the poster below covers the pre-hydration paint. -->
   <HeroSky client:only="react" />
 
@@ -114,6 +119,51 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
       url('/sky/sky.avif') center top / cover no-repeat,
       linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 44%, var(--sky-3) 66%, var(--sky-4) 82%, var(--horizon) 100%);
   }
+  /* ── condition base ─────────────────────────────────────────────────────────
+     The photo on .hero is the *sunny* poster and nothing else, but it sits under
+     every condition. So a pick away from sunny meant watching a clear blue sky for
+     as long as the lazy WebGL chunk took to arrive, parse and fade in — measured at
+     ~1.8s even on a fast connection, with the opaque canvas only landing ~3.5s in.
+
+     This layer paints the picked condition's own sky under the canvas and fades in
+     over the photo, so the wait is spent looking at roughly the right colour instead
+     of the wrong photograph, and the photo is fully covered by the time it lands. It
+     is off at rest, so sunny keeps the photo exactly as it was.
+
+     Opaque rather than transparent: `transparent` is rgba(0,0,0,0), so interpolating
+     towards it drags the fade through grey. The default below is the sunny sky's own
+     colour, which fades cleanly into whichever condition replaces it. Hexes mirror
+     the SkyBand's .sb-sky (itself lifted from CONDITIONS in hero-sky/conditions.ts),
+     so the hero and the band agree. */
+  .hero-base {
+    position: absolute;
+    inset: 0;
+    z-index: 0;   /* over .hero's photo; under .hero-sky, which follows it in the DOM */
+    pointer-events: none;
+    background: linear-gradient(180deg, #037af2, #30b2f3);
+    opacity: 0;
+    transition: background 1.2s ease, opacity 1.2s ease;
+  }
+  /* Any real condition fades it in. Before hydration the attribute is absent
+     altogether, so this stays off and the photo keeps the first paint. */
+  :global(:root[data-sky-weather]:not([data-sky-weather="sunny"])) .hero-base { opacity: 1; }
+
+  :global(:root[data-sky-weather="cloudy"]) .hero-base {
+    background: linear-gradient(180deg, #425269, #92a6bc);
+  }
+  :global(:root[data-sky-weather="drizzle"]) .hero-base {
+    background: linear-gradient(180deg, #2d3744, #485463);
+  }
+  :global(:root[data-sky-weather="overcast-night"]) .hero-base {
+    background: linear-gradient(180deg, #010308, #040a1e);
+  }
+  :global(:root[data-sky-weather="drizzle-night"]) .hero-base {
+    background: linear-gradient(180deg, #010205, #030716);
+  }
+  :global(:root[data-sky-weather="clear-night"]) .hero-base {
+    background: linear-gradient(180deg, #000104, #030922);
+  }
+
   /* atmosphere — the time-of-day wash the SkyEngine fades over the photo */
   .hero::before {
     content: "";
@@ -559,6 +609,7 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
     .cloud, .cloud > .bob, .bird { animation: none; }
     .bird svg :global(animate) { display: none; }
     .hero::before { transition: none; }
+    .hero-base { transition: none; }
   }
 </style>
 
