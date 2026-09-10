@@ -100,8 +100,8 @@ The delimiter is a convention, not a requirement — consistency is what matters
 - **Done — all Sky components migrated.** The four sheets above + every homepage
   `*.astro` section and the `design-library` styleguide. The `.sky-wrap` and
   `.section` aliases have been **retired** — use `.wrapper`, and `.region` +
-  `.border-top-line`. `Loader` and the nav pill stay bespoke Blocks (no shared
-  skeleton maps cleanly to their animated/stateful internals — that's fine).
+  `.border-top-line`. The nav pill stays a bespoke Block (no shared
+  skeleton maps cleanly to its animated/stateful internals — that's fine).
 - **Done — blog unified:** `/blog` and `/404` now use the light Sky system
   (`BlogLayout` + `sky-blog.css`), sharing tokens/composition/utility, Inter fonts,
   and `SkyNav` + `SiteFooter`. The old dark theme (`global.css`, `BaseLayout`,

@@ -146,8 +146,6 @@ export default function HeroSky({ condition: forced }: Props) {
   }, []);
 
   // Hand the sky back to the CSS hero: drop the class that hides its clouds/glow.
-  // (The Loader no longer waits on the hero — WebGL now arrives well after the
-  // reveal, so gating the splash on a first frame only held the page back.)
   useEffect(() => {
     if (!usePoster) return;
     document.querySelector('.hero')?.classList.remove('sky-webgl');

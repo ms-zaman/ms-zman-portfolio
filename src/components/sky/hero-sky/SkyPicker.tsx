@@ -198,9 +198,9 @@ export function SkyPicker({ condition, manual, onPick, location }: Props) {
 
   // The chip states a fact quietly in a corner, which is exactly how it got
   // missed. So once — ever, per browser — it announces itself: a beat after the
-  // sky has actually resolved (no point pointing at a sky that isn't up yet, and
-  // `sky:hero-ready` is also what retires the loader), a single bounce and a glow
-  // ring. Not a loop and not a shake: a status light catching your eye.
+  // sky has actually resolved (no point pointing at a sky that isn't up yet),
+  // a single bounce and a glow ring. Not a loop and not a shake: a status light
+  // catching your eye.
   //
   // It's skipped outright for anyone who has seen it, who has already opened the
   // menu (`markHintSeen` in `toggle` — they found it themselves), whose chip has
