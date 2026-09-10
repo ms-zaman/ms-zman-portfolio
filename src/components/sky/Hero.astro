@@ -1,8 +1,8 @@
 ---
 /**
  * Hero — the immersive sky header.
- * The sky background is parameterised via CSS variables (--sun-x/-y, --sun-glow,
- * --sky-tint) so the SkyEngine can later drive it from real time & weather.
+ * The sky background is parameterised via CSS variables (--sky-tint/-2) so the
+ * SkyEngine can drive it from the visitor's local time.
  * With the default token values it renders as a clear midday sky.
  */
 import Button from './Button.astro';
@@ -114,16 +114,14 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
       url('/sky/sky.avif') center top / cover no-repeat,
       linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 44%, var(--sky-3) 66%, var(--sky-4) 82%, var(--horizon) 100%);
   }
-  /* atmosphere — sun glow (position + colour driven by SkyEngine) + optional tint */
+  /* atmosphere — the time-of-day wash the SkyEngine fades over the photo */
   .hero::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: 1;
     pointer-events: none;
-    background:
-      linear-gradient(180deg, var(--sky-tint), var(--sky-tint-2)),
-      radial-gradient(38% 34% at var(--sun-x) var(--sun-y), var(--sun-glow), rgba(255, 240, 205, .28) 42%, rgba(255, 240, 205, 0) 66%);
+    background: linear-gradient(180deg, var(--sky-tint), var(--sky-tint-2));
     transition: background 1.2s ease, opacity 1.2s ease;
   }
   /* The photo poster's two finishing layers, both switched off below the moment the
@@ -179,7 +177,7 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
   .hero :global(.hero-sky.ready) { opacity: 1; }
   .hero :global(.hero-sky canvas) { display: block; width: 100% !important; height: 100% !important; }
 
-  /* once WebGL owns the sky, retire the CSS poster clouds + atmosphere glow
+  /* once WebGL owns the sky, retire the CSS poster clouds + atmosphere wash
      (birds stay) — the canvas draws its own sun, veiled by whatever deck it has */
   .hero.sky-webgl .cloud { display: none; }
   .hero.sky-webgl::before { opacity: 0; }

@@ -54,9 +54,6 @@
   --section-y: 100px;
 
   /* — sky state (runtime-controlled by SkyEngine; defaults = clear midday) — */
-  --sun-x: 86%;          /* horizontal sun position: sunrise≈left … sunset≈right */
-  --sun-y: 2%;           /* vertical sun position: noon≈high … horizon≈low */
-  --sun-glow: rgba(255, 244, 214, .7);
   --sky-tint: transparent;   /* dawn/dusk/night overlay the engine fades in */
   --sky-tint-2: transparent;
   --wx-tint: transparent;    /* weather wash — set by the R3F hero island (see weather-css.ts) */

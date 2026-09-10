@@ -1,10 +1,8 @@
 /**
  * SkyEngine v1 — drives the hero sky from the visitor's local time.
  *
- * It computes where the sun sits on its arc and a dawn/day/dusk/night colour
- * palette, then writes them to the CSS custom properties the Hero consumes:
- *   --sun-x / --sun-y   sun glow position (see sky-tokens.css)
- *   --sun-glow          sun glow colour
+ * It resolves the current dawn/day/dusk/night phase, then writes that phase's
+ * overlay wash to the CSS custom properties the Hero consumes:
  *   --sky-tint / -2     overlay wash the hero fades over the photo
  * It also stamps `data-sky-phase` on <html> so CSS can key off the phase.
  *
@@ -29,9 +27,6 @@ export interface Location {
 
 export interface SkyState {
   phase: Phase;
-  sunX: number; // percent
-  sunY: number; // percent (small = high in the sky)
-  glow: string;
   tint: string;
   tint2: string;
 }
@@ -44,12 +39,12 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const norm360 = (v: number) => ((v % 360) + 360) % 360;
 const norm24 = (v: number) => ((v % 24) + 24) % 24;
 
-/** Per-phase glow + tint. `day` is fully transparent so the photo shows raw. */
-const PALETTE: Record<Phase, { glow: string; tint: string; tint2: string }> = {
-  dawn:  { glow: 'rgba(255, 209, 166, .62)', tint: 'rgba(255, 178, 150, .26)', tint2: 'rgba(120, 140, 205, .12)' },
-  day:   { glow: 'rgba(255, 244, 214, .70)', tint: 'rgba(255, 255, 255, 0)',   tint2: 'rgba(255, 255, 255, 0)' },
-  dusk:  { glow: 'rgba(255, 176, 120, .70)', tint: 'rgba(255, 138, 92, .30)',  tint2: 'rgba(72, 60, 120, .22)' },
-  night: { glow: 'rgba(200, 218, 255, .14)', tint: 'rgba(9, 19, 52, .58)',     tint2: 'rgba(16, 30, 72, .40)' },
+/** Per-phase overlay tint. `day` is fully transparent so the photo shows raw. */
+const PALETTE: Record<Phase, { tint: string; tint2: string }> = {
+  dawn:  { tint: 'rgba(255, 178, 150, .26)', tint2: 'rgba(120, 140, 205, .12)' },
+  day:   { tint: 'rgba(255, 255, 255, 0)',   tint2: 'rgba(255, 255, 255, 0)' },
+  dusk:  { tint: 'rgba(255, 138, 92, .30)',  tint2: 'rgba(72, 60, 120, .22)' },
+  night: { tint: 'rgba(9, 19, 52, .58)',     tint2: 'rgba(16, 30, 72, .40)' },
 };
 
 /**
@@ -137,13 +132,8 @@ export function computeState(loc: Location, now: Date = new Date()): SkyState {
   else if (h < duskStart) phase = 'day';
   else phase = 'dusk';
 
-  // sun travels left→right and arcs high at solar noon
-  const dayFrac = clamp((h - SR) / (SS - SR), 0, 1);
-  const sunX = lerp(6, 94, dayFrac);
-  const sunY = clamp(60 - 58 * Math.sin(Math.PI * dayFrac), 2, 60);
-
   const p = PALETTE[phase];
-  return { phase, sunX, sunY, glow: p.glow, tint: p.tint, tint2: p.tint2 };
+  return { phase, tint: p.tint, tint2: p.tint2 };
 }
 
 /**
@@ -206,9 +196,6 @@ export function moonVector(loc: Location, now: Date = new Date()): [number, numb
 }
 
 function apply(root: HTMLElement, s: SkyState): void {
-  root.style.setProperty('--sun-x', `${s.sunX.toFixed(1)}%`);
-  root.style.setProperty('--sun-y', `${s.sunY.toFixed(1)}%`);
-  root.style.setProperty('--sun-glow', s.glow);
   root.style.setProperty('--sky-tint', s.tint);
   root.style.setProperty('--sky-tint-2', s.tint2);
   root.dataset.skyPhase = s.phase; // → <html data-sky-phase="…">
