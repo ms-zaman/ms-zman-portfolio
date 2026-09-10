@@ -5,6 +5,9 @@
  * since there's no hero backdrop to transition over. Section links are
  * cross-page (`/#work`) so they resolve from any route.
  */
+import { Image } from 'astro:assets';
+import brandIcon from '../images/image-as-icon.webp';
+
 const links = [
   { href: '/#services', label: 'Expertise' },
   { href: '/#work', label: 'Work' },
@@ -17,7 +20,7 @@ const isBlog = path === '/blog' || path.startsWith('/blog/');
 ---
 <nav class="nav" aria-label="Primary">
   <div class="nav-in">
-    <a href="/" class="nav-brand"><span class="mono">S</span>Sharfuzzaman</a>
+    <a href="/" class="nav-brand"><Image class="mono" src={brandIcon} alt="" width={52} height={52} loading="eager" />Sharfuzzaman</a>
     <span class="nav-links">
       {links.map((l) => (
         <a href={l.href} aria-current={isBlog && l.href === '/blog' ? 'page' : undefined}>{l.label}</a>
@@ -52,9 +55,11 @@ const isBlog = path === '/blog' || path.startsWith('/blog/');
     box-shadow: var(--shadow-md);
   }
   .nav-brand { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15px; color: var(--ink); }
+  /* The portrait replaced the monogram letter; see the mirror of this rule in
+     Hero.astro for why the ring is a box-shadow rather than a border. */
   .nav-brand .mono {
-    width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff;
-    display: grid; place-items: center; font-size: 11px; font-weight: 600;
+    width: 26px; height: 26px; border-radius: 50%; object-fit: cover;
+    box-shadow: 0 0 0 1px rgba(40, 80, 140, .16);
   }
   .nav-links { display: flex; gap: 20px; }
   .nav-links a { font-size: 14px; color: var(--ink-2); transition: color .2s; }

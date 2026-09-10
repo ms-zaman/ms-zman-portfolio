@@ -5,9 +5,11 @@
  * SkyEngine can drive it from the visitor's local time.
  * With the default token values it renders as a clear midday sky.
  */
+import { Image } from 'astro:assets';
 import Button from './Button.astro';
 import Tag from './Tag.astro';
 import HeroSky from './hero-sky/HeroSky';
+import brandIcon from '../../images/image-as-icon.webp';
 
 const stack = ['WordPress', 'Elementor', 'Gutenberg', 'WooCommerce', 'React'];
 const focus = ['Pixel perfect builds', 'Global Style & Typography', 'Figma → WordPress'];
@@ -55,7 +57,7 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
 
   <nav class="nav" aria-label="Primary">
     <div class="nav-in">
-      <span class="nav-brand"><span class="mono">S</span>Sharfuzzaman</span>
+      <span class="nav-brand"><Image class="mono" src={brandIcon} alt="" width={52} height={52} loading="eager" />Sharfuzzaman</span>
       <span class="nav-links">
         <a href="#services">Expertise</a><a href="#work">Work</a><a href="#experience">Experience</a><a href="/blog">Blog</a><a href="#contact">Contact</a>
       </span>
@@ -424,9 +426,14 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
     box-shadow: var(--shadow-md);
   }
   .nav-brand { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 15px; color: var(--ink); }
+  /* The monogram used to be a letter in an ink-filled disc (hence the background,
+     `place-items` and the type sizes). It is now the portrait, so all of that goes —
+     what's left is the disc itself. A 1px ring, not a border: border-box would make
+     the border eat into the 26px, and a near-white photo on the glass pill would
+     otherwise read as a hole punched in it. */
   .nav-brand .mono {
-    width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff;
-    display: grid; place-items: center; font-size: 13px; font-weight: 600;
+    width: 26px; height: 26px; border-radius: 50%; object-fit: cover;
+    box-shadow: 0 0 0 1px rgba(40, 80, 140, .16);
   }
   .nav-links { display: flex; gap: 20px; }
   .nav-links a { font-size: 14px; color: var(--ink-2); transition: color .2s; }
