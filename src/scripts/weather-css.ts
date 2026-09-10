@@ -27,5 +27,5 @@ const WX_TINT: Record<Condition, string> = {
 
 export function applyWeatherVars(condition: Condition, root: HTMLElement = document.documentElement): void {
   root.style.setProperty('--wx-tint', WX_TINT[condition]);
-  root.dataset.skyWeather = condition; // → <html data-sky-weather="…"> (future CSS hooks)
+  root.dataset.skyWeather = condition; // → <html data-sky-weather="…">; read by Hero.astro + SkyBand.astro
 }

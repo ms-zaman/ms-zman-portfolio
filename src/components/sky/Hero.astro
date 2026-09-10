@@ -111,7 +111,7 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
 <style>
   .hero {
     position: relative;
-    min-height: calc(100vh - 120px); ;
+    min-height: calc(100vh - 120px);
     overflow: hidden;
     background:
       url('/sky/sky.avif') center top / cover no-repeat,
@@ -148,8 +148,14 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
       linear-gradient(180deg, rgba(255, 255, 255, 0) 58%, rgba(255, 255, 255, .6) 80%, rgba(255, 255, 255, .92) 93%, var(--horizon) 100%);
     transition: opacity 1.2s ease;
   }
-  /* every condition except sunny is the WebGL sky — keep it unmuddied */
-  :global(:root[data-sky-weather]:not([data-sky-weather="sunny"])) .hero::after {
+  /* The scrim belongs to the photo poster; WebGL draws its own sky and must not be
+     muddied. Keyed off `.sky-webgl`, which the island sets only once the canvas has
+     actually taken over — NOT off data-sky-weather, which publishes the *resolved*
+     weather even on the paths where the canvas never mounts. On those (a device that
+     fails canAffordWebgl, one the frame watchdog retired, or reduced motion) the
+     sunny photo is what renders, so it needs its scrim: keying off the weather left
+     a clear-sky photo unshaded underneath a "rain" label and a storm-washed SkyBand. */
+  .hero.sky-webgl::after {
     background: none;
   }
 
@@ -535,11 +541,10 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
      viewport height (top padding clears the floating nav) */
   .hero-grid {
     position: relative; z-index: 10;
-    min-height: calc(100vh - 120px) ; box-sizing: border-box;
+    min-height: calc(100vh - 120px); box-sizing: border-box;
     display: flex; flex-direction: column; justify-content: center;
     padding-top: 160px;
     padding-bottom: 100px;
-    
   }
   .greet { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; color: #eaf3ff; text-shadow: 0 1px 3px rgba(18, 44, 84, .5); }
   /* availability marker — the greet was already an inline-flex row with a 9px gap

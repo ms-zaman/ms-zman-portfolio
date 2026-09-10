@@ -48,6 +48,19 @@ function markWebglReady() {
 }
 
 /**
+ * Signal the SkyPicker that the hero sky is up, so its one-time hint can arm.
+ * The picker may mount before or after this, so it reads the flag first and only
+ * falls back to the event. The dispatcher for both used to live in the preloader,
+ * which has since been retired — without one here the hint never plays at all.
+ */
+function markSkyReady() {
+  const w = window as unknown as { __skyHeroReady?: boolean };
+  if (w.__skyHeroReady) return;
+  w.__skyHeroReady = true;
+  window.dispatchEvent(new Event('sky:hero-ready'));
+}
+
+/**
  * The canvas — and with it three/r3f/drei — is fetched only when one is actually
  * going to mount. On any poster path (`sunny`, reduced motion, a device that fails
  * `canAffordWebgl`, or simply before the page has finished loading) this import
@@ -120,7 +133,12 @@ export default function HeroSky({ condition: forced }: Props) {
       if (cancelled) return;
       if (weather) kind = weather;
       recompute();
-    })();
+    })().catch(() => {
+      // Nothing to do: any throw in here (a runtime without AbortSignal.timeout,
+      // say) would otherwise surface as an unhandled rejection while the sky sat
+      // unresolved. `kind` is still 'clear', and the interval below still lands
+      // the right phase, so the hero keeps a defensible sky either way.
+    });
 
     // the phase (and so the condition) flips at dusk/dawn even if the weather holds
     const id = window.setInterval(recompute, 60_000);
@@ -146,10 +164,13 @@ export default function HeroSky({ condition: forced }: Props) {
   }, []);
 
   // Hand the sky back to the CSS hero: drop the class that hides its clouds/glow.
+  // The CSS hero *is* the sky on this path — there is no first frame still to
+  // arrive — so the picker's hint has nothing left to wait for either.
   useEffect(() => {
     if (!usePoster) return;
     document.querySelector('.hero')?.classList.remove('sky-webgl');
     setReady(false);
+    markSkyReady();
   }, [usePoster]);
 
   // Pause the WebGL loop when the hero is offscreen (scrolled past) or the tab is
@@ -180,7 +201,10 @@ export default function HeroSky({ condition: forced }: Props) {
   // .hero-sky opacity transition covers the handoff.
   const handleCanvasCreated = useCallback(() => {
     markWebglReady();
-    requestAnimationFrame(() => setReady(true));
+    requestAnimationFrame(() => {
+      setReady(true);
+      markSkyReady();
+    });
   }, []);
 
   return (

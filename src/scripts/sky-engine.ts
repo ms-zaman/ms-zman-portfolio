@@ -281,8 +281,16 @@ export function resolveVisitorLocation(silentOnly = true): Promise<Location> {
 
     if (!silentOnly) return use();
 
+    // The Permissions API is secure-context only, so on a plain-http origin (a
+    // phone on the LAN, say) `navigator.permissions` is simply undefined — and
+    // optional chaining would short-circuit the whole chain below, `.catch`
+    // included, leaving this promise pending forever. A promise that never
+    // settles means no weather and a hero stuck on the sunny poster, so fall
+    // back to Dhaka explicitly instead.
+    if (!navigator.permissions?.query) return resolve(DHAKA);
+
     navigator.permissions
-      ?.query({ name: 'geolocation' as PermissionName })
+      .query({ name: 'geolocation' as PermissionName })
       .then((s) => (s.state === 'granted' ? use() : resolve(DHAKA)))
       .catch(() => resolve(DHAKA));
   });
