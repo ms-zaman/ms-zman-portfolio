@@ -5,6 +5,13 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://sharfuzzaman.com',
+  // The dev toolbar ships its own dependencies, which Vite's optimizer treats as a
+  // separate dependency graph from the site's. That graph is what kept returning
+  // "504 (Outdated Optimize Dep)" for dev-toolbar/entrypoint.js on every reload —
+  // noise that reads like a site error and drowned out real ones (it hid the WebGL
+  // context loss behind it). Nothing here uses the toolbar, and it never ships to
+  // production, so turning it off is free.
+  devToolbar: { enabled: false },
   // Self-hosted, subset, preloaded fonts with auto metric-matched fallbacks.
   //
   // `display: 'optional'` is doing real work here. The generated fallback faces are
