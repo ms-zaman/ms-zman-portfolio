@@ -110,6 +110,36 @@ export default function HeroSky({ condition: forced }: Props) {
     setArmed(false);
   }, []);
 
+  /**
+   * The canvas died under us — the GL context was lost, or the scene threw while
+   * mounting. Either way the sky is gone, so hand it back to the CSS poster.
+   *
+   * Disarming is what makes this a graceful fallback rather than a broken hero:
+   * `usePoster` flips, and the effect below drops `.sky-webgl`, which is what
+   * brings the poster's clouds and glow back and restores its legibility scrim.
+   * Without it the hero kept the WebGL chrome over a canvas that was no longer
+   * drawing — a stripped, washed-out sky that reads as "the sky is broken".
+   *
+   * Deliberately NOT `rememberTooSlow()`: that verdict is a performance judgement
+   * persisted for a week, and a lost context is usually transient — the browser
+   * kills the oldest contexts once too many are live, which is a crowded tab, not
+   * a slow machine.
+   */
+  const retriedAfterLoss = useRef(false);
+  const retryTimer = useRef(0);
+  const handleCanvasLost = useCallback(() => {
+    setArmed(false);
+    // One retry only: unmounting releases the dead context, so a remount often
+    // succeeds. Guarded so a device that keeps losing it can't loop.
+    if (retriedAfterLoss.current) return;
+    retriedAfterLoss.current = true;
+    retryTimer.current = window.setTimeout(() => {
+      if (!document.hidden && canAffordWebgl()) setArmed(true);
+    }, 4000);
+  }, []);
+
+  useEffect(() => () => window.clearTimeout(retryTimer.current), []);
+
   // track the live weather (skipped when a caller forces the condition outright)
   useEffect(() => {
     if (reduced || forced) return;
@@ -212,7 +242,7 @@ export default function HeroSky({ condition: forced }: Props) {
       {/* reduced motion, or a condition the CSS hero owns → no canvas at all */}
       {!usePoster && (
         <div ref={containerRef} className={`hero-sky${ready ? ' ready' : ''}`} aria-hidden="true">
-          <CanvasErrorBoundary>
+          <CanvasErrorBoundary onError={handleCanvasLost}>
             <Suspense fallback={null}>
               <WeatherCanvas
                 condition={condition}
@@ -220,6 +250,7 @@ export default function HeroSky({ condition: forced }: Props) {
                 active={active}
                 onCreated={handleCanvasCreated}
                 onTooSlow={handleTooSlow}
+                onContextLost={handleCanvasLost}
               />
             </Suspense>
           </CanvasErrorBoundary>

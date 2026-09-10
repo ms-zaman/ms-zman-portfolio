@@ -54,6 +54,32 @@ function pickDpr(): [number, number] {
   return window.matchMedia('(max-width: 900px)').matches ? [1, 1] : [1, 1.5];
 }
 
+/**
+ * Watches for a lost WebGL context and reports it.
+ *
+ * three.js already handles the event (it logs "Context Lost" and calls
+ * preventDefault, letting the browser try to restore) — but R3F's Canvas does not
+ * survive that teardown: its children re-render without the internal store and
+ * throw "R3F: Hooks can only be used within the Canvas component!", which the error
+ * boundary then swallows, leaving a hero with no sky at all.
+ *
+ * So we catch the loss ourselves and let HeroSky hand the sky to the CSS poster.
+ * This is the case that bit us in a long dev session: every HMR cycle remounts the
+ * canvas and takes a new GL context, and once the browser's limit is reached the
+ * oldest contexts are killed.
+ */
+function ContextLossWatcher({ onLost }: { onLost: () => void }) {
+  const gl = useThree((s) => s.gl);
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+    canvas.addEventListener('webglcontextlost', onLost);
+    return () => canvas.removeEventListener('webglcontextlost', onLost);
+  }, [gl, onLost]);
+
+  return null;
+}
+
 interface Props {
   condition: Condition;
   /** Live-updated by HeroSky as geolocation resolves; read each frame for the sun arc. */
@@ -64,6 +90,8 @@ interface Props {
   onCreated: () => void;
   /** Fired when the frame budget says this device can't carry the scene. */
   onTooSlow: () => void;
+  /** Fired when the GL context is lost, so the hero can fall back to the poster. */
+  onContextLost: () => void;
 }
 
 export default function WeatherCanvas({
@@ -72,6 +100,7 @@ export default function WeatherCanvas({
   active,
   onCreated,
   onTooSlow,
+  onContextLost,
 }: Props) {
   return (
     <Canvas
@@ -86,6 +115,7 @@ export default function WeatherCanvas({
         onCreated();
       }}
     >
+      <ContextLossWatcher onLost={onContextLost} />
       <Suspense fallback={null}>
         <WeatherScene condition={condition} locationRef={locationRef} onTooSlow={onTooSlow} />
       </Suspense>
