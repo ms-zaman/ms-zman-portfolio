@@ -129,13 +129,21 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
       radial-gradient(38% 34% at var(--sun-x) var(--sun-y), var(--sun-glow), rgba(255, 240, 205, .28) 42%, rgba(255, 240, 205, 0) 66%);
     transition: background 1.2s ease, opacity 1.2s ease;
   }
-  /* Legibility scrim so white type reads over the clouds, feathering to white at the
-     bottom. This belongs to the photo hero (the prototype's sunny sky) — it was
-     switched off site-wide because it muddied the WebGL sky, but the photo needs it:
-     without it the intro copy sits on the photo's bright lower half at 1.69:1.
-     So it is on by default (which is also the pre-hydration state, where the poster
-     is what's showing) and switched off below as soon as a non-sunny condition is
-     published, since those are rendered by the canvas. */
+  /* The photo poster's two finishing layers, both switched off below the moment the
+     canvas takes the sky over (it draws its own, and neither belongs on it).
+
+     The scrim is legibility: without it the intro copy sits on the photo's bright
+     lower half at 1.69:1, so it is on by default (which is also the pre-hydration
+     state, where the poster is what's showing).
+
+     The wash on top of it is honesty. The poster is the *clear-sky* photograph and
+     nothing else, so on any device where the canvas never mounts — no GPU, hardware
+     acceleration off, a small or low-memory device, save-data, reduced motion, or a
+     watchdog verdict — a rainy Dhaka afternoon rendered as a blue sky, and picking a
+     condition in the chip changed the menu, the attribute and the band below while
+     the hero sat perfectly still. This is the same --wx-tint the SkyBand washes with,
+     so both halves of the page agree. It sits above the sun, clouds and birds (z 4)
+     and below the copy (z 10), so they all tint together. */
   .hero::after {
     content: "";
     position: absolute;
@@ -143,10 +151,11 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
     z-index: 4;
     pointer-events: none;
     background:
+      linear-gradient(var(--wx-tint), var(--wx-tint)),
       linear-gradient(100deg, rgba(14, 38, 74, .42) 0%, rgba(14, 38, 74, .16) 40%, rgba(14, 38, 74, 0) 64%),
       radial-gradient(150% 80% at 88% 116%, rgba(255, 255, 255, .95) 0%, rgba(255, 255, 255, 0) 58%),
       linear-gradient(180deg, rgba(255, 255, 255, 0) 58%, rgba(255, 255, 255, .6) 80%, rgba(255, 255, 255, .92) 93%, var(--horizon) 100%);
-    transition: opacity 1.2s ease;
+    transition: background 1.2s ease, opacity 1.2s ease;
   }
   /* The scrim belongs to the photo poster; WebGL draws its own sky and must not be
      muddied. Keyed off `.sky-webgl`, which the island sets only once the canvas has
@@ -275,6 +284,12 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
     --halo-3: rgba(255, 138, 88, .2); --ray: rgba(255, 196, 142, .3); --size: 64px;
   }
   :global(:root[data-sky-phase="night"]) .sun { display: none; }
+  /* The disc belongs to the clear-sky photo, so on any other condition it goes:
+     the canvas draws its own light, and on the poster path a bright disc sitting
+     over the rain wash above reads as a bug. Fades rather than switching off, so a
+     pick glides the way every other sky change does. (Night, above, is the phase's
+     own business and drops it outright.) */
+  :global(:root[data-sky-weather]:not([data-sky-weather="sunny"])) .sun { opacity: 0; }
 
   /* ── sky picker ─────────────────────────────────────────────────────────────
      The live-weather chip and its menu. Rendered by React (SkyPicker.tsx), so it

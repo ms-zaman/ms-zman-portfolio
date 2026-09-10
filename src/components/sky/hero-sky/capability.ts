@@ -20,6 +20,40 @@
 
 /** Remembered verdict from the frame-budget watchdog (see WeatherScene). */
 const SLOW_KEY = 'sky:webgl-too-slow';
+/** How long that verdict stands before the browser is given another chance. */
+const SLOW_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * True when the watchdog has retired this browser *recently*, so we skip the download.
+ *
+ * It expires, because the verdict is one short sample taken while the page is still
+ * settling: a shader compile, a GC pause or a backgrounded tab could land in it and
+ * retire a machine that is perfectly capable. That verdict used to be permanent —
+ * nothing but clearing site data brought the canvas back — which meant the hero fell
+ * back to the photo poster for good, and on the poster path every sky it might have
+ * drawn, the live weather and the chip's picks alike, was invisible.
+ *
+ * A cool-off keeps what the memory is for (a device that genuinely can't cope
+ * shouldn't re-download the ~216 kB three.js chunk on every visit) without turning one
+ * unlucky moment into a life sentence.
+ */
+function retiredForSpeed(): boolean {
+  try {
+    const raw = localStorage.getItem(SLOW_KEY);
+    if (!raw) return false;
+
+    // The first version wrote a bare '1' with no timestamp. Those are exactly the
+    // browsers this was unfair to, so don't trust one — start the clock over.
+    const at = raw === '1' ? NaN : Number(raw);
+    if (!Number.isFinite(at) || Date.now() - at > SLOW_TTL_MS) {
+      localStorage.removeItem(SLOW_KEY);
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 interface NetworkInformation {
   saveData?: boolean;
@@ -34,11 +68,7 @@ export function canAffordWebgl(): boolean {
   if (typeof window === 'undefined') return false;
 
   // The browser already decided this one was too slow to render (watchdog below).
-  try {
-    if (localStorage.getItem(SLOW_KEY) === '1') return false;
-  } catch {
-    // storage blocked — carry on with the live checks
-  }
+  if (retiredForSpeed()) return false;
 
   const nav = navigator as Navigator & {
     connection?: NetworkInformation;
@@ -105,7 +135,7 @@ export function whenIdle(cb: () => void): void {
 /** Remember that this browser couldn't keep up, so the next visit skips the download. */
 export function rememberTooSlow(): void {
   try {
-    localStorage.setItem(SLOW_KEY, '1');
+    localStorage.setItem(SLOW_KEY, String(Date.now()));
   } catch {
     // storage blocked — the check just won't persist
   }

@@ -54,6 +54,13 @@ const PORTRAIT_MOON_EL = 0.36;
 const WARMUP_FRAMES = 6; // shader compile + texture upload — not representative
 const SAMPLE_FRAMES = 24;
 const SLOW_MS = 80;
+/**
+ * A gap this long is not a slow frame, it is an *absent* one: a hidden tab parks the
+ * driver, and the frame that resumes carries the whole wall-clock gap as its `dt`. One
+ * of those landing in the sample is how a fast machine got retired for good, so they
+ * are dropped rather than counted.
+ */
+const SUSPENDED_MS = 2000;
 
 interface Props {
   condition: Condition;
@@ -83,7 +90,8 @@ export function WeatherScene({ condition, locationRef, onTooSlow }: Props) {
     // — frame-budget watchdog (see the note above) —
     if (!verdict.current) {
       const s = samples.current;
-      s.push(dt * 1000);
+      const ms = dt * 1000;
+      if (ms < SUSPENDED_MS) s.push(ms);
       if (s.length >= WARMUP_FRAMES + SAMPLE_FRAMES) {
         const gaps = s.slice(WARMUP_FRAMES).sort((a, b) => a - b);
         verdict.current = true;
