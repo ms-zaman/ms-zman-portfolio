@@ -13,7 +13,6 @@ export type WeatherKind =
   | 'fog'
   | 'drizzle'
   | 'rain'
-  | 'snow'
   | 'thunder';
 
 /** WMO weather-interpretation code → coarse kind. */
@@ -24,7 +23,10 @@ function wmoToKind(code: number): WeatherKind {
   if (code === 45 || code === 48) return 'fog';
   if (code >= 51 && code <= 57) return 'drizzle';
   if ((code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return 'rain';
-  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'snow';
+  // Snow codes (71–77, 85, 86) fold into overcast: snow weather *is* overcast
+  // weather — which is what the night branch already resolved it to — and there is
+  // no snow condition to return any more.
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return 'overcast';
   if (code >= 95) return 'thunder';
   return 'partly';
 }

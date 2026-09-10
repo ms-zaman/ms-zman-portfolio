@@ -37,7 +37,7 @@ const prefersReducedMotion = () =>
  * height, and closing that gap dropped the h1 below its contrast floor. Letting the
  * CSS hero own the clear-sky case makes the two layers identical by construction
  * (there is no handoff to mismatch) and costs no WebGL work on the commonest sky.
- * Every other condition — clouds, rain, snow, the moonlit nights — is procedural,
+ * Every other condition — clouds, rain, the moonlit nights — is procedural,
  * where the canvas earns its keep.
  */
 const POSTER_CONDITIONS: ReadonlySet<Condition> = new Set<Condition>(['sunny']);

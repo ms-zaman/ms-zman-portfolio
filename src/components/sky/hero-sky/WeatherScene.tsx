@@ -18,7 +18,6 @@ import { CONDITIONS, type Condition } from './conditions';
 import { SkyBackdrop } from './SkyBackdrop';
 import { Clouds } from './Clouds';
 import { Rain } from './Rain';
-import { Snow } from './Snow';
 import { Lighting, Atmosphere, Lightning } from './Effects';
 import {
   COLOR_KEYS,
@@ -137,7 +136,6 @@ export function WeatherScene({ condition, locationRef, onTooSlow }: Props) {
       <Lighting />
       <Clouds />
       <Rain />
-      <Snow />
       <Atmosphere />
       <Lightning />
     </SkyProvider>

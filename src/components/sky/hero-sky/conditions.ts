@@ -16,7 +16,6 @@ export type Condition =
   | 'sunny'
   | 'cloudy'
   | 'drizzle'
-  | 'snow'
   | 'overcast-night'
   | 'drizzle-night'
   | 'clear-night';
@@ -50,9 +49,6 @@ export interface Preset {
   rainOpacity: number;
   rainSpeed: number;
   rainColor: string;
-  // — snow —
-  snowOpacity: number;
-  snowSpeed: number;
   // — fog —
   fogDensity: number;
   fogColor: string;
@@ -82,7 +78,6 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 1.7, ambientColor: '#ffffff', keyIntensity: 1.5, keyColor: '#ffe680',
     cloudOpacity: 1, cloudColor: '#ffffff', cloudSpeed: 0.5,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#cfe0f5',
-    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.0016, fogColor: '#cfe4fb',
     lightning: 0,
   },
@@ -94,7 +89,6 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 0.7, ambientColor: '#dfe6ee', keyIntensity: 0.7, keyColor: '#c3cfdd',
     cloudOpacity: 0.9, cloudColor: '#b9c4d2', cloudSpeed: 0.9,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#aebccd',
-    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.006, fogColor: '#b7c3d1',
     lightning: 0.4,
   },
@@ -110,21 +104,8 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 0.62, ambientColor: '#9fadbe', keyIntensity: 0.5, keyColor: '#93a1b2',
     cloudOpacity: 1, cloudColor: '#7d8a9c', cloudSpeed: 1.4,
     rainOpacity: 0.48, rainSpeed: 4, rainColor: '#c3ccd8',
-    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.011, fogColor: '#6e7a8a',
     lightning: 0.9,
-  },
-  snow: {
-    skyBlend: 0.86,
-    domeHorizon: '#c6d4e5', domeZenith: '#6c7c93', domeGlow: '#eef2f7', glowStrength: 0.35,
-    turbidity: 9, rayleigh: 1.4, mie: 0.02, stars: 0,
-    moon: 0, moonGlow: 0, moonLight: 0, moonColor: '#dfe9ff',
-    ambient: 0.88, ambientColor: '#eef3f8', keyIntensity: 0.8, keyColor: '#dde7f2',
-    cloudOpacity: 0.85, cloudColor: '#cdd6e0', cloudSpeed: 0.7,
-    rainOpacity: 0, rainSpeed: 0, rainColor: '#ffffff',
-    snowOpacity: 0.9, snowSpeed: 1.1,
-    fogDensity: 0.009, fogColor: '#d9e2ec',
-    lightning: 0,
   },
   // Moon behind the cloud deck: no disc to speak of and no stars, but the whole
   // sky glows where it sits, and the rafts are lit from *behind* — so they read as
@@ -137,7 +118,6 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 0.6, ambientColor: '#3a4f74', keyIntensity: 0.2, keyColor: '#33466a',
     cloudOpacity: 1, cloudColor: '#44567f', cloudSpeed: 1,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#3a465a',
-    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.011, fogColor: '#1a2742',
     lightning: 0,
   },
@@ -153,7 +133,6 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 0.5, ambientColor: '#33475f', keyIntensity: 0.15, keyColor: '#2b3c5a',
     cloudOpacity: 1, cloudColor: '#38486b', cloudSpeed: 1.3,
     rainOpacity: 0.4, rainSpeed: 4, rainColor: '#a8bcd6',
-    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.012, fogColor: '#131e33',
     lightning: 0.7,
   },
@@ -168,7 +147,6 @@ export const CONDITIONS: Record<Condition, Preset> = {
     ambient: 0.45, ambientColor: '#3b5480', keyIntensity: 0.1, keyColor: '#2a3a56',
     cloudOpacity: 0.72, cloudColor: '#6d84af', cloudSpeed: 0.45,
     rainOpacity: 0, rainSpeed: 0, rainColor: '#2a3546',
-    snowOpacity: 0, snowSpeed: 0,
     fogDensity: 0.0035, fogColor: '#14224a',
     lightning: 0,
   },

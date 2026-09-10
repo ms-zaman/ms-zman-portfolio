@@ -16,7 +16,7 @@ export const NUM_KEYS = [
   'skyBlend', 'glowStrength', 'turbidity', 'rayleigh', 'mie', 'stars',
   'moon', 'moonGlow', 'moonLight',
   'ambient', 'keyIntensity', 'cloudOpacity', 'cloudSpeed',
-  'rainOpacity', 'rainSpeed', 'snowOpacity', 'snowSpeed', 'fogDensity', 'lightning',
+  'rainOpacity', 'rainSpeed', 'fogDensity', 'lightning',
 ] as const;
 export type NumKey = (typeof NUM_KEYS)[number];
 

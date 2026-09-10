@@ -9,10 +9,10 @@
  * jobs at once:
  *
  *   • resting, it *states* the fact — "☀ Dhaka, 2:40 pm" with a live dot;
- *   • opened, it hands the sky over: seven conditions plus Auto to give it back.
+ *   • opened, it hands the sky over: six conditions plus Auto to give it back.
  *
  * A manual pick is remembered in localStorage (`STORE_KEY`), so a visitor who
- * likes the snow keeps the snow on their next visit. `?skyWeather=` still wins
+ * likes the rain keeps the rain on their next visit. `?skyWeather=` still wins
  * over both and is deliberately *not* saved — it's a preview link, not a choice.
  *
  * It also gets *one* chance to be noticed: ~2s after the sky resolves it plays a
@@ -90,12 +90,6 @@ const Ico = {
       <path d="M9 19l-1 2M13 19l-1 2M17 19l-1 2" />
     </>
   ),
-  snow: (
-    <>
-      <path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9" />
-      <path d="M9.4 4.6L12 6.6l2.6-2M9.4 19.4L12 17.4l2.6 2" />
-    </>
-  ),
   moon: <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z" />,
   auto: (
     <>
@@ -128,7 +122,6 @@ const GROUPS: { title: string; items: Item[] }[] = [
       { id: 'sunny', label: 'Sunny', icon: 'sun' },
       { id: 'cloudy', label: 'Cloudy', icon: 'cloud' },
       { id: 'drizzle', label: 'Rain', icon: 'rain' },
-      { id: 'snow', label: 'Snow', icon: 'snow' },
     ],
   },
   {

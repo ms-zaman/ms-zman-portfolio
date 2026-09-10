@@ -476,18 +476,15 @@ const RESUME = '/Sharfuzzaman-Resume.pdf';
   .intro { font-size: 18px; line-height: 1.55; color: #f2f7ff; max-width: 46ch; margin-bottom: 30px; text-shadow: 0 1px 2px rgba(18, 44, 84, .4), 0 2px 22px rgba(18, 44, 84, .28); }
   .intro b { color: #fff; font-weight: 600; }
 
-  /* Cloudy and snow are the pale-sky WebGL conditions with no scrim (sunny keeps its
-     own ::after; the rest are dark enough). White type loses contrast on their light
-     left/lower band, so lift the shadow at the text layer for just these two — no
-     dimming of the hero itself. */
-  :global(:root[data-sky-weather="cloudy"]) .greet,
-  :global(:root[data-sky-weather="snow"]) .greet { text-shadow: 0 1px 3px rgba(14, 34, 68, .72); }
-  :global(:root[data-sky-weather="cloudy"]) .h1,
-  :global(:root[data-sky-weather="snow"]) .h1 {
+  /* Cloudy is the pale-sky WebGL condition with no scrim (sunny keeps its own
+     ::after; the rest are dark enough). White type loses contrast on its light
+     left/lower band, so lift the shadow at the text layer for this one — no dimming
+     of the hero itself. */
+  :global(:root[data-sky-weather="cloudy"]) .greet { text-shadow: 0 1px 3px rgba(14, 34, 68, .72); }
+  :global(:root[data-sky-weather="cloudy"]) .h1 {
     text-shadow: 0 1px 2px rgba(14, 34, 68, .55), 0 2px 16px rgba(14, 34, 68, .4);
   }
-  :global(:root[data-sky-weather="cloudy"]) .intro,
-  :global(:root[data-sky-weather="snow"]) .intro {
+  :global(:root[data-sky-weather="cloudy"]) .intro {
     text-shadow: 0 1px 2px rgba(14, 34, 68, .6), 0 2px 20px rgba(14, 34, 68, .34);
   }
 

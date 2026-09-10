@@ -19,7 +19,6 @@ const WX_TINT: Record<Condition, string> = {
   sunny: 'rgba(255, 255, 255, 0)', // clear — no veil
   cloudy: 'rgba(128, 143, 166, 0.60)', // grey overcast
   drizzle: 'rgba(46, 57, 74, 0.74)', // wet storm slate
-  snow: 'rgba(206, 216, 228, 0.52)', // pale, flat snow-light
   'overcast-night': 'rgba(8, 15, 30, 0.70)', // heavy dark veil
   'drizzle-night': 'rgba(7, 13, 27, 0.76)', // wet night — darkest of the set
   'clear-night': 'rgba(10, 20, 42, 0.42)', // clear — let the night tint show
