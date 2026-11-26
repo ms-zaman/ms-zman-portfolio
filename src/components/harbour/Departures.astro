@@ -1,0 +1,97 @@
+---
+/**
+ * Departures — the harbour's split-flap board: what actually shipped, when,
+ * and where it went. Every departed row links to the live thing. The one row
+ * that has not shipped says so ("IN DESIGN"), by form (it blinks) as well as
+ * colour. Cells are built and flipped by scripts/flaps.ts; without JS the
+ * rows read as plain monospace text.
+ * Every date is sourced in redesign/case-studies-draft.md.
+ */
+interface Row { date: string; product: string; dest: string; status: string; href?: string; sr: string }
+const WP = 'https://wordpress.org/plugins/wp-scheduled-posts/';
+const rows: Row[] = [
+  { date: '24 NOV', product: 'SCHEDULEPRESS 5.4.0', dest: 'WP.ORG', status: 'DEPARTED', href: WP, sr: '24 November 2026, SchedulePress 5.4.0 to WordPress.org, departed' },
+  { date: '10 NOV', product: 'SHOPCURATOR 1.0', dest: 'WP.ORG', status: 'DEPARTED', href: 'https://wordpress.org/plugins/shopcurator/', sr: '10 November 2026, ShopCurator approved on WordPress.org, departed' },
+  { date: '10 NOV', product: 'SCHEDULEPRESS 5.3.8', dest: 'WP.ORG', status: 'DEPARTED', href: WP, sr: '10 November 2026, SchedulePress 5.3.8 to WordPress.org, departed' },
+  { date: '05 NOV', product: 'SCHEDULEPRESS 5.3.7', dest: 'WP.ORG', status: 'DEPARTED', href: WP, sr: '5 November 2026, SchedulePress 5.3.7 to WordPress.org, departed' },
+  { date: '29 OCT', product: 'PROSTUTI', dest: 'VISAPREP', status: 'DEPARTED', href: 'https://visaprep.sharfuzzaman.com/', sr: '29 October 2026, Prostuti to visaprep, departed' },
+  { date: '08 OCT', product: 'WPDEVELOPER HOME', dest: 'WPDEVELOPER', status: 'DEPARTED', href: 'https://wpdeveloper.com/', sr: '8 October 2026, WPDeveloper homepage to wpdeveloper.com, departed' },
+  { date: '15 SEP', product: 'HERMIZON STORE', dest: 'HERMIZON.COM', status: 'DEPARTED', href: 'https://hermizon.com/', sr: '15 September 2026, Hermizon store to hermizon.com, departed' },
+  { date: 'NEXT', product: 'SP DASHBOARD', dest: 'WP.ORG', status: 'IN DESIGN', sr: 'Next: SchedulePress dashboard, in design, not shipped yet' },
+];
+---
+<section class="harbour" aria-labelledby="dep-h">
+  <div class="wrapper">
+    <div class="board rise" data-board>
+      <div class="board-head">
+        <h2 id="dep-h" class="lum">Departures <span lang="bn">প্রস্থান</span></h2>
+        <div class="clock" aria-label="Local time in Dhaka"><span>Dhaka</span><span class="flaps" data-clock data-len="5">--:--</span></div>
+      </div>
+      <div class="cols" aria-hidden="true"><span>Date</span><span>Product</span><span class="c-dest">Destination</span><span>Status</span></div>
+      <div class="rows">
+        {rows.map((r) => {
+          const Tag = r.href ? 'a' : 'div';
+          return (
+            <Tag class:list={['row', { design: !r.href }]} href={r.href} target={r.href ? '_blank' : undefined} rel={r.href ? 'noopener' : undefined}>
+              <span class="sr-only">{r.sr}</span>
+              <span class="flaps" data-len="6">{r.date}</span>
+              <span class="flaps" data-len="19">{r.product}</span>
+              <span class="flaps c-dest" data-len="12">{r.dest}</span>
+              <span class="flaps c-stat" data-len="9">{r.status}</span>
+            </Tag>
+          );
+        })}
+      </div>
+      <div class="board-foot"><span>Every departure links to the live thing.</span><span class="num"><b>10K+</b> plugin installs · <b>40+</b> template packs · <b>700K+</b> users reached</span></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .harbour { padding: 24px 0 0; }
+  .board { container-type: inline-size; padding: clamp(14px, 2vw, 26px); background: linear-gradient(180deg, #07101c, #050b14); border: 1px solid rgba(102, 246, 255, .22); border-radius: var(--r-lg); box-shadow: var(--shadow-lg); }
+  .board-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding: 0 4px 16px; margin-bottom: 12px; border-bottom: 1px solid var(--trace); }
+  h2 { margin: 0; display: flex; align-items: baseline; gap: 16px; font-size: clamp(30px, 3.6vw, 48px); line-height: 1; }
+  h2 span { font-family: var(--sans); font-weight: 500; font-size: max(14px, .42em); letter-spacing: 0; color: var(--lume); text-shadow: none; }
+  .clock { --c: 15px; display: flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--mist); }
+  /* one flap width for the whole board, derived from the board's own width:
+     46 cells, their 1px gaps, three column gaps and the row padding */
+  .cols, .row { --c: min(20px, calc((100cqi - 60px) / 49.5)); display: grid; grid-template-columns: calc(var(--c) * 6 + 5px) calc(var(--c) * 19 + 18px) calc(var(--c) * 12 + 11px) calc(var(--c) * 9 + 8px); column-gap: calc(var(--c) * .9); align-items: center; }
+  .cols { padding: 2px 8px 8px; font-family: var(--display); font-size: 11.5px; letter-spacing: .2em; text-transform: uppercase; color: var(--dim); }
+  .rows { display: flex; flex-direction: column; gap: 6px; }
+  .row { padding: 5px 8px; border-radius: 6px; transition: background .25s; }
+  a.row:hover, a.row:focus-visible { background: rgba(30, 139, 255, .1); }
+  .flaps { display: flex; gap: 1px; font-family: var(--mono); font-weight: 600; }
+  .board-foot { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 16px 4px 2px; font-size: 13px; color: var(--mist); }
+  .board-foot b { color: var(--foam); font-weight: 500; }
+  @media (max-width: 640px) {
+    .cols, .row { --c: min(13px, calc((100cqi - 44px) / 36.5)); grid-template-columns: calc(var(--c) * 6 + 5px) calc(var(--c) * 19 + 18px) calc(var(--c) * 9 + 8px); }
+    .c-dest { display: none; }
+    .clock { --c: 12px; }
+    .board-foot span:last-child { display: none; }
+  }
+</style>
+
+<style is:global>
+  /* the flap cells are created by scripts/flaps.ts, so they sit outside the scoped styles */
+  [data-board] .cell { position: relative; display: grid; place-items: center; width: var(--c); height: calc(var(--c) * 1.55); border-radius: 2px; background: linear-gradient(#11203a 0 50%, #0c1830 50% 100%); color: var(--foam); font-size: calc(var(--c) * 1.05); line-height: 1; text-shadow: 0 0 8px rgba(102, 246, 255, .35); transition: color .2s; }
+  [data-board] .cell::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(3, 6, 11, .32); }
+  [data-board] .cell::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 50%; background: #11203a; transform-origin: bottom; opacity: 0; pointer-events: none; }
+  [data-board] .cell.fa::before { animation: flap-a .11s linear; }
+  [data-board] .cell.fb::before { animation: flap-b .11s linear; }
+  @keyframes flap-a { 0% { opacity: 1; transform: rotateX(0); } 100% { opacity: 1; transform: rotateX(-90deg); } }
+  @keyframes flap-b { 0% { opacity: 1; transform: rotateX(0); } 100% { opacity: 1; transform: rotateX(-90deg); } }
+  [data-board] a.row:hover .cell, [data-board] a.row:focus-visible .cell { color: var(--lume); }
+  /* not shipped yet: three blinks, then it holds lit (no endless blinking) */
+  [data-board] .row.design .c-stat .cell { color: var(--lume); animation: flap-blink 1.6s steps(1) 3; }
+  @keyframes flap-blink { 0%, 70% { opacity: 1; } 71%, 100% { opacity: .3; } }
+  @media (prefers-reduced-motion: reduce) { [data-board] .row.design .c-stat .cell { animation: none; } }
+  /* at phone size a seam line is thicker than the strokes it crosses and splits the I; drop it */
+  /* and wide glyphs (W, M, O) need a smaller face to stay inside a phone-size cell */
+  @media (max-width: 640px) { [data-board] .cell::after { display: none; } [data-board] .cell { font-size: calc(var(--c) * .9); } }
+</style>
+
+<script>
+  import { initFlaps } from '../../scripts/flaps';
+  initFlaps();
+</script>

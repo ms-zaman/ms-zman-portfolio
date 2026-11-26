@@ -1,0 +1,114 @@
+---
+/**
+ * Nav — the harbour's top bar, shared by the homepage and the blog.
+ * On the homepage it floats transparent over the sea and turns solid once the
+ * hero has scrolled past; elsewhere it is solid from the start. It tucks away
+ * on the way down and returns on the way up (transform only, no reflow), stays
+ * pinned while the mobile menu is open, and returns on keyboard focus.
+ */
+interface Props {
+  /** true on the homepage: links are in-page anchors and the bar starts transparent */
+  home?: boolean;
+}
+const { home = false } = Astro.props;
+const base = home ? '' : '/';
+const links = [
+  { href: `${base}#work`, label: 'Work' },
+  { href: `${base}#expertise`, label: 'Expertise' },
+  { href: `${base}#lab`, label: 'Lab' },
+  { href: `${base}#experience`, label: 'Experience' },
+  { href: '/blog', label: 'Writing' },
+];
+---
+<header class:list={['nav', { solid: !home }]} data-nav data-home={home ? '' : undefined}>
+  <div class="nav-in">
+    <a class="brand" href="/" aria-label="Sharfuzzaman, home">
+      <svg aria-hidden="true"><use href="#i-mark" /></svg>
+      <b>Sharfuzzaman</b>
+    </a>
+    <nav class="links" aria-label="Primary">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+    <a class="cta" href={`${base}#contact`}>Get in touch <svg class="arrow" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+    <button class="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 9h14M2 13h9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" /></svg>
+    </button>
+    <nav class="menu" id="nav-menu" aria-label="Menu">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+      <a href={`${base}#contact`}>Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav { position: fixed; inset: 0 0 auto; z-index: 50; transition: background .4s, transform .45s var(--ease-out), border-color .4s; border-bottom: 1px solid transparent; }
+  .nav.solid { background: rgba(3, 6, 11, .86); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom-color: rgba(34, 55, 79, .7); }
+  .nav.tuck { transform: translateY(-100%); }
+  .nav-in { max-width: var(--wrap); margin: 0 auto; padding: 16px var(--gutter); display: flex; align-items: center; gap: 28px; position: relative; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand svg { width: 34px; height: 34px; flex: none; }
+  .brand b { font-family: var(--display); font-weight: 400; font-size: 15px; letter-spacing: .32em; text-transform: uppercase; }
+  .links { margin-left: auto; display: flex; gap: 30px; }
+  .links a { position: relative; padding: 6px 0; font-family: var(--display); font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(--mist); transition: color .25s; }
+  .links a::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--lume); transform: scaleX(0); transform-origin: left; transition: transform .4s var(--ease-out); }
+  .links a:hover { color: var(--foam); }
+  .links a:hover::after { transform: scaleX(1); }
+  .cta { display: inline-flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 6px; background: var(--wake-btn); border: 1px solid #2a7ae0; color: #fff; font-family: var(--display); font-size: 12px; letter-spacing: .2em; text-transform: uppercase; box-shadow: 0 8px 24px -12px rgba(30, 139, 255, .9); transition: background .3s; }
+  .cta:hover { background: var(--wake-btn-hi); }
+  .arrow { width: 46px; height: 10px; flex: none; transition: transform .45s var(--ease-out); }
+  .cta:hover .arrow { transform: translateX(5px); }
+  .burger { display: none; margin-left: auto; width: 42px; height: 42px; place-items: center; background: none; border: 1px solid var(--trace); border-radius: 6px; color: var(--foam); cursor: pointer; }
+  .menu { display: none; }
+  @media (max-width: 860px) {
+    .links, .cta { display: none; }
+    .burger { display: grid; }
+    .menu { position: absolute; top: 100%; left: var(--gutter); right: var(--gutter); flex-direction: column; padding: 10px; background: rgba(10, 20, 34, .98); border: 1px solid var(--trace); border-radius: 10px; }
+    .menu.open { display: flex; }
+    .menu a { padding: 14px 12px; border-bottom: 1px solid rgba(34, 55, 79, .6); font-family: var(--display); font-size: 13px; letter-spacing: .2em; text-transform: uppercase; }
+    .menu a:last-child { border: 0; color: var(--lume); }
+  }
+  @media (prefers-reduced-motion: reduce) { .nav { transition: none; } }
+</style>
+
+<script>
+  // Re-runs after a blog view-transition swap; the previous scroll handler is
+  // removed first so listeners never pile up.
+  type W = Window & { __navScroll?: () => void };
+  function initNav() {
+    const nav = document.querySelector<HTMLElement>('[data-nav]');
+    if (!nav) return;
+    const menu = nav.querySelector<HTMLElement>('.menu')!;
+    const burger = nav.querySelector<HTMLButtonElement>('.burger')!;
+    const home = nav.hasAttribute('data-home');
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    let last = 0;
+    const w = window as W;
+    if (w.__navScroll) removeEventListener('scroll', w.__navScroll);
+    w.__navScroll = () => {
+      const y = scrollY;
+      if (home && hero) nav.classList.toggle('solid', y > hero.offsetHeight - 80);
+      const open = menu.classList.contains('open');
+      if (!open && y > 160 && y > last + 4) nav.classList.add('tuck');
+      else if (y < last - 4 || y < 120) nav.classList.remove('tuck');
+      last = y;
+    };
+    addEventListener('scroll', w.__navScroll, { passive: true });
+    const first = w.__navScroll;
+    requestAnimationFrame(() => requestAnimationFrame(first));
+    burger.addEventListener('click', () => {
+      const open = menu.classList.toggle('open');
+      burger.setAttribute('aria-expanded', String(open));
+      burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    });
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) {
+        menu.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+        burger.setAttribute('aria-label', 'Open menu');
+      }
+    });
+    nav.addEventListener('focusin', () => nav.classList.remove('tuck'));
+  }
+  initNav();
+  document.addEventListener('astro:after-swap', initNav);
+</script>

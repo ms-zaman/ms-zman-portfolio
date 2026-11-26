@@ -1,81 +1,77 @@
 /* ============================================================
-   Sky design system — BASE / AXIOMS  (the global foundation under CUBE)
-   Reset, base element defaults, and a11y helpers. Everything is scoped
-   under `.sky` (set on <body> by SkyLayout and BlogLayout), which keeps
-   these globals off any other document but applies them site-wide.
-
-   New layout work goes in sky-composition.css (skeletons) and new
-   single-purpose helpers in sky-utilities.css — see src/styles/CUBE-CSS.md.
-   Component-specific *visual* styling (Blocks) lives inside each .astro file.
+   Night Harbour design system — BASE / AXIOMS  (the global foundation under CUBE)
+   Reset, base element defaults, browser surfaces and a11y helpers. Scoped
+   under `.sky` (set on <body> by HarbourLayout and BlogLayout; the class keeps
+   its legacy name so every sheet and component selector stays valid).
+   Layout skeletons live in sky-composition.css, single-purpose helpers in
+   sky-utilities.css, component visuals inside each .astro file.
    ============================================================ */
-
+html {
+  background: var(--abyss);
+  scrollbar-color: var(--trace) var(--abyss);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
 .sky {
   margin: 0;
   font-family: var(--sans);
   color: var(--ink);
-  background: var(--horizon);
-  font-size: 17px;
-  line-height: 1.6;
+  background: var(--abyss);
+  font-size: 16.5px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  caret-color: var(--lume);
 }
 .sky *,
 .sky *::before,
 .sky *::after { box-sizing: border-box; }
-.sky ::selection { background: var(--sun); color: #3a2600; }
+.sky ::selection { background: var(--wake-btn); color: #fff; }
 .sky a { color: inherit; text-decoration: none; }
 .sky img { max-width: 100%; height: auto; display: block; }
+.sky .num { font-variant-numeric: tabular-nums; }
 
-/* — layout — page gutters and section rhythm are Composition primitives now
-   (.wrapper, .region in sky-composition.css); the section divider is the
-   .border-top-line utility. The nav pill is fixed (Hero.astro), so an anchor
-   jump would otherwise drop a region's top rule — and, at the narrow widths
-   where --section-y shrinks to 60px, its heading too — underneath it. Land
-   anchored regions clear of the pill instead. */
+/* anchored regions land clear of the fixed nav */
+.sky section[id],
 .sky .region[id],
 .sky #content { scroll-margin-top: 84px; }
 
-/* — scroll-reveal (progressive enhancement; JS adds .in) — */
-.sky .reveal {
+/* one authored entrance: content surfaces like plankton lighting; visible without JS */
+.js .sky .rise,
+.sky.js .rise {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity .8s ease, transform .8s ease;
+  transform: translateY(18px);
+  filter: blur(6px);
+  transition: opacity 1s var(--ease-out), transform 1s var(--ease-out), filter 1s var(--ease-out);
 }
-.sky .reveal.in { opacity: 1; transform: none; }
+.js .sky .rise.in,
+.sky.js .rise.in { opacity: 1; transform: none; filter: none; }
 
-/* — focus: consistent keyboard ring; outline follows each element's radius — */
 .sky a:focus-visible,
 .sky button:focus-visible,
 .sky summary:focus-visible,
 .sky [tabindex]:focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--lume);
   outline-offset: 3px;
+  border-radius: 4px;
 }
-/* programmatic skip targets (tabindex="-1") shouldn't paint a ring on focus */
 .sky [tabindex="-1"]:focus { outline: none; }
-
-/* — skip link: hidden until focused, so keyboard users can bypass the nav — */
 .sky .skip-link {
   position: fixed;
   top: 12px;
   left: 12px;
   z-index: 1000;
   padding: 10px 16px;
-  border-radius: var(--r-md);
-  background: var(--ink);
-  color: #fff;
+  border-radius: var(--r-sm);
+  background: var(--foam);
+  color: var(--abyss);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   transform: translateY(-160%);
   transition: transform .2s ease;
 }
-.sky .skip-link:focus-visible {
-  transform: translateY(0);
-  outline: 2px solid #fff;
-  outline-offset: 2px;
-}
-
-/* — visually hidden but exposed to assistive tech (screen-reader-only) — */
+.sky .skip-link:focus-visible { transform: translateY(0); }
 .sky .sr-only {
   position: absolute;
   width: 1px;
@@ -88,9 +84,23 @@
   border: 0;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .sky .reveal { opacity: 1; transform: none; }
+/* below-the-fold sections skip layout and paint until they near the viewport;
+   the remembered size keeps the scrollbar and anchor jumps stable */
+.sky main > section:not([data-hero]) {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
 }
-@media (max-width: 680px) {
-  .sky-wrap { padding: 0 22px; }
+
+/* luminous display lettering, the world's one voice for headings */
+.sky .lum {
+  font-family: var(--display);
+  font-weight: 200;
+  letter-spacing: -.02em;
+  color: var(--foam);
+  text-shadow: 0 0 18px rgba(102, 246, 255, .28), 0 0 2px rgba(232, 244, 255, .6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .sky .rise,
+  .sky.js .rise { opacity: 1; transform: none; filter: none; transition: none; }
 }

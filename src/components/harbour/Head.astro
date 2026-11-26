@@ -1,0 +1,16 @@
+---
+/** Head — a section's luminous heading with its one supporting line beside it. */
+interface Props { id: string; title: string; sub?: string }
+const { id, title, sub } = Astro.props;
+---
+<div class="head rise">
+  <h2 class="lum" id={id}>{title}</h2>
+  {sub && <p>{sub}</p>}
+</div>
+
+<style>
+  .head { display: grid; grid-template-columns: 1.2fr .8fr; gap: 30px; align-items: end; margin-bottom: clamp(40px, 6vw, 72px); }
+  h2 { margin: 0; font-size: clamp(34px, 4.6vw, 60px); line-height: 1.04; }
+  p { margin: 0; justify-self: end; max-width: 44ch; color: var(--mist); }
+  @media (max-width: 760px) { .head { grid-template-columns: 1fr; } p { justify-self: start; } }
+</style>

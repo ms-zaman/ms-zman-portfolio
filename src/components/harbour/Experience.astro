@@ -1,0 +1,62 @@
+---
+/**
+ * Experience — a depth sounding of three roles, the current one lit.
+ * Everything here is factual; the two Startise titles are one continuous role.
+ */
+import Head from './Head.astro';
+const roles = [
+  {
+    when: 'Nov 2022 – present', now: true, role: 'Frontend Developer', co: 'Startise · Dhaka',
+    desc: 'Started on Templately template packs and now work across the company’s WordPress products: plugin releases, AI integrations, and the live marketing sites.',
+    points: [
+      'Release SchedulePress Free and Pro (10,000+ active installs); took its MCP server from an internal branch to public release in 5.4.0.',
+      'Build WPDeveloper’s live sites from Figma with a Python to Elementor pipeline: the wpdeveloper.com homepage and Black Friday 2026 across five sites.',
+      'Personally developed 40+ template packs and exported 500+, the majority of the team’s pack exports.',
+      'Expert level Templately Global Style & Typography work; the internal reference point for it.',
+      'Coordinate and review the work of a 4 member development team.',
+      'Own WordPress update and maintenance workflows across Startise’s site ecosystem.',
+      'Contributing to production WordPress to Astro migrations, including easy.jobs.',
+    ],
+  },
+  {
+    when: 'Jan – Oct 2022', role: 'Frontend Developer', co: 'American Best IT · Dhaka',
+    desc: 'Built websites for marketing focused client projects, structured with SEO in mind: content hierarchy, usability, and search engine friendly markup. Clients included Alpha Omega Restoration Pros and Dera Resort.',
+  },
+  {
+    when: 'Jan – Oct 2021', role: 'Jr. Web Developer', co: 'Technofelia · Dhaka',
+    desc: 'Worked inside existing PHP codebases: customised CodeCanyon scripts, fixed bugs in existing applications, handled Fiverr client work, and turned designs into pixel perfect frontends. Worked on YodaBD.',
+  },
+];
+---
+<section class="xp" id="experience" aria-labelledby="xp-h">
+  <div class="wrapper">
+    <Head id="xp-h" title="Where I’ve worked" sub="Over five years of web work, more than three of them on production WordPress." />
+    <div class="depth">
+      {roles.map((r) => (
+        <div class:list={['role', 'rise', { now: r.now }]}>
+          <p class="when">{r.when}{r.now && <span> · current</span>}</p>
+          <h3>{r.role}</h3>
+          <p class="co">{r.co}</p>
+          <p class="desc">{r.desc}</p>
+          {r.points && <ul>{r.points.map((p) => <li>{p}</li>)}</ul>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .xp { padding: var(--section-y) 0; }
+  .depth { position: relative; padding-left: 40px; }
+  .depth::before { content: ""; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(var(--lume), var(--trace) 40%); }
+  .role { position: relative; padding-bottom: 48px; }
+  .role::before { content: ""; position: absolute; left: -39px; top: 9px; width: 11px; height: 11px; border: 1px solid var(--dim); border-radius: 50%; background: var(--abyss); }
+  .role.now::before { border-color: var(--lume); background: var(--lume); }
+  .when { margin: 0; font-size: 13px; color: var(--mist); }
+  .when span { color: var(--lume); }
+  h3 { margin: 4px 0 2px; font-family: var(--display); font-weight: 300; font-size: 28px; }
+  .co { margin: 0; color: var(--lume); font-size: 14.5px; }
+  .desc { margin: 12px 0 0; max-width: 68ch; color: var(--ink-2); }
+  ul { display: grid; gap: 6px; margin: 12px 0 0; padding-left: 18px; max-width: 72ch; color: var(--mist); }
+  li::marker { color: var(--wake); }
+</style>

@@ -1,0 +1,23 @@
+---
+/** Footer — the quiet close under every page. */
+const year = new Date().getFullYear();
+---
+<footer class="foot">
+  <div class="foot-in">
+    <span>© {year} Sharfuzzaman</span>
+    <nav aria-label="Footer">
+      <a href="/blog">Writing</a>
+      <a href="/#contact">Contact</a>
+      <a href="https://github.com/ms-zaman" target="_blank" rel="noopener">GitHub</a>
+    </nav>
+    <span>WordPress Developer · Dhaka (GMT+6) · Open to roles and projects</span>
+  </div>
+</footer>
+
+<style>
+  .foot { border-top: 1px solid var(--trace); padding: 28px 0; color: var(--dim); font-size: 13px; }
+  .foot-in { max-width: var(--wrap); margin: 0 auto; padding: 0 var(--gutter); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 28px; }
+  nav { display: flex; gap: 22px; }
+  a { transition: color .25s; }
+  a:hover { color: var(--lume); }
+</style>
