@@ -1,24 +1,25 @@
 ---
 /**
- * Process — the four-stage build workflow behind a pixel perfect implementation.
- * Ported from the frozen prototype (redesign/variant-g §Process, #process) and
- * re-pointed from a client-project flow to how the work actually runs on a team.
+ * Process — "How I ship": the four steps the work actually follows (written
+ * decision records, checking the real path, release gates), taken from how
+ * Hermizon and the SchedulePress releases are run.
+ * Ported from the frozen prototype (redesign/variant-g §Process, #process).
  */
 import SectionHead from './SectionHead.astro';
 
 const steps = [
-  { n: '1', title: 'Design', body: 'I start from the design reference (Figma files or a spec from the design team) and read it closely enough to catch what is ambiguous before building anything.' },
-  { n: '2', title: 'Development', body: 'The build itself, in Elementor or Gutenberg: real structure, reusable patterns, and content that stays editable by whoever inherits it.' },
-  { n: '3', title: 'Responsive', body: 'Every breakpoint handled deliberately rather than left to the builder’s defaults, so the layout holds from wide desktop down to small phones.' },
-  { n: '4', title: 'QA & refinement', body: 'QA reviews the build, I work with them and the designer through the findings, and refine until the implementation matches the design.' },
+  { n: '1', title: 'Understand', body: 'Read the brief, the design and the data before writing code, and ask about what is unclear while it is still cheap to change.' },
+  { n: '2', title: 'Decide, in writing', body: 'Every real choice gets a short written record: what, why, and what else was considered. Anyone can see the reasoning later, including me.' },
+  { n: '3', title: 'Check the real path', body: 'Tests are a start. I also check the thing a user actually touches, on a real install, because a passing test can still hide a broken feature.' },
+  { n: '4', title: 'Release behind a gate', body: 'Staging first, a checklist, a rollback ready. If a check fails, it does not ship.' },
 ];
 ---
 <section class="[ region ] [ border-top-line ]" id="process">
   <div class="[ wrapper ]">
     <SectionHead
       eyebrow="How I work"
-      title="What pixel perfect actually takes"
-      sub="Design → development → responsive implementation → QA → refinement. The last stage is the one that decides whether a build matches its design."
+      title="How I ship"
+      sub="The same four steps whether it is a template, a plugin release or a whole store. The last one decides whether it goes out."
     />
     <div class="[ proc-grid ] [ grid ]">
       {steps.map((s) => (

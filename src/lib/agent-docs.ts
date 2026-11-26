@@ -8,9 +8,12 @@
  *
  * Consumed by src/pages/index.md.ts and src/pages/llms.txt.ts.
  *
- * ⚠️ The four metrics are verified and must not drift or be conflated:
+ * ⚠️ Metrics are verified and must not drift or be conflated:
  *    5+ yrs · 40+ packs PERSONALLY DEVELOPED · 500+ packs EXPORTED · 700K+ users.
  *    "40+ developed" and "500+ exported" are different numbers for different things.
+ *    Case study numbers (Hermizon, ShopCurator, SchedulePress, WPDeveloper) are
+ *    sourced in redesign/case-studies-draft.md (local only). Hermizon is a
+ *    "client project" only: never name its owner or how the work came in.
  */
 
 export const SITE = 'https://sharfuzzaman.com';
@@ -18,115 +21,145 @@ export const EMAIL = 'dev.mszaman@gmail.com';
 
 /** One-paragraph description reused by llms.txt and the OpenAPI summary. */
 export const summary =
-  'Sharfuzzaman is a WordPress Developer in Dhaka, Bangladesh (GMT+6) with 5+ years of ' +
-  'experience specializing in Elementor, Gutenberg and pixel perfect frontend implementation. ' +
-  'Currently a Frontend Developer at Startise building production template packs for Templately. ' +
-  'Open to remote opportunities.';
+  'Sharfuzzaman is a WordPress developer in Dhaka, Bangladesh (GMT+6) with 5+ years of ' +
+  'experience who builds products for the web and ships them: WooCommerce stores, WordPress ' +
+  'plugins, MCP integrations for AI assistants, and the deploys behind them. Frontend Developer ' +
+  'at Startise (WPDeveloper). Open to remote roles and well defined projects.';
 
 /** The homepage, as markdown. Served at /index.md and via Accept negotiation on /. */
 export const homeMarkdown = `# Sharfuzzaman
 
-> WordPress Developer specializing in Elementor & Gutenberg.
-> Dhaka, Bangladesh (GMT+6) · **open to remote opportunities**.
+> I build products for the web and ship them.
+> Dhaka, Bangladesh (GMT+6) · **open to roles and projects**.
 
-5+ years building pixel perfect, production ready WordPress experiences, with 40+ template
-packs personally developed for an ecosystem of 700K+ users.
+5+ years of production WordPress. Lately: a WooCommerce store I built and run, my own plugin
+on WordPress.org, and AI assistants inside a plugin on 10,000+ sites.
 
 ## At a glance
 
 | | |
 |---|---|
-| Role | WordPress Developer (Frontend Developer at Startise) |
-| Specialization | Elementor, Gutenberg, pixel perfect implementation |
+| Role | WordPress developer (Frontend Developer at Startise) |
+| Focus | WooCommerce stores, plugin development, MCP and AI integrations, deployment |
 | Experience | 5+ years |
 | Location | Dhaka, Bangladesh (GMT+6) |
-| Availability | Open to remote opportunities |
+| Availability | Open to remote roles and well defined projects |
 | Email | ${EMAIL} |
 | Résumé | ${SITE}/Sharfuzzaman-Resume.pdf |
 
-**Verified metrics.** 700K+ users in the Templately ecosystem my work ships to ·
-40+ template packs personally developed (Elementor & Gutenberg) ·
-500+ template packs exported, most of the team's output · 5+ years of experience.
+**Verified metrics.** 10,000+ active installs of SchedulePress, which I release ·
+34 MCP tools running a live WooCommerce store · 40+ template packs personally developed ·
+500+ template packs exported · 700K+ users in the Templately ecosystem · 5+ years.
 
 ## What I do
 
-I turn design files into pixel perfect production WordPress: Elementor and Gutenberg in
-roughly equal measure, built to hold up on every screen and stay easy for the next person
-to edit.
-
-## Expertise
-
-- **Elementor development:** production template packs and client editable sites: custom
-  layouts, responsive breakpoints, and structure that survives real content.
-- **Gutenberg development:** native block editor builds: block patterns, reusable layouts,
-  and clean semantic structure that stays fast without a page builder runtime.
-- **Pixel perfect implementation:** translating design specifications into production
-  builds, working directly with designers and QA until it matches at every breakpoint.
-- **Global Style & Typography:** expert level work on Templately's Global Style and
-  Typography systems across template packs; the internal reference point for it on my team.
-- **WooCommerce & production WordPress:** store and site work on live installs, theme
-  customisation, plus the update and maintenance workflows that keep an ecosystem healthy.
-- **Frontend, migration & automation:** handwritten HTML, CSS, JavaScript and React where
-  a builder is the wrong tool, plus WordPress migrations, WordPress to Astro work, and
-  automating repetitive maintenance.
-
-## Toolkit
-
-- **WordPress:** WordPress, Elementor, Gutenberg, WooCommerce, theme development, template
-  development, Global Style & Typography
-- **Frontend:** HTML5, CSS3, JavaScript, React, responsive development, pixel perfect UI
-  implementation, Figma → WordPress
-- **Development:** PHP, MySQL, Git, GitHub
-- **Additional:** SEO aware development, WordPress migration, WordPress → Astro,
-  AI assisted automation
+I take a product from the design file to a live server: the storefront, the plugins behind
+it, the deploy, and the AI tools around it. WordPress is where I go deepest.
 
 ## Selected work
 
-- [SaaStrive](https://templately.com/pack/saastrive-elementor-saas-template): SaaS website
-  template (Elementor). 8 page designs, 15 sections. Built every page from the design
-  reference, pixel perfect and fully responsive.
-- [MindXtend](https://templately.com/pack/mindxtend-business-consultancy-template-gutenberg):
-  business consultancy template, built natively in the block editor. 7 page designs,
-  12 sections.
-- [BookAnAir](https://templately.com/pack/bookanair-elementor-flight-booking-website):
-  flight booking website (Elementor). 8 page designs, 11 sections.
+### Hermizon (client project): hermizon.com
 
-Also from the Templately library: NaturExplo, FlexiDropper, SnapCatch, Multigency,
-NooCodeHub, HiringFinds, D-Care, NatureTreat.
+A women's footwear store in Bangladesh. I rebuilt it on a custom block theme and six plugins
+of my own (phone sign in with SMS codes, courier booking, server side tracking), deployed it,
+and run it. The shop's team manages it through an MCP server with 34 tools: every write is
+previewed first and needs a signed, single use confirm token; write tools are off until an
+admin turns them on. Home page 80% lighter (4,169 KB to 817 KB); mobile LCP 1.36s from real
+user data. Deployment is git and Composer only, behind a launch runbook with a final gate.
+
+### ShopCurator (own plugin): <https://wordpress.org/plugins/shopcurator/>
+
+A free WooCommerce plugin for block themes, rebuilt from fixes first written for one store:
+22 storefront blocks rendered in PHP, a usable My Account area, size filters that count only
+what is in stock, and phone sign in with SMS codes. Approved on WordPress.org in November 2026.
+
+### SchedulePress (WPDeveloper): <https://wordpress.org/plugins/wp-scheduled-posts/>
+
+A post scheduling and social sharing plugin with 10,000+ active installs. I took its MCP
+server from an internal branch to public release in 5.4.0 (24 Nov 2026): 20 tools, OAuth
+for Claude and ChatGPT, sharing off until an admin allows it, every share confirmed. I run
+the Free and Pro releases: three in three weeks in November 2026.
+
+### WPDeveloper sites: <https://wpdeveloper.com/>
+
+The company homepage (live since 8 Oct 2026) and Black Friday 2026 across five sites, built
+with a pipeline that generates Elementor page data from Figma in Python, pushes it over the
+REST API and checks it against the design in a headless browser.
 
 ### Also built
 
-- **Plugin Pilot:** *1st place, Startise AI Automation Competition.* A WordPress automation
-  tool streamlining repetitive maintenance across Templately's multisite template-pack
-  environments, starting with plugin installs and updates.
-- **WordPress → Astro migration** *(in progress)*: contributing to production
-  WordPress to Astro migrations on the team, including the ongoing migration of easy.jobs.
+- **Plugin Pilot:** *1st place, Startise AI Automation Competition.* Deploys WordPress
+  plugins to many sites at once from a dashboard or Slack. Internal tool.
+- **[Saasar](https://astro.build/themes/details/saasar-ai-saas-project-management-astro-theme/):**
+  a paid Astro theme for AI SaaS and project management products, 18 page templates, on the
+  official Astro themes directory. Built with Build2Next.
+- **This site:** a live WebGL weather sky that scores 99 on mobile PageSpeed, up from 42.
+- **[Prostuti](https://visaprep.sharfuzzaman.com/):** a Bengali site that helps people in
+  Bangladesh prepare Indian visa applications, with an in browser photo checker.
 
-## Open source
+From the Templately library: SaaStrive, MindXtend, BookAnAir, NaturExplo, FlexiDropper,
+SnapCatch, Multigency, NooCodeHub, HiringFinds, D-Care.
 
-- [DesignScan](https://github.com/ms-zaman/DesignScan) : point it at a URL and get a
-  \`DESIGN.md\`: automatic design token extraction (colors, type, spacing, radius) from any
-  live site, ready for your coding agent. TypeScript, Playwright, CLI. MIT.
-- [Redline](https://github.com/ms-zaman/Redline): an end to end data pipeline that crawls
-  news sources, uses AI to classify and geotag each incident, stores it in Postgres, and
-  renders it on a live filterable map with charts. Next.js, React, Express, PostgreSQL,
-  Puppeteer, Leaflet.
+## Expertise
+
+- **WooCommerce stores:** phone first, cash on delivery, courier booking, SMS codes, server
+  side tracking (Meta CAPI, GA4).
+- **Plugin development:** PHP plugins that pass WordPress.org review, with PHPStan, PHPCS
+  and releases that can be rolled back.
+- **MCP and AI integrations:** connecting AI assistants to real systems safely: previews,
+  signed confirm tokens, admin switches, rate limits, OAuth.
+- **Elementor and Gutenberg:** 40+ production template packs, Global Style & Typography.
+- **Deployment and operations:** hosting, staging, git based deploys, launch gates,
+  rollbacks, email DNS (Netlify, Cloudflare, xCloud).
+- **Performance:** page weight, Critical CSS, Core Web Vitals from real users.
+
+## Toolkit
+
+- **WordPress:** WordPress, WooCommerce, Elementor, Gutenberg, block themes, plugin
+  development, Global Style & Typography
+- **Backend:** PHP, MySQL, REST API, WP CLI, Composer, PHPStan, MCP, OAuth
+- **Frontend:** HTML, CSS, JavaScript, React, Astro, WebGL (React Three Fiber), Figma to code
+- **Ship:** Git, GitHub Actions, Netlify, Cloudflare, xCloud, WordPress.org SVN
+- **Also:** Python, Rust (learning), SEO aware development, WordPress to Astro
+
+## Lab
+
+- [DesignScan](https://github.com/ms-zaman/DesignScan) *(open source)*: point it at a URL
+  and get a \`DESIGN.md\` of its design tokens. TypeScript, Playwright, CLI. MIT.
+- [Redline](https://github.com/ms-zaman/Redline) *(open source)*: crawls news sources,
+  classifies and geotags incidents with AI, stores them in Postgres, renders a live map.
+- [WordPress to Astro kit](https://github.com/ms-zaman/wordpress-to-astro-kit)
+  *(open source)*: a starter app and playbook for moving a WordPress site to Astro.
+- **Afternote** *(prototype)*: a Bengali first newsroom with a Rust API and an MCP server
+  for AI readers.
+- **Onushondhan** *(in progress)*: a verified hub for Bangla books and audiobooks.
+- [Learning Rust](${SITE}/blog/learning-rust-variables-mutability-shadowing) *(learning in
+  public)*: lessons on memory, ownership and concurrency, in Bengali.
+
+## How I ship
+
+1. **Understand:** read the brief, the design and the data before writing code.
+2. **Decide, in writing:** every real choice gets a short written record.
+3. **Check the real path:** tests are a start; I also check what a user actually touches.
+4. **Release behind a gate:** staging first, a checklist, a rollback ready.
 
 ## Experience
 
 ### Frontend Developer, Startise, Dhaka (Nov 2022 – present)
 
-Building production WordPress template packs for Templately, split roughly 50/50 between
-Elementor and Gutenberg, in a workflow where pixel perfect implementation is the baseline.
+Started on Templately template packs and now work across the company's WordPress products:
+plugin releases, AI integrations, and the live marketing sites.
 
+- Release SchedulePress Free and Pro (10,000+ active installs); took its MCP server from an
+  internal branch to public release in 5.4.0.
+- Build WPDeveloper's live sites from Figma with a Python to Elementor pipeline: the
+  wpdeveloper.com homepage and Black Friday 2026 across five sites.
 - Personally developed 40+ template packs and exported 500+, the majority of the team's
   pack exports.
 - Expert level Templately Global Style & Typography work; the internal reference point for it.
-- Work directly with designers and QA to refine each build until it matches the design.
-- Supported and reviewed template migrations across the library.
 - Coordinate and review the work of a 4-member development team.
 - Own WordPress update and maintenance workflows across Startise's site ecosystem.
-- Contributing to production WordPress → Astro migrations, including easy.jobs.
+- Contributing to production WordPress to Astro migrations, including easy.jobs.
 
 ### Frontend Developer, American Best IT, Dhaka (Jan – Oct 2022)
 
@@ -147,7 +180,7 @@ designs into pixel perfect frontends.
 
 ## Contact
 
-Currently looking for a remote WordPress / Web Developer position.
+Open to a remote role or a well defined project.
 
 - Email: <${EMAIL}>
 - GitHub: <https://github.com/ms-zaman>

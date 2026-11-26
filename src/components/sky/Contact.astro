@@ -17,8 +17,9 @@ const EMAIL = 'dev.mszaman@gmail.com';
    one key; the label and options are what changed. */
 const enquiryTypes = [
   'Full time remote role',
-  'Contract / part time role',
-  'WordPress project (Elementor / Gutenberg)',
+  'Contract or part time role',
+  'A project (WordPress, WooCommerce, plugin)',
+  'Collaboration',
   'Recruiter enquiry',
   'Something else',
 ];
@@ -30,8 +31,8 @@ const enquiryTypes = [
       <div class="c-cloud x2" aria-hidden="true"><picture><source srcset="/sky/cloud-2.avif" type="image/avif" /><img src="/sky/cloud-2.png" alt="" width="1024" height="393" loading="lazy" /></picture></div>
 
       <div class="eyebrow c-eyebrow"><span class="s">✦</span> Contact</div>
-      <h2 class="big">Let's talk about the <em>role.</em></h2>
-      <p class="contact-note">Currently looking for a remote WordPress / Web Developer position. Send over the details and I'll reply quickly.</p>
+      <h2 class="big">Let's build something that <em>ships.</em></h2>
+      <p class="contact-note">Open to a remote role or a well defined project. Send over the details and I'll reply quickly.</p>
 
       <form class="[ c-form ] [ grid ]" name={FORM_NAME} method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value={FORM_NAME} />
@@ -48,10 +49,10 @@ const enquiryTypes = [
               {enquiryTypes.map((t) => <option>{t}</option>)}
             </select>
           </div>
-          <div class="cf-field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" placeholder="A few lines about the role, the team & the stack…" required></textarea></div>
+          <div class="cf-field"><label for="cf-message">Message</label><textarea id="cf-message" name="message" placeholder="A few lines about the role or the project, the team & the stack…" required></textarea></div>
           <div class="[ cf-actions ] [ repel ]">
             <button type="submit" class="cf-submit">Send message <span aria-hidden="true">→</span></button>
-            <span class="cf-note">Open to remote opportunities. Replies from a real person.</span>
+            <span class="cf-note">Open to roles and projects. Replies from a real person.</span>
           </div>
           <p class="cf-err" role="alert" hidden>Couldn't send just now. Please email <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.</p>
           <div class="cf-sent" role="status" aria-live="polite" tabindex="-1">
