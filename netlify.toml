@@ -15,6 +15,11 @@
   from = "/sky/*"
   to = "/"
   status = 301
+# The old Sky styleguide was retired with the Night Harbour redesign
+[[redirects]]
+  from = "/design-library"
+  to = "/"
+  status = 301
 
 # @astrojs/sitemap emits /sitemap-index.xml, but /sitemap.xml is the URL every
 # crawler and scanner actually probes (and the one robots.txt advertised while
@@ -70,11 +75,15 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# Brand sky assets (hero poster + cloud cut-outs). A week, not `immutable`:
+# The hero's sea posters and the work screenshots. A week, not `immutable`:
 # these live in public/ so they are NOT content-hashed, and a stale copy pinned
 # for a year would survive any future re-export.
 [[headers]]
-  for = "/sky/*"
+  for = "/harbour/*"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+[[headers]]
+  for = "/work/*"
   [headers.values]
     Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
 

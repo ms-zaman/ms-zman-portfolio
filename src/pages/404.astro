@@ -1,6 +1,5 @@
 ---
 import BlogLayout from '../layouts/BlogLayout.astro';
-import Button from '../components/sky/Button.astro';
 ---
 
 <BlogLayout
@@ -11,8 +10,14 @@ import Button from '../components/sky/Button.astro';
 >
   <div class="[ notfound ] [ wrapper ]">
     <p class="nf-code">404</p>
-    <h1 class="nf-title">Page not found</h1>
-    <p class="nf-text">The page you&apos;re looking for doesn&apos;t exist or has been moved.</p>
-    <Button href="/" variant="solid">Back to Home <span aria-hidden="true">→</span></Button>
+    <h1 class="nf-title">Lost at sea</h1>
+    <p class="nf-text">This page doesn&apos;t exist or has been moved. The harbour is this way.</p>
+    <a class="nf-home" href="/">Back to the harbour <svg aria-hidden="true"><use href="#i-arrow" /></svg></a>
   </div>
 </BlogLayout>
+
+<style>
+  .nf-home { display: inline-flex; align-items: center; gap: 14px; margin-top: 8px; padding: 14px 22px; border: 1px solid #2a7ae0; border-radius: 6px; background: var(--wake-btn); color: #fff; font-family: var(--display); font-size: 13.5px; letter-spacing: .2em; text-transform: uppercase; transition: background .3s; }
+  .nf-home:hover { background: var(--wake-btn-hi); }
+  .nf-home svg { width: 46px; height: 10px; }
+</style>

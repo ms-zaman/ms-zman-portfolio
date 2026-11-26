@@ -1,5 +1,5 @@
 /* ============================================================
-   Sky design system — COMPOSITION  (the "C" in CUBE CSS)
+   Night Harbour design system — COMPOSITION  (the "C" in CUBE CSS)
    ------------------------------------------------------------
    Flexible, high-level layout skeletons — how elements sit and
    flow relative to one another. They hint the browser rather than
@@ -16,7 +16,7 @@
    Every primitive exposes a --hook with an inline fallback, so a Block
    can pin an exact value (e.g. --grid-space: 22px) without that value
    inheriting down into nested layouts.
-   Loaded (with the Utility sheet) only on Sky pages via SkyLayout.
+   Loaded (with the Utility sheet) by HarbourLayout and BlogLayout.
    ============================================================ */
 
 /* — Wrapper — the page gutter: centred, max-width, inline padding.
@@ -24,10 +24,7 @@
 .wrapper {
   max-width: var(--wrapper-max, var(--wrap));
   margin-inline: auto;
-  padding-inline: var(--wrapper-pad, 40px);
-}
-@media (max-width: 680px) {
-  .wrapper { padding-inline: var(--wrapper-pad, 22px); }
+  padding-inline: var(--wrapper-pad, var(--gutter));
 }
 
 /* — Flow (a.k.a. Stack) — vertical rhythm between direct siblings.

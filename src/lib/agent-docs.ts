@@ -51,6 +51,11 @@ on WordPress.org, and AI assistants inside a plugin on 10,000+ sites.
 34 MCP tools running a live WooCommerce store · 40+ template packs personally developed ·
 500+ template packs exported · 700K+ users in the Templately ecosystem · 5+ years.
 
+## Now (November 2026)
+
+Redesigning the SchedulePress dashboard (in design review: upcoming and missed posts, cron
+health, failed shares with a plain fix). Also learning Rust.
+
 ## What I do
 
 I take a product from the design file to a live server: the storefront, the plugins behind
@@ -93,7 +98,8 @@ REST API and checks it against the design in a headless browser.
 - **[Saasar](https://astro.build/themes/details/saasar-ai-saas-project-management-astro-theme/):**
   a paid Astro theme for AI SaaS and project management products, 18 page templates, on the
   official Astro themes directory. Built with Build2Next.
-- **This site:** a live WebGL weather sky that scores 99 on mobile PageSpeed, up from 42.
+- **This site:** a live WebGPU sea in the hero (plankton lit by the visitor's pointer), shown
+  only on a real GPU so PageSpeed still sees a fast static poster.
 - **[Prostuti](https://visaprep.sharfuzzaman.com/):** a Bengali site that helps people in
   Bangladesh prepare Indian visa applications, with an in browser photo checker.
 

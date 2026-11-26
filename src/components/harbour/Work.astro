@@ -1,0 +1,192 @@
+---
+/**
+ * Work — four live products as buoys on one current. The current is drawn by
+ * scroll and each buoy lights as it reaches it; inside every case study a
+ * dashed shipping lane runs from the problem to the port it reached.
+ * Screenshots are captures of the live sites in public/work/ (2026-11-26) plus
+ * ShopCurator's own WordPress.org screenshots. Every metric is sourced in
+ * redesign/case-studies-draft.md; never add one without a source.
+ * Hermizon is a "Client project" only: never name its owner or how it came in.
+ */
+interface Shot { label: string; src: string; w: number; h: number }
+interface Case {
+  tag: string; name: string; sub: string; desc: string;
+  readings: { b: string; s: string }[];
+  href: string; linkLabel: string; shots: Shot[]; lane: string[];
+}
+const P = { w: 900, h: 1030 };
+const L = { w: 1280, h: 900 };
+const cases: Case[] = [
+  {
+    tag: 'Client project · WooCommerce', name: 'Hermizon', sub: 'Women’s footwear store, Bangladesh',
+    desc: 'I rebuilt the store on a custom block theme and six plugins of my own (phone sign in with SMS codes, courier booking, server side tracking), deployed it, and run it. The shop’s team manages it through an AI assistant that previews every change and waits for a confirm before it touches the live store.',
+    readings: [{ b: '80%', s: 'lighter home page' }, { b: '1.36s', s: 'LCP, real users' }, { b: '34', s: 'MCP tools' }],
+    href: 'https://hermizon.com/', linkLabel: 'Visit hermizon.com',
+    shots: [
+      { label: 'Home', src: '/work/hermizon/home.webp', ...P },
+      { label: 'Shop', src: '/work/hermizon/shop.webp', ...P },
+      { label: 'Product', src: '/work/hermizon/product.webp', ...P },
+      { label: 'Size and delivery', src: '/work/hermizon/product-buy.webp', ...P },
+      { label: 'Bridal collection', src: '/work/hermizon/bridal.webp', ...P },
+    ],
+    lane: ['Tampered plugin found', 'Block theme and six plugins', 'Staging, gate, deploy', 'Live 15 Sep 2026', '80% lighter, 1.36s LCP'],
+  },
+  {
+    tag: 'Own plugin · WordPress.org', name: 'ShopCurator', sub: 'Free WooCommerce plugin for block themes',
+    desc: 'The fixes I wrote for one store solved problems every block theme shop has, so I rebuilt them as a plugin anyone can install: storefront blocks, a My Account area customers can actually use, size filters that only count what is in stock, and phone sign in with SMS codes.',
+    readings: [],
+    href: 'https://wordpress.org/plugins/shopcurator/', linkLabel: 'View on WordPress.org',
+    shots: [
+      { label: 'WordPress.org', src: '/work/shopcurator/wporg.webp', ...P },
+      { label: 'Quick view', src: '/work/shopcurator/quick-view.webp', ...L },
+      { label: 'Review summary', src: '/work/shopcurator/reviews.webp', ...L },
+      { label: 'My Account', src: '/work/shopcurator/account.webp', w: 1280, h: 1465 },
+    ],
+    lane: ['Fixes from one store', '22 blocks, rendered in PHP', 'WordPress.org review', 'Approved 10 Nov 2026'],
+  },
+  {
+    tag: 'WPDeveloper · MCP', name: 'SchedulePress', sub: 'Post scheduling and social sharing plugin',
+    desc: 'I took the plugin’s MCP server from an internal branch to a public release, so Claude and ChatGPT can plan and share posts, with sharing off until an admin allows it and every share confirmed. I also run the Free and Pro releases: three in three weeks in November 2026.',
+    readings: [{ b: '10K+', s: 'active installs' }, { b: '20', s: 'MCP tools' }],
+    href: 'https://wordpress.org/plugins/wp-scheduled-posts/', linkLabel: 'View on WordPress.org',
+    shots: [
+      { label: 'Changelog, 5.4.0', src: '/work/schedulepress/changelog.webp', ...P },
+      { label: 'WordPress.org', src: '/work/schedulepress/wporg.webp', ...P },
+      { label: 'schedulepress.com', src: '/work/schedulepress/features.webp', ...P },
+    ],
+    lane: ['MCP on a branch', 'Every QA must fix', 'Sharing checked on the real path', '5.4.0 live 24 Nov 2026'],
+  },
+  {
+    tag: 'WPDeveloper · Elementor', name: 'WPDeveloper sites', sub: 'Company homepage and Black Friday 2026',
+    desc: 'Instead of hand building every page, I generate the Elementor page data from Figma in Python, push it over the REST API and check it against the design in a headless browser. It built the wpdeveloper.com homepage and the Black Friday pages across five sites, with a backup before every live write.',
+    readings: [],
+    href: 'https://wpdeveloper.com/', linkLabel: 'Visit wpdeveloper.com',
+    shots: [
+      { label: 'Homepage', src: '/work/wpdeveloper/home.webp', ...P },
+      { label: 'Homepage, products', src: '/work/wpdeveloper/home-products.webp', ...P },
+      { label: 'Deals', src: '/work/wpdeveloper/deals.webp', ...P },
+      { label: 'Black Friday', src: '/work/wpdeveloper/black-friday.webp', ...P },
+    ],
+    lane: ['Figma file', 'Python to Elementor data', 'Headless check against the design', 'Live on five sites'],
+  },
+];
+---
+<section class="work" id="work" aria-labelledby="work-h" data-work>
+  <div class="current" aria-hidden="true">
+    <svg preserveAspectRatio="none" viewBox="0 0 4 1000"><path class="faint" d="M2 0V1000" /><path class="lit" data-current d="M2 0V1000" stroke-dasharray="1000" stroke-dashoffset="1000" /></svg>
+  </div>
+  <div class="wrapper">
+    <div class="head rise">
+      <h2 class="lum" id="work-h">Things I've shipped</h2>
+      <p>Four products that are live right now, from a store I run to a plugin on 10,000+ sites. Each one started with a real problem.</p>
+    </div>
+
+    {cases.map((c) => (
+      <article class="case rise">
+        <span class="buoy" aria-hidden="true"></span>
+        <div>
+          <h3>{c.name}</h3>
+          <p class="sub">{c.sub} <span>· {c.tag}</span></p>
+          <p class="desc">{c.desc}</p>
+          {c.readings.length > 0 && <div class="readings num">{c.readings.map((r) => <div><b>{r.b}</b><span>{r.s}</span></div>)}</div>}
+          <a class="go" href={c.href} target="_blank" rel="noopener">{c.linkLabel} <svg class="arrow" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+        </div>
+        <div class="rail" tabindex="0" role="group" aria-label={`${c.name} screenshots, scroll horizontally`}>
+          {c.shots.map((s) => (
+            <figure>
+              <img src={s.src} width={s.w} height={s.h} alt={`${c.name}: ${s.label}`} loading="lazy" decoding="async" style={`aspect-ratio: ${s.w} / ${s.h}`} />
+              <figcaption>{s.label}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <ol class="lane" style={`--n: ${c.lane.length}`} aria-label={`${c.name}, from the problem to launch`}>
+          {c.lane.map((stop, i) => <li class:list={['stop', { end: i === c.lane.length - 1 }]}><span class="pin" aria-hidden="true"></span><span>{stop}</span></li>)}
+        </ol>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .work { position: relative; padding: var(--section-y) 0; overflow: hidden; }
+  .head { display: grid; grid-template-columns: 1.2fr .8fr; gap: 30px; align-items: end; margin-bottom: clamp(40px, 6vw, 72px); }
+  .head h2 { margin: 0; font-size: clamp(34px, 4.6vw, 60px); line-height: 1.04; }
+  .head p { margin: 0; justify-self: end; max-width: 44ch; color: var(--mist); }
+  .current { position: absolute; left: calc(max(0px, (100vw - var(--wrap)) / 2) + var(--gutter) - 2px); top: 330px; height: 60%; width: 4px; pointer-events: none; }
+  .current svg { width: 4px; height: 100%; overflow: visible; }
+  .current path { fill: none; stroke-width: 1.5; }
+  .current .lit { stroke: var(--lume); }
+  .current .faint { stroke: var(--trace); }
+  .case { position: relative; display: grid; grid-template-columns: minmax(260px, 380px) minmax(0, 1fr); gap: clamp(28px, 4vw, 56px); padding: 56px 0 56px 44px; border-top: 1px solid rgba(34, 55, 79, .55); }
+  .buoy { position: absolute; left: -9px; top: 62px; width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid var(--lume); border-radius: 50%; background: var(--abyss); }
+  .buoy::after { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--lume); opacity: .35; transition: opacity .6s; }
+  .case.lit .buoy::after { opacity: 1; }
+  h3 { margin: 0 0 8px; font-family: var(--display); font-weight: 200; font-size: clamp(34px, 4vw, 52px); line-height: 1; letter-spacing: -.01em; }
+  .sub { margin: 0 0 18px; color: var(--mist); font-size: 15px; }
+  .sub span { color: var(--lume); }
+  .desc { margin: 0; max-width: 48ch; color: var(--ink-2); font-size: 15.5px; }
+  .readings { display: flex; flex-wrap: wrap; gap: 10px 28px; margin: 24px 0; padding: 16px 0; border-block: 1px solid var(--trace); }
+  .readings div { display: flex; flex-direction: column; }
+  .readings b { font-family: var(--mono); font-weight: 600; font-size: 22px; line-height: 1.2; color: var(--foam); }
+  .readings span { font-size: 12.5px; color: var(--mist); }
+  .desc + .go { margin-top: 24px; }
+  .go { display: inline-flex; align-items: center; gap: 12px; color: var(--lume); font-family: var(--display); font-size: 12.5px; letter-spacing: .18em; text-transform: uppercase; }
+  .go .arrow { width: 46px; height: 10px; transition: transform .45s var(--ease-out); }
+  .go:hover .arrow { transform: translateX(6px); }
+  .rail { display: flex; gap: 16px; align-self: start; overflow-x: auto; scroll-snap-type: x proximity; padding: 4px calc(max(0px, (100vw - var(--wrap)) / 2) + var(--gutter)) 16px 0; margin-right: calc(-1 * (max(0px, (100vw - var(--wrap)) / 2) + var(--gutter))); scrollbar-width: thin; scrollbar-color: var(--trace) transparent; }
+  figure { flex: none; margin: 0; scroll-snap-align: start; }
+  .rail img { width: auto; height: clamp(240px, 30vw, 380px); object-fit: cover; object-position: top; border: 1px solid var(--trace); border-radius: 8px; background: var(--deep); filter: saturate(.92) brightness(.92); transition: filter .5s var(--ease-out), border-color .5s, transform .5s var(--ease-out); }
+  figure:hover img { filter: none; border-color: rgba(102, 246, 255, .5); transform: translateY(-4px); }
+  figcaption { margin-top: 10px; font-size: 12.5px; color: var(--dim); }
+  .lane { grid-column: 1 / -1; position: relative; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; margin: 6px 0 0; padding: 28px 0 0; list-style: none; border-top: 1px solid rgba(34, 55, 79, .55); }
+  .lane::before { content: ""; position: absolute; left: calc(100% / var(--n) / 2); right: calc(100% / var(--n) / 2); top: 38px; height: 0; border-top: 2px dashed var(--lume); opacity: .8; }
+  .stop { position: relative; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 0 8px; text-align: center; }
+  .pin { position: relative; z-index: 1; width: 20px; height: 20px; border: 1.5px solid var(--lume); border-radius: 50%; background: var(--abyss); }
+  .end .pin { background: var(--lume); box-shadow: 0 0 14px var(--lume); }
+  .stop span:last-child { max-width: 20ch; font-size: 14px; line-height: 1.4; color: var(--mist); }
+  .end span:last-child { color: var(--foam); }
+  @media (max-width: 900px) {
+    .case { grid-template-columns: 1fr; padding-left: 30px; }
+    .current { left: calc(var(--gutter) - 2px); }
+    .buoy { left: -11px; }
+  }
+  @media (max-width: 760px) { .head { grid-template-columns: 1fr; } .head p { justify-self: start; } }
+  @media (max-width: 640px) {
+    .lane { grid-auto-flow: row; grid-auto-columns: auto; gap: 16px; padding-top: 22px; }
+    .lane::before { left: 9px; right: auto; top: 30px; bottom: 10px; width: 0; height: auto; border-top: 0; border-left: 2px dashed var(--lume); }
+    .stop { flex-direction: row; padding: 0; text-align: left; }
+    .stop span:last-child { max-width: none; }
+  }
+</style>
+
+<script>
+  // The current through the work: drawn by scroll; buoys light as it reaches them.
+  const sec = document.querySelector<HTMLElement>('[data-work]');
+  const lit = sec?.querySelector<SVGPathElement>('[data-current]');
+  if (sec && lit) {
+    const cases = [...sec.querySelectorAll<HTMLElement>('.case')];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const line = sec.querySelector<HTMLElement>('.current');
+    // the current runs from the first buoy to the last one, never into empty water
+    const place = () => {
+      const buoys = [...sec.querySelectorAll<HTMLElement>('.buoy')];
+      if (!line || buoys.length < 2) return;
+      const top0 = sec.getBoundingClientRect().top;
+      const first = buoys[0].getBoundingClientRect();
+      const last = buoys[buoys.length - 1].getBoundingClientRect();
+      line.style.top = `${first.top - top0 + first.height / 2}px`;
+      line.style.height = `${last.top - first.top}px`;
+    };
+    const tick = () => {
+      const r = sec.getBoundingClientRect();
+      const vh = innerHeight;
+      const p = reduce ? 1 : Math.min(1, Math.max(0, (vh * 0.6 - r.top - 300) / (r.height - 400)));
+      lit.setAttribute('stroke-dashoffset', String(1000 * (1 - p)));
+      cases.forEach((c) => c.classList.toggle('lit', reduce || c.getBoundingClientRect().top < vh * 0.6));
+    };
+    addEventListener('scroll', tick, { passive: true });
+    addEventListener('resize', () => { place(); tick(); });
+    // first measure after the browser's own first layout, never forced during module evaluation
+    requestAnimationFrame(() => requestAnimationFrame(() => { place(); tick(); }));
+  }
+</script>

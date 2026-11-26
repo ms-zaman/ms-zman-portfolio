@@ -1,18 +1,17 @@
 ---
 /**
- * BlogLayout — the light "Sky" shell for /blog and /404.
- * Shares the homepage design system (sky-tokens + composition + utility, Inter
- * fonts, SkyNav + SiteFooter) so the blog matches the redesign. Replaces the old
- * dark BaseLayout. Keeps ClientRouter view transitions and GA.
+ * BlogLayout — the Night Harbour shell for /blog and /404.
+ * Shares the homepage tokens, fonts, nav and footer so the whole site is the
+ * harbour at night. Keeps ClientRouter view transitions and the analytics tags.
  */
 import type { ImageMetadata } from 'astro';
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
-import defaultFeaturedImage from '../images/ms-zaman-featured-img.webp';
 import Analytics from '../components/Analytics.astro';
 import Clarity from '../components/Clarity.astro';
-import SkyNav from '../components/SkyNav.astro';
-import SiteFooter from '../components/sky/SiteFooter.astro';
+import Nav from '../components/harbour/Nav.astro';
+import Footer from '../components/harbour/Footer.astro';
+import Sprite from '../components/harbour/Sprite.astro';
 import '../styles/sky-tokens.css';
 import '../styles/sky-base.css';
 import '../styles/sky-composition.css';
@@ -51,7 +50,7 @@ const {
   ogTitle = title,
   ogDescription = description,
   canonicalPath = '/',
-  ogImage = defaultFeaturedImage,
+  ogImage = '/og.jpg',
   markdownPath,
   noindex = false,
   article,
@@ -105,7 +104,7 @@ const articleLd = article && {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#3f86cf" />
+    <meta name="theme-color" content="#03060b" />
     <meta name="description" content={description} />
     <meta name="author" content="Sharfuzzaman" />
     <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large'} />
@@ -141,7 +140,7 @@ const articleLd = article && {
     <link rel="dns-prefetch" href="https://www.clarity.ms" />
 
     <Font cssVariable="--font-inter" preload />
-    <Font cssVariable="--font-inter-tight" preload />
+    <Font cssVariable="--font-jost" preload />
     <ClientRouter />
 
     <!-- Both tags now load themselves on requestIdleCallback (see src/scripts/ga.ts
@@ -151,10 +150,11 @@ const articleLd = article && {
   </head>
   <body class="sky">
     <a href="#main-content" class="skip-link">Skip to main content</a>
-    <SkyNav />
+    <Sprite />
+    <Nav />
     <main id="main-content" class="blog-main">
       <slot />
     </main>
-    <SiteFooter />
+    <Footer />
   </body>
 </html>

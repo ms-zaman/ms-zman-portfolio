@@ -1,33 +1,35 @@
 ---
 /**
- * Home (/) — the "Sky" redesign. Assembled from the sky components.
- * The blog/404 share the same light Sky system via BlogLayout.
+ * Home (/) — Night Harbour. The harbour at night: a WebGPU sea in the hero,
+ * the departures board of what shipped, four live products as buoys on one
+ * current, then craft, expertise, lab, experience, gates and contact.
+ * The blog/404 share the same tokens via BlogLayout.
  */
-import SkyLayout from '../layouts/SkyLayout.astro';
-import Hero from '../components/sky/Hero.astro';
-import WhatIDo from '../components/sky/WhatIDo.astro';
-import Services from '../components/sky/Services.astro';
-import SelectedWork from '../components/sky/SelectedWork.astro';
-import SkyBand from '../components/sky/SkyBand.astro';
-import OpenSource from '../components/sky/OpenSource.astro';
-import Experience from '../components/sky/Experience.astro';
-import Process from '../components/sky/Process.astro';
-import Faq from '../components/sky/Faq.astro';
-import Contact from '../components/sky/Contact.astro';
-import SiteFooter from '../components/sky/SiteFooter.astro';
+import HarbourLayout from '../layouts/HarbourLayout.astro';
+import Nav from '../components/harbour/Nav.astro';
+import Hero from '../components/harbour/Hero.astro';
+import Departures from '../components/harbour/Departures.astro';
+import Work from '../components/harbour/Work.astro';
+import Craft from '../components/harbour/Craft.astro';
+import Expertise from '../components/harbour/Expertise.astro';
+import Lab from '../components/harbour/Lab.astro';
+import Experience from '../components/harbour/Experience.astro';
+import Gates from '../components/harbour/Gates.astro';
+import Contact from '../components/harbour/Contact.astro';
+import Footer from '../components/harbour/Footer.astro';
 ---
-<SkyLayout>
-  <Hero />
+<HarbourLayout>
+  <Nav home />
   <main>
-    <WhatIDo />
-    <Services />
-    <SelectedWork />
-    <SkyBand />
-    <OpenSource />
+    <Hero />
+    <Departures />
+    <Work />
+    <Craft />
+    <Expertise />
+    <Lab />
     <Experience />
-    <Process />
-    <Faq />
+    <Gates />
     <Contact />
   </main>
-  <SiteFooter />
-</SkyLayout>
+  <Footer />
+</HarbourLayout>

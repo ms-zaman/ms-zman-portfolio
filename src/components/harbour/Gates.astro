@@ -1,0 +1,30 @@
+---
+/** Gates — how I ship: four steps in order (numbered, because the order is the point). */
+import Head from './Head.astro';
+const steps = [
+  { t: 'Understand', d: 'Read the brief, the design and the data before writing code, and ask while it is still cheap to change.' },
+  { t: 'Decide, in writing', d: 'Every real choice gets a short record: what, why, and what else was considered.' },
+  { t: 'Check the real path', d: 'Tests are a start. I also check what a user actually touches, on a real install.' },
+  { t: 'Release behind a gate', d: 'Staging first, a checklist, a rollback ready. If a check fails, it does not ship.' },
+];
+---
+<section class="gates" aria-labelledby="gate-h">
+  <div class="wrapper">
+    <Head id="gate-h" title="How I ship" sub="The same four steps whether it is a template, a plugin release or a whole store." />
+    <ol class="route rise">
+      {steps.map((s, i) => <li><span class="wp">{i + 1}</span><h3>{s.t}</h3><p>{s.d}</p></li>)}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .gates { padding: var(--section-y) 0; }
+  .route { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; padding: 0; list-style: none; }
+  .route::before { content: ""; position: absolute; left: 0; right: 0; top: 15px; height: 0; border-top: 1px dashed var(--lume); opacity: .6; }
+  li { position: relative; padding-right: 28px; }
+  .wp { position: relative; display: grid; place-items: center; width: 31px; height: 31px; margin-bottom: 22px; border: 1px solid var(--lume); border-radius: 50%; background: var(--abyss); font-family: var(--display); font-size: 13px; color: var(--lume); }
+  h3 { margin: 0 0 10px; font-family: var(--display); font-weight: 300; font-size: 24px; }
+  p { margin: 0; color: var(--mist); font-size: 15px; }
+  @media (max-width: 860px) { .route { grid-template-columns: 1fr 1fr; row-gap: 40px; } .route::before { display: none; } }
+  @media (max-width: 520px) { .route { grid-template-columns: 1fr; } }
+</style>

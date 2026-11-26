@@ -1,0 +1,61 @@
+---
+/**
+ * Lab — open source tools and experiments, each by its honest light state:
+ * radiant (open source), excited (in progress), dormant (prototype), and a
+ * ringed state for learning in public. Private repos get no link.
+ */
+import Head from './Head.astro';
+interface Item { state: 'radiant' | 'excited' | 'dormant' | 'learning'; label: string; name: string; href?: string; desc: string; stack: string }
+const items: Item[] = [
+  { state: 'radiant', label: 'Open source', name: 'DesignScan', href: 'https://github.com/ms-zaman/DesignScan', desc: 'Point it at a URL and get a DESIGN.md: design tokens extracted from any live site, ready for a coding agent.', stack: 'TypeScript · Playwright · CLI' },
+  { state: 'radiant', label: 'Open source', name: 'Redline', href: 'https://github.com/ms-zaman/Redline', desc: 'Crawls news sources, classifies and geotags each incident with AI, stores it in Postgres and draws it on a live map.', stack: 'Next.js · Express · PostgreSQL · Leaflet' },
+  { state: 'radiant', label: 'Open source', name: 'WordPress to Astro kit', href: 'https://github.com/ms-zaman/wordpress-to-astro-kit', desc: 'A starter app and a playbook for moving a WordPress site to Astro, taken from a real migration.', stack: 'Astro · WordPress' },
+  { state: 'excited', label: 'In progress', name: 'Onushondhan', desc: 'A verified hub for Bangla books and audiobooks, where every listing is checked before it goes up.', stack: 'Astro · Data · Bengali' },
+  { state: 'dormant', label: 'Prototype', name: 'Afternote', desc: 'A Bengali first newsroom: a Rust API, an Astro site, and an MCP server that lets AI assistants read published news through audited tokens.', stack: 'Rust · Astro · MCP' },
+  { state: 'learning', label: 'Learning in public', name: 'Learning Rust', href: '/blog/learning-rust-variables-mutability-shadowing', desc: 'Lessons on what sits under the code I write every day: memory, ownership, concurrency. Written in Bengali.', stack: 'Rust · Blog' },
+];
+---
+<section class="lab" id="lab" aria-labelledby="lab-h">
+  <div class="wrapper">
+    <Head id="lab-h" title="Below the surface" sub="Open source tools and experiments. Each one says honestly how brightly it is lit." />
+    <div class="grid-lab rise">
+      {items.map((it) => {
+        const ext = it.href?.startsWith('http');
+        return (
+          <article>
+            <h3>{it.href ? <a href={it.href} target={ext ? '_blank' : undefined} rel={ext ? 'noopener' : undefined}>{it.name} <svg aria-hidden="true"><use href="#i-ext" /></svg></a> : it.name}</h3>
+            <p>{it.desc}</p>
+            <span class="stack"><span class:list={['state', it.state]}><i aria-hidden="true"></i>{it.label}</span><span>{it.stack}</span></span>
+          </article>
+        );
+      })}
+    </div>
+    <p class="more rise">More is in the works. I build in public on <a href="https://github.com/ms-zaman" target="_blank" rel="noopener">GitHub</a>.</p>
+  </div>
+</section>
+
+<style>
+  .lab { padding: var(--section-y) 0; background: linear-gradient(180deg, var(--abyss), var(--deep) 30%, var(--deep) 70%, var(--abyss)); }
+  .grid-lab { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; overflow: hidden; background: var(--trace); border: 1px solid var(--trace); border-radius: var(--r-lg); }
+  article { display: flex; flex-direction: column; gap: 12px; min-height: 250px; padding: 28px 26px 26px; background: var(--deep); transition: background .4s; }
+  article:hover { background: #0d1a2c; }
+  .state { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-size: 11.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--mist); }
+  .state i { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .radiant i { background: var(--lume); }
+  .excited i { background: var(--wake); animation: pulse 2.4s infinite; }
+  .dormant i { background: var(--ghost); border: 1px solid var(--dim); }
+  .learning i { border: 1px solid var(--lume); }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+  h3 { margin: 0; font-family: var(--display); font-weight: 300; font-size: 24px; }
+  h3 a { display: inline-flex; align-items: center; gap: 10px; transition: color .25s; }
+  h3 a:hover { color: var(--lume); }
+  h3 svg { width: 1em; height: 1em; }
+  p { margin: 0; color: var(--mist); font-size: 15px; }
+  /* state on the first row, stack on the second, so every card ends on the same two lines */
+  .stack { margin-top: auto; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding-top: 8px; font-size: 12.5px; color: var(--dim); }
+  .more { margin: 28px 0 0; color: var(--mist); font-size: 15px; }
+  .more a { color: var(--lume); border-bottom: 1px solid rgba(102, 246, 255, .4); }
+  @media (max-width: 980px) { .grid-lab { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 620px) { .grid-lab { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .excited i { animation: none; } }
+</style>

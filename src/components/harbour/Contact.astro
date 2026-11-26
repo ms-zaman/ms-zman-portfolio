@@ -1,0 +1,112 @@
+---
+/**
+ * Contact — send a signal. Netlify Forms: the form is plain static HTML
+ * (`data-netlify` + a hidden `form-name`), so submissions land in the Netlify
+ * dashboard with no third party and no API key. The field names, `project_type`
+ * included, are unchanged so earlier submissions stay on the same keys.
+ * Without JS the native POST still delivers; with JS it submits in place.
+ */
+const FORM_NAME = 'contact';
+const EMAIL = 'dev.mszaman@gmail.com';
+const reasons = [
+  'Full time remote role',
+  'Contract or part time role',
+  'A project (WordPress, WooCommerce, plugin)',
+  'Collaboration',
+  'Recruiter enquiry',
+  'Something else',
+];
+---
+<section class="contact" id="contact" aria-labelledby="c-h">
+  <div class="wrapper">
+    <div class="signal rise">
+      <div>
+        <h2 class="lum" id="c-h">Let's build something that <em>ships.</em></h2>
+        <p class="lead">Open to a remote role or a well defined project. Send the details and I'll reply quickly.</p>
+        <form class="form" name={FORM_NAME} method="POST" data-netlify="true" data-netlify-honeypot="bot-field" data-form>
+          <input type="hidden" name="form-name" value={FORM_NAME} />
+          <p class="hp" aria-hidden="true"><label>Don't fill this out if you're human: <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+          <div class="pair">
+            <div><label for="cf-name">Name</label><input id="cf-name" name="name" type="text" autocomplete="name" placeholder="Your name" required /></div>
+            <div><label for="cf-email">Email</label><input id="cf-email" name="email" type="email" autocomplete="email" placeholder="you@company.com" required /></div>
+          </div>
+          <div><label for="cf-type">Reason for reaching out</label>
+            <select id="cf-type" name="project_type">{reasons.map((r) => <option>{r}</option>)}</select>
+          </div>
+          <div><label for="cf-message">Message</label><textarea id="cf-message" name="message" placeholder="A few lines about the role or the project, the team and the stack" required></textarea></div>
+          <button class="send" type="submit">Send signal <svg class="arrow" aria-hidden="true"><use href="#i-arrow" /></svg></button>
+          <p class="err" role="alert" hidden>That didn't send. Please try again, or email <a href={`mailto:${EMAIL}`}>{EMAIL}</a>.</p>
+          <p class="sent" role="status" tabindex="-1" hidden><b>Signal received.</b> I'll reply soon. Prefer email? <a href={`mailto:${EMAIL}`}>{EMAIL}</a></p>
+        </form>
+      </div>
+      <div class="channels">
+        <a href={`mailto:${EMAIL}`}><span><small>Email</small><b>{EMAIL}</b></span><svg aria-hidden="true"><use href="#i-mail" /></svg></a>
+        <a href="https://wa.me/8801764121252" target="_blank" rel="noopener"><span><small>Quick chat</small><b>WhatsApp</b></span><svg aria-hidden="true"><use href="#i-chat" /></svg></a>
+        <a href="https://github.com/ms-zaman" target="_blank" rel="noopener"><span><small>Code</small><b>GitHub · ms-zaman</b></span><svg aria-hidden="true"><use href="#i-code" /></svg></a>
+        <a href="https://www.linkedin.com/in/sharfuzzaman/" target="_blank" rel="noopener"><span><small>Connect</small><b>LinkedIn · /sharfuzzaman</b></span><svg aria-hidden="true"><use href="#i-linkedin" /></svg></a>
+        <p class="tz">Based in Dhaka (GMT+6), working comfortably across US and EU time zones.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact { padding: var(--section-y) 0 110px; }
+  .signal { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(28px, 4vw, 56px); padding: clamp(26px, 4vw, 52px); border: 1px solid rgba(102, 246, 255, .22); border-radius: var(--r-xl); background: radial-gradient(120% 90% at 100% 0%, rgba(30, 139, 255, .14), transparent 60%), var(--deep); }
+  h2 { margin: 0 0 16px; font-size: clamp(38px, 5vw, 68px); line-height: 1; }
+  h2 em { font-style: normal; color: var(--lume); }
+  .lead { margin: 0 0 30px; max-width: 44ch; color: var(--mist); }
+  .form { display: grid; gap: 16px; }
+  .hp { position: absolute; left: -9999px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--mist); }
+  input, select, textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--trace); border-radius: 8px; background: rgba(3, 6, 11, .6); color: var(--foam); font: inherit; font-size: 15px; transition: border-color .25s, box-shadow .25s; }
+  input::placeholder, textarea::placeholder { color: #8396ab; }
+  input:focus, select:focus, textarea:focus { outline: none; border-color: var(--lume); box-shadow: 0 0 0 3px rgba(102, 246, 255, .15); }
+  textarea { min-height: 120px; resize: vertical; }
+  .send { justify-self: start; display: inline-flex; align-items: center; gap: 14px; padding: 14px 22px; border: 1px solid #2a7ae0; border-radius: 6px; background: var(--wake-btn); color: #fff; font-family: var(--display); font-size: 13.5px; letter-spacing: .2em; text-transform: uppercase; cursor: pointer; transition: background .3s; }
+  .send:hover { background: var(--wake-btn-hi); }
+  .send:disabled { opacity: .6; cursor: progress; }
+  .arrow { width: 46px; height: 10px; transition: transform .45s var(--ease-out); }
+  .send:hover .arrow { transform: translateX(5px); }
+  .err { margin: 0; color: #ff9b9b; font-size: 14px; }
+  .sent { margin: 0; padding: 14px 16px; border: 1px solid rgba(102, 246, 255, .4); border-radius: 8px; color: var(--ink-2); font-size: 14.5px; }
+  .sent b { color: var(--lume); font-weight: 500; }
+  .err a, .sent a { color: var(--lume); }
+  .channels { display: grid; gap: 12px; align-content: start; }
+  .channels a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 18px; border: 1px solid var(--trace); border-radius: 10px; transition: border-color .3s, background .3s; }
+  .channels a:hover { border-color: rgba(102, 246, 255, .5); background: rgba(30, 139, 255, .06); }
+  small { display: block; font-size: 12px; color: var(--dim); }
+  .channels b { font-weight: 500; font-size: 15px; overflow-wrap: anywhere; }
+  .channels svg { flex: none; width: 18px; height: 18px; color: var(--lume); }
+  .tz { margin: 0; padding: 14px 2px; font-size: 13.5px; color: var(--mist); }
+  @media (max-width: 860px) { .signal { grid-template-columns: 1fr; } .pair { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-form]');
+  const btn = form?.querySelector<HTMLButtonElement>('.send');
+  const err = form?.querySelector<HTMLElement>('.err');
+  const sent = form?.querySelector<HTMLElement>('.sent');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    if (err) err.hidden = true;
+    const label = btn?.innerHTML ?? '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+    try {
+      const body = new URLSearchParams(new FormData(form) as unknown as Record<string, string>).toString();
+      const res = await fetch(form.getAttribute('action') || location.pathname, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body,
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      form.querySelectorAll<HTMLElement>('.pair, .pair ~ div, .send').forEach((el) => (el.hidden = true));
+      if (sent) { sent.hidden = false; sent.focus(); }
+    } catch {
+      if (btn) { btn.disabled = false; btn.innerHTML = label; }
+      if (err) err.hidden = false;
+    }
+  });
+</script>

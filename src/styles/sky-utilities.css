@@ -1,5 +1,5 @@
 /* ============================================================
-   Sky design system — UTILITY  (the "U" in CUBE CSS)
+   Night Harbour design system — UTILITY  (the "U" in CUBE CSS)
    ------------------------------------------------------------
    Single-purpose helpers, each doing one job well and drawing on a
    design token so the token stays the single source of truth. They
@@ -11,7 +11,7 @@
    sit BELOW a component's scoped Block (0,2,0) — so apply a utility
    only where the Block doesn't also set that property (when a property
    is handed to a utility, delete it from the Block). No !important.
-   Loaded only on Sky pages via SkyLayout.
+   Loaded by HarbourLayout and BlogLayout.
    ============================================================ */
 
 /* — colour: text — */

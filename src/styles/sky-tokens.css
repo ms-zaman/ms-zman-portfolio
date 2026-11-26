@@ -1,100 +1,68 @@
 /* ============================================================
-   Sky design system — TOKENS
-   Extracted from the redesign prototype (redesign/variant-g.html).
-   Shared across the whole site — the homepage (SkyLayout) and the
-   blog/404 (BlogLayout), which are all the light Sky theme now.
+   Night Harbour design system — TOKENS
+   (file keeps its old "sky-" name so the CUBE layer imports stay put)
+   The whole site is the harbour at night: the homepage (HarbourLayout)
+   and the blog/404 (BlogLayout) share these values.
+   Legacy names (--horizon, --paper, --ink …) are kept and remapped so the
+   blog sheet and composition layer keep working unchanged.
    ============================================================ */
 :root {
-    /* — sky palette (hero / immersive backgrounds) — */
-    --sky-1: #3f86cf;
-    --sky-2: #6ea9e4;
-    --sky-3: #a9cff2;
-    --sky-4: #dcecfb;
-    --horizon: #ffffff;
+  /* the sea and its light */
+  --abyss: #03060b;
+  --deep: #0a1422;
+  --ghost: #1a2b3f;
+  --trace: #22374f;
+  --wake: #1e8bff;
+  --wake-btn: #1166d4;     /* action fill: white text clears 4.5:1 on it */
+  --wake-btn-hi: #0d58b8;
+  --lume: #66f6ff;
+  --foam: #e8f4ff;
+  --mist: #9db1c7;
+  --dim: #7f93a9;
 
-    /* — ink / text — */
-    --ink: #1b2635;
-    --ink-2: #4a596b;
-    --ink-3: #8794a6;
+  /* legacy roles, remapped onto the harbour */
+  --horizon: var(--abyss);   /* page ground */
+  --paper: var(--deep);      /* raised ground */
+  --card: var(--deep);
+  --ink: var(--foam);        /* primary text */
+  --ink-2: #c3d3e4;
+  --ink-3: var(--mist);
+  --line: var(--trace);
+  --accent: var(--lume);     /* links and wayfinding on the dark ground */
+  --accent-soft: rgba(30, 139, 255, .14);
+  --sun: var(--lume);
+  --sun-deep: var(--wake);
+  --glass: rgba(6, 12, 21, .82);
+  --glass-line: rgba(102, 246, 255, .28);
 
-    /* — surfaces & lines — */
-    --line: #e5ebf2;
-    --paper: #f7fafd;
-    --card: #ffffff;
+  /* type: luminous Jost for display, Inter for reading, Overpass Mono for flaps */
+  --display: var(--font-jost, 'Jost'), system-ui, sans-serif;
+  --sans: var(--font-inter, 'Inter'), system-ui, sans-serif;
+  --mono: var(--font-overpass-mono, 'Overpass Mono'), ui-monospace, monospace;
 
-    /* — accent + sun — */
-    --accent: #2f74c0;
-    --accent-soft: #e8f1fb;
-    --sun: #f6b352;
-    --sun-deep: #e08e2a;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 16px;
+  --r-pill: 999px;
+  --shadow-sm: 0 10px 28px -12px rgba(0, 0, 0, .7);
+  --shadow-md: 0 18px 40px -16px rgba(0, 0, 0, .8);
+  --shadow-lg: 0 30px 60px -30px rgba(0, 0, 0, .9);
 
-    /* — glass (floating nav / cards over sky) — */
-    --glass: rgba(255, 255, 255, .9);
-    --glass-line: rgba(255, 255, 255, .7);
+  --wrap: 1240px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --section-y: clamp(60px, 7vw, 96px);
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
 
-    /* — type families (self-hosted via Astro Fonts API; the cssVariable already
-     includes a metric-matched fallback, so there's no font-swap layout shift) — */
-    --display: var(--font-inter-tight, 'Inter Tight'), system-ui, sans-serif;
-    --sans: var(--font-inter, 'Inter'), system-ui, sans-serif;
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs: 0.75rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
 
-    /* — radii — */
-    --r-sm: 7px;
-    --r-md: 12px;
-    --r-lg: 18px;
-    --r-xl: 24px;
-    --r-pill: 999px;
-
-    /* — elevation — */
-    --shadow-sm: 0 10px 30px rgba(40, 80, 140, .05);
-    --shadow-md: 0 14px 40px rgba(40, 80, 140, .10);
-    --shadow-lg: 0 22px 54px rgba(40, 80, 140, .13);
-
-    /* — layout — */
-    --wrap: 1200px;
-    --section-y: 100px;
-
-    /* — sky state (runtime-controlled by SkyEngine; defaults = clear midday) — */
-    --sky-tint: transparent;
-    /* dawn/dusk/night overlay the engine fades in */
-    --sky-tint-2: transparent;
-    --wx-tint: transparent;
-    /* weather wash — set by the R3F hero island (see weather-css.ts) */
-
-    /* — spacing scale (CUBE) — a normalised rhythm the Composition primitives and
-     Utility helpers draw on. rem is relative to the 16px root (the .sky 17px is a
-     body font-size, not the root), so the px comments below are exact.
-     NOTE: per-primitive hooks (--flow-space, --cluster-space, --grid-space,
-     --region-space, --grid-min) are intentionally NOT set here — they live as
-     inline fallbacks inside each composition rule so nested layouts stay
-     independent (a value set on :root would inherit into every child). — */
-    --space-3xs: 0.25rem;
-    /* 4px  */
-    --space-2xs: 0.5rem;
-    /* 8px  */
-    --space-xs: 0.75rem;
-    /* 12px */
-    --space-s: 1rem;
-    /* 16px */
-    --space-m: 1.5rem;
-    /* 24px */
-    --space-l: 2rem;
-    /* 32px */
-    --space-xl: 3rem;
-    /* 48px */
-    --space-2xl: 4rem;
-    /* 64px */
-    --space-3xl: 6rem;
-    /* 96px */
-}
-
-@media (max-width: 900px) {
-    :root {
-        --section-y: 80px;
-    }
-}
-
-@media (max-width: 680px) {
-    :root {
-        --section-y: 60px;
-    }
+  color-scheme: dark;
 }

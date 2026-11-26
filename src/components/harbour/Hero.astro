@@ -1,0 +1,84 @@
+---
+/**
+ * Hero — the harbour at night. A static poster of the sea is painted in the
+ * HTML (it is what PageSpeed, reduced motion and GPU-less visitors see); the
+ * WebGPU sea fades in over it after load on a capable device (scripts/sea.ts).
+ */
+const RESUME = '/Sharfuzzaman-Resume.pdf';
+---
+<section class="hero" id="top" aria-label="Introduction" data-hero>
+  <picture class="poster" aria-hidden="true">
+    <source media="(max-aspect-ratio: 1/1)" srcset="/harbour/sea-tall.avif" type="image/avif" />
+    <source srcset="/harbour/sea-wide.avif" type="image/avif" />
+    <img src="/harbour/sea-wide.webp" alt="" width="1600" height="1000" fetchpriority="high" decoding="async" />
+  </picture>
+  <canvas class="sea" data-sea aria-hidden="true"></canvas>
+
+  <div class="hero-in" id="content" tabindex="-1">
+    <div>
+      <p class="status"><span class="dot" aria-hidden="true"></span>Open to roles and projects</p>
+      <h1 class="lum">I build products for the web and <em>ship</em> them.</h1>
+      <p class="intro"><b>5+ years</b> of production WordPress. Lately: a WooCommerce store I built and run, my own plugin on WordPress.org, and AI assistants inside a plugin on <b>10,000+</b> sites.</p>
+      <div class="ctas">
+        <a class="btn btn--wake" href="#contact">Get in touch <svg class="arrow" aria-hidden="true"><use href="#i-arrow" /></svg></a>
+        <a class="btn btn--trace" href={RESUME} target="_blank" rel="noopener">Résumé <small>PDF</small></a>
+      </div>
+    </div>
+    <aside class="now" aria-label="What I am working on now">
+      <h2><span>Now:</span> redesigning the SchedulePress dashboard</h2>
+      <p>In design review: upcoming and missed posts, cron health, and every failed share with a plain reason and a fix.</p>
+      <div class="meta"><span>Nov 2026 · also learning Rust</span><a href="/blog/learning-rust-variables-mutability-shadowing">Lesson 1 <svg aria-hidden="true"><use href="#i-ext" /></svg></a></div>
+    </aside>
+  </div>
+  <div class="coords" aria-hidden="true"><span>23.81° N · 90.41° E · Dhaka</span><span class="hint" data-sea-hint>Move to draw a wake</span></div>
+</section>
+
+<style>
+  .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; isolation: isolate; }
+  .poster, .sea { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -2; }
+  .poster img { width: 100%; height: 100%; object-fit: cover; object-position: 70% 50%; }
+  .sea { z-index: -1; opacity: 0; transition: opacity 1.4s var(--ease-out); }
+  .sea.live { opacity: 1; }
+  .hero::after { content: ""; position: absolute; inset: auto 0 0; height: 180px; background: linear-gradient(transparent, var(--abyss)); z-index: -1; pointer-events: none; }
+  .hero-in { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 120px var(--gutter) 90px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 40px; align-items: end; pointer-events: none; }
+  .hero-in > * { pointer-events: auto; }
+  .status { display: flex; align-items: center; gap: 10px; margin: 0 0 26px; color: var(--mist); font-size: 14px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lume); flex: none; animation: pulse 2.6s var(--ease-out) infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+  h1 { margin: 0; font-size: clamp(46px, 7.4vw, 104px); line-height: .98; max-width: 11ch; }
+  h1 em { font-style: normal; color: var(--lume); text-shadow: 0 0 26px rgba(102, 246, 255, .55), 0 0 3px rgba(232, 244, 255, .8); }
+  .intro { margin: 28px 0 0; max-width: 46ch; font-size: clamp(17px, 1.5vw, 19px); color: var(--mist); text-shadow: 0 1px 14px var(--abyss), 0 0 2px var(--abyss); }
+  .intro b { color: var(--foam); font-weight: 500; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
+  .btn { display: inline-flex; align-items: center; gap: 14px; padding: 14px 22px; border-radius: 6px; font-family: var(--display); font-size: 13.5px; letter-spacing: .2em; text-transform: uppercase; transition: background .35s var(--ease-out), border-color .35s, color .35s; }
+  .btn .arrow { width: 46px; height: 10px; transition: transform .45s var(--ease-out); }
+  .btn:hover .arrow { transform: translateX(5px); }
+  .btn--wake { background: var(--wake-btn); color: #fff; border: 1px solid #2a7ae0; box-shadow: 0 8px 28px -10px rgba(30, 139, 255, .85); }
+  .btn--wake:hover { background: var(--wake-btn-hi); }
+  .btn--trace { border: 1px solid rgba(157, 177, 199, .45); color: var(--foam); }
+  .btn--trace:hover { border-color: var(--lume); color: var(--lume); }
+  .btn small { font-family: var(--sans); font-size: 11px; letter-spacing: .08em; padding: 2px 6px; border: 1px solid currentColor; border-radius: 3px; opacity: .8; }
+  .now { justify-self: end; width: min(100%, 360px); padding: 20px 22px; background: rgba(6, 12, 21, .74); border: 1px solid rgba(102, 246, 255, .28); border-radius: 10px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .now h2 span { color: var(--lume); }
+  .now h2 { margin: 0 0 6px; font-family: var(--display); font-weight: 300; font-size: 22px; line-height: 1.3; letter-spacing: -.01em; }
+  .now p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--mist); }
+  .meta { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--trace); font-size: 13px; color: var(--mist); }
+  .meta a { display: inline-flex; gap: 8px; align-items: center; color: var(--lume); }
+  .meta svg { width: 1em; height: 1em; }
+  .coords { position: absolute; left: calc(max(0px, (100vw - var(--wrap)) / 2) + var(--gutter)); bottom: 26px; z-index: 1; display: flex; gap: 22px; font-family: var(--display); font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--dim); }
+  .hint { color: var(--mist); opacity: 0; transition: opacity .6s; }
+  .hint.on { opacity: 1; }
+  @media (max-width: 900px) {
+    /* portrait: the sea's current owns the top of the screen, the words start below it */
+    .hero-in { grid-template-columns: 1fr; align-items: start; padding-top: clamp(150px, 30svh, 260px); }
+    .now { justify-self: start; }
+    .coords { position: static; padding: 0 var(--gutter) 28px; flex-wrap: wrap; gap: 6px 18px; }
+    .hint { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) { .dot { animation: none; } .sea { transition: none; } }
+</style>
+
+<script>
+  import { initSea } from '../../scripts/sea';
+  initSea();
+</script>

@@ -1,0 +1,56 @@
+---
+/** Craft — smaller finished work, as rows rather than cards, plus the template library. */
+import Head from './Head.astro';
+interface Item { badge: string; name: string; href?: string; desc: string }
+const items: Item[] = [
+  { badge: '1st place · Startise AI Automation Competition', name: 'Plugin Pilot', desc: 'Deploys WordPress plugins to many sites at once from a dashboard or from Slack, with site credentials encrypted at rest and Google Workspace sign in.' },
+  { badge: 'Official Astro themes directory', name: 'Saasar', href: 'https://astro.build/themes/details/saasar-ai-saas-project-management-astro-theme/', desc: 'A paid theme for AI SaaS and project management products, with 18 page templates. Built with Build2Next.' },
+  { badge: 'This site', name: 'A sea that scores on PageSpeed', desc: 'The old weather sky scored 42 on mobile PageSpeed because the test machine has no GPU; the fix took it to 99. The sea keeps that rule: no real GPU, no canvas. The site also serves Markdown to AI agents.' },
+  { badge: 'Live', name: 'Prostuti', href: 'https://visaprep.sharfuzzaman.com/', desc: 'A Bengali site that helps people in Bangladesh prepare Indian visa applications, with a photo checker that runs in the browser.' },
+];
+const library = [
+  ['SaaStrive', 'https://templately.com/pack/saastrive-elementor-saas-template'],
+  ['MindXtend', 'https://templately.com/pack/mindxtend-business-consultancy-template-gutenberg'],
+  ['BookAnAir', 'https://templately.com/pack/bookanair-elementor-flight-booking-website'],
+  ['NaturExplo', 'https://templately.com/pack/naturexplo-gutenberg-travel-eco-tourism-template'],
+  ['FlexiDropper', 'https://templately.com/pack/flexidropper-elementor-dropshipping-agency-template'],
+  ['SnapCatch', 'https://templately.com/pack/snapcatch-gutenberg-photography-template'],
+  ['Multigency', 'https://templately.com/pack/multigency-elementor-multipurpose-template'],
+  ['NooCodeHub', 'https://templately.com/pack/noocodehub-gutenberg-no-code-community'],
+  ['HiringFinds', 'https://templately.com/pack/hiringfinds-elementor-job-board-template'],
+  ['D-Care', 'https://templately.com/pack/d-care-gutenberg-dentist-clinic-template'],
+];
+---
+<section class="craft" aria-labelledby="craft-h">
+  <div class="wrapper">
+    <Head id="craft-h" title="Smaller craft" sub="Finished, in use, and worth a look." />
+    <div class="rows rise">
+      {items.map((it) => (
+        <article>
+          <h3>{it.href ? <a href={it.href} target="_blank" rel="noopener">{it.name} <svg aria-hidden="true"><use href="#i-ext" /></svg></a> : it.name}</h3>
+          <p>{it.desc}</p>
+          <span class="badge">{it.badge}</span>
+        </article>
+      ))}
+    </div>
+    <p class="library rise">From the template library, 10 of the 40+ packs I have developed:
+      {library.map(([n, h], i) => <><a href={h} target="_blank" rel="noopener">{n}</a>{i < library.length - 1 ? ', ' : '.'}</>)}
+    </p>
+  </div>
+</section>
+
+<style>
+  .craft { padding: var(--section-y) 0; }
+  .rows { display: grid; grid-template-columns: 1fr 1fr; gap: 0 48px; border-top: 1px solid var(--trace); }
+  article { display: grid; gap: 8px; padding: 26px 0; border-bottom: 1px solid var(--trace); }
+  .badge { font-family: var(--display); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--lume); }
+  h3 { margin: 0; font-family: var(--display); font-weight: 300; font-size: 24px; letter-spacing: -.01em; }
+  h3 a { display: inline-flex; align-items: center; gap: 10px; transition: color .25s; }
+  h3 a:hover { color: var(--lume); }
+  h3 svg { width: 1em; height: 1em; }
+  p { margin: 0; max-width: 52ch; color: var(--mist); font-size: 15px; }
+  .library { margin-top: 42px; max-width: 80ch; font-size: 14.5px; }
+  .library a { color: var(--foam); border-bottom: 1px solid var(--trace); transition: color .25s, border-color .25s; }
+  .library a:hover { color: var(--lume); border-color: var(--lume); }
+  @media (max-width: 760px) { .rows { grid-template-columns: 1fr; } }
+</style>
