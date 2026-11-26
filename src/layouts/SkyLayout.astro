@@ -24,8 +24,8 @@ interface Props {
 }
 
 const {
-  title = 'Sharfuzzaman · WordPress Developer | Elementor & Gutenberg',
-  description = 'WordPress Developer specializing in Elementor, Gutenberg and pixel perfect frontend implementation, with 5+ years of production web development experience.',
+  title = 'Sharfuzzaman · WordPress Developer | WooCommerce, Plugins & MCP',
+  description = 'WordPress developer who builds and ships products: WooCommerce stores, WordPress.org plugins and MCP integrations for AI assistants. 5+ years in production.',
   image = '/og.jpg',
   noindex = false,
 } = Astro.props;
@@ -53,20 +53,21 @@ const jsonLd = {
       sameAs: ['https://github.com/ms-zaman', 'https://www.linkedin.com/in/sharfuzzaman/'],
       knowsAbout: [
         'WordPress',
+        'WooCommerce',
+        'WordPress Plugin Development',
+        'Model Context Protocol (MCP)',
+        'PHP',
         'Elementor',
         'Gutenberg',
-        'WooCommerce',
-        'WordPress Theme Development',
-        'Pixel perfect UI Implementation',
-        'Frontend Development',
-        'React',
-        'PHP',
+        'WordPress Block Themes',
+        'Web Performance',
         'Astro',
+        'React',
       ],
       worksFor: { '@type': 'Organization', name: 'Startise' },
       seeks: {
         '@type': 'Demand',
-        name: 'Remote WordPress / Web Developer role',
+        name: 'Remote WordPress developer role or a well defined project',
       },
       address: { '@type': 'PostalAddress', addressLocality: 'Dhaka', addressCountry: 'BD' },
     },
@@ -103,7 +104,7 @@ const jsonLd = {
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Sharfuzzaman, WordPress Developer specializing in Elementor & Gutenberg." />
+    <meta property="og:image:alt" content="Sharfuzzaman, WordPress developer: I build products for the web and ship them." />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />

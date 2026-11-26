@@ -1,25 +1,28 @@
 ---
 /**
- * SelectedWork — three featured Templately templates, each shown as a
- * sticky text column beside a horizontally-scrolling rail of page previews
+ * SelectedWork — four case studies (live products), each shown as a
+ * sticky text column beside a horizontally-scrolling rail of screenshots
  * (layout borrowed from northgarden.com/work, restyled with Sky tokens).
- * Followed by a compact "more from the library" list.
+ * Followed by "Also built" cards and the Templately library list.
  *
- * Previews are the real per-page thumbnails from the live Templately packs
- * (remote CDN, all 900x1030) — scraped from each pack page, not local assets.
- * `pages`/`sections` counts are the actual item counts in each pack.
+ * Screenshots are captures of the live sites in public/work/ (Playwright,
+ * 2026-11-26) plus ShopCurator's own WordPress.org screenshots. Every metric
+ * is sourced in redesign/case-studies-draft.md; do not add one without a source.
  * The rail is a keyboard-scrollable group rather than a list of links, so the
- * row keeps exactly one destination (the pack page) and no nested anchors.
+ * row keeps exactly one destination (the product link) and no nested anchors.
  */
 import SectionHead from './SectionHead.astro';
 
 interface Shot {
   label: string;
   src: string;
+  w: number;
+  h: number;
 }
 
 interface Work {
   href: string;
+  linkLabel: string;
   num: string;
   tags: string[];
   name: string;
@@ -29,61 +32,77 @@ interface Work {
   rail: Shot[];
 }
 
+/* Portrait captures are 900x1030 (a 450px phone or a 1200px desktop, both
+   scaled to the rail's tile); ShopCurator's are its WordPress.org screenshots. */
+const P = { w: 900, h: 1030 };
+const L = { w: 1280, h: 900 };
+
 const works: Work[] = [
   {
-    href: 'https://templately.com/pack/saastrive-elementor-saas-template',
+    href: 'https://hermizon.com/',
+    linkLabel: 'Visit hermizon.com',
     num: '01',
-    tags: ['Elementor', 'SaaS'],
-    name: 'SaaStrive',
-    sub: 'SaaS website template',
-    desc: 'A conversion focused SaaS marketing pack with pricing, feature, and onboarding sections. I built every page in Elementor from the design reference, pixel perfect and fully responsive across breakpoints.',
-    metrics: [{ b: '8', s: 'page designs' }, { b: '15', s: 'sections' }, { b: 'Elementor', s: 'builder' }],
+    tags: ['Client project', 'WooCommerce'],
+    name: 'Hermizon',
+    sub: 'Women’s footwear store, Bangladesh',
+    desc: 'I rebuilt the store on a custom block theme and six plugins of my own (phone sign in with SMS codes, courier booking, server side tracking), deployed it, and run it. The shop’s team manages it through an AI assistant that previews every change and waits for a confirm before it touches the live store.',
+    metrics: [{ b: '80%', s: 'lighter home page' }, { b: '1.36s', s: 'LCP, real users' }, { b: '34', s: 'MCP tools' }],
     rail: [
-      { label: 'Home', src: 'https://items.templately.com/item-c565103c9c5d33ea3d4132cc3b7ae922/saastrive-home-page-thumbnail-51hyyej.jpg' },
-      { label: 'Pricing', src: 'https://items.templately.com/item-03b8869e9a4afb7714f6cb54a5db5355/saastrive-pricing-page-thumbnail-byTruic.jpg' },
-      { label: 'About', src: 'https://items.templately.com/item-d3fce58e855a0bf1a0bff045e8289b29/saastrive-about-page-thumbnail-xTrR0xT.jpg' },
-      { label: 'Roadmap', src: 'https://items.templately.com/item-928bfca3b00055ffd43388ef61b3ef4a/saastrive-roadmap-page-thumbnail-yPOE5jm.jpg' },
-      { label: 'Blog', src: 'https://items.templately.com/item-233a351cd358294318f8ce9b4303ea01/saastrive-blog-page-thumbnail-M72jsMC.jpg' },
-      { label: 'Blog details', src: 'https://items.templately.com/item-420b3e538dc48ed4dca12562f365d8a9/saastrive-blog-details-page-thumbnail-Hmk3XgI.jpg' },
-      { label: 'Resource', src: 'https://items.templately.com/item-8f5574fecc206497a2a17d36c005a949/saastrive-resource-page-thumbnail-pXytDlg.jpg' },
-      { label: 'Contact', src: 'https://items.templately.com/item-1641e6e601c6f1cc5ab50cb7f67be14a/saastrive-contact-page-thumbnail-Gjr564O.jpg' },
+      { label: 'Home', src: '/work/hermizon/home.webp', ...P },
+      { label: 'Product cards', src: '/work/hermizon/home-cards.webp', ...P },
+      { label: 'Shop', src: '/work/hermizon/shop.webp', ...P },
+      { label: 'Product', src: '/work/hermizon/product.webp', ...P },
+      { label: 'Size and delivery', src: '/work/hermizon/product-buy.webp', ...P },
+      { label: 'Bridal collection', src: '/work/hermizon/bridal.webp', ...P },
     ],
   },
   {
-    href: 'https://templately.com/pack/mindxtend-business-consultancy-template-gutenberg',
+    href: 'https://wordpress.org/plugins/shopcurator/',
+    linkLabel: 'View on WordPress.org',
     num: '02',
-    tags: ['Gutenberg', 'Business'],
-    name: 'MindXtend',
-    sub: 'Business consultancy template',
-    desc: 'A consultancy pack I built natively in the block editor: clean block structure, accessible markup, and layouts that stay easy to edit after handover.',
-    metrics: [{ b: '7', s: 'page designs' }, { b: '12', s: 'sections' }, { b: 'Gutenberg', s: 'native' }],
+    tags: ['Own plugin', 'WordPress.org'],
+    name: 'ShopCurator',
+    sub: 'Free WooCommerce plugin for block themes',
+    desc: 'The fixes I wrote for one store solved problems every block theme shop has, so I rebuilt them as a plugin anyone can install: storefront blocks, a My Account area customers can actually use, size filters that only count what is in stock, and phone sign in with SMS codes.',
+    metrics: [{ b: '22', s: 'storefront blocks' }, { b: 'Nov 2026', s: 'approved on WordPress.org' }, { b: 'Free', s: 'GPL' }],
     rail: [
-      { label: 'Home', src: 'https://items.templately.com/item-438aad9d55ae5bc1f7fd55bc072055ff/mindxtend-landing-page-for-gutenberg-thumbnail-aiwYyfA.jpg' },
-      { label: 'About', src: 'https://items.templately.com/item-47e2731312c72cab4909a74adbbe65a4/mindxtend-about-page-for-gutenberg-thumbnail-pi3TxNv.jpg' },
-      { label: 'Portfolio', src: 'https://items.templately.com/item-5e4f10e57e9b8cd401ad77c39829d009/mindxtend-portfolio-page-for-gutenberg-thumbnail-MMLFrMF.jpg' },
-      { label: 'Portfolio details', src: 'https://items.templately.com/item-48a7acd79e2b6af7c4d9ef24fc0f3931/mindxtend-portfolio-details-page-for-gutenberg-thumbnail-mnrqCsp.jpg' },
-      { label: 'Blog', src: 'https://items.templately.com/item-980ef17fa45078cbd764015b37d67ee3/mindxtend-blog-page-for-gutenberg-thumbnail-UWKz4oG.jpg' },
-      { label: 'Blog details', src: 'https://items.templately.com/item-82eac38d6de7e347ae3105b344363999/mindxtend-blog-details-page-for-gutenberg-thumbnail-q50ceDu.jpg' },
-      { label: 'Contact', src: 'https://items.templately.com/item-23114594700d95ae0f0ff3cb397b9d21/mindxtend-contact-page-for-gutenberg-thumbnail-FxZiLTl.jpg' },
+      { label: 'WordPress.org', src: '/work/shopcurator/wporg.webp', ...P },
+      { label: 'Search overlay', src: '/work/shopcurator/search.webp', ...L },
+      { label: 'Quick view', src: '/work/shopcurator/quick-view.webp', ...L },
+      { label: 'Review summary', src: '/work/shopcurator/reviews.webp', ...L },
+      { label: 'My Account', src: '/work/shopcurator/account.webp', w: 1280, h: 1465 },
     ],
   },
   {
-    href: 'https://templately.com/pack/bookanair-elementor-flight-booking-website',
+    href: 'https://wordpress.org/plugins/wp-scheduled-posts/',
+    linkLabel: 'View on WordPress.org',
     num: '03',
-    tags: ['Elementor', 'Booking'],
-    name: 'BookAnAir',
-    sub: 'Flight booking website',
-    desc: 'A travel booking pack with search focused layouts and trust building sections, built and shipped by me in Elementor. One of the 40+ packs I have developed for Templately.',
-    metrics: [{ b: '8', s: 'page designs' }, { b: '11', s: 'sections' }, { b: 'Elementor', s: 'builder' }],
+    tags: ['WPDeveloper', 'MCP'],
+    name: 'SchedulePress',
+    sub: 'Post scheduling and social sharing plugin',
+    desc: 'I took the plugin’s MCP server from an internal branch to a public release, so Claude and ChatGPT can plan and share posts, with sharing off until an admin allows it and every share confirmed. I also run the Free and Pro releases: three in three weeks in November 2026.',
+    metrics: [{ b: '10K+', s: 'active installs' }, { b: '20', s: 'MCP tools' }, { b: '5.4.0', s: 'shipped 24 Nov 2026' }],
     rail: [
-      { label: 'Home', src: 'https://items.templately.com/item-f826763e3a70c93f0ac93c4cbcfa0c19/bookanair-home-page-thumbnail-SzdTiwr.jpg' },
-      { label: 'Flight', src: 'https://items.templately.com/item-e4fdc634b841d5f0b9f5646a38c4ea59/bookanair-flight-page-thumbnail-mxKadJW.jpg' },
-      { label: 'Hotels', src: 'https://items.templately.com/item-5ef088458d8f8ed9687acb8dc6cf6b20/bookanair-hotels-page-thumbnail-ahmcFm5.jpg' },
-      { label: 'Booking details', src: 'https://items.templately.com/item-6ea20135a82245a42b26082a55db7284/bookanair-booking-details-page-thumbnail-BFZbteP.jpg' },
-      { label: 'Deals', src: 'https://items.templately.com/item-ab53217bff97a98ee9401cc1a91b1a07/bookanair-deals-page-thumbnail-JVvt2HS.jpg' },
-      { label: 'Support', src: 'https://items.templately.com/item-66d101316f7808b423297607262a7532/bookanair-support-page-thumbnail-n4QfkMG.jpg' },
-      { label: 'Blog', src: 'https://items.templately.com/item-f5553f4673c5ad1d1becb70f01ef5cc5/bookanair-blog-page-thumbnail-bIDJCiz.jpg' },
-      { label: 'Blog details', src: 'https://items.templately.com/item-ab7e86d2351c7ea6c951418c10074aa0/bookanair-blog-details-page-thumbnail-ck7IQo9.jpg' },
+      { label: 'WordPress.org', src: '/work/schedulepress/wporg.webp', ...P },
+      { label: 'Changelog, 5.4.0', src: '/work/schedulepress/changelog.webp', ...P },
+      { label: 'schedulepress.com', src: '/work/schedulepress/features.webp', ...P },
+    ],
+  },
+  {
+    href: 'https://wpdeveloper.com/',
+    linkLabel: 'Visit wpdeveloper.com',
+    num: '04',
+    tags: ['WPDeveloper', 'Elementor'],
+    name: 'WPDeveloper sites',
+    sub: 'Company homepage and Black Friday 2026',
+    desc: 'Instead of hand building every page, I generate the Elementor page data from Figma in Python, push it over the REST API and check it against the design in a headless browser. It built the wpdeveloper.com homepage and the Black Friday pages across five sites, with a backup before every live write.',
+    metrics: [{ b: '8 Oct', s: 'homepage live' }, { b: '5', s: 'sites for Black Friday' }, { b: 'Python', s: 'Figma to Elementor' }],
+    rail: [
+      { label: 'Homepage', src: '/work/wpdeveloper/home.webp', ...P },
+      { label: 'Homepage, products', src: '/work/wpdeveloper/home-products.webp', ...P },
+      { label: 'Deals', src: '/work/wpdeveloper/deals.webp', ...P },
+      { label: 'Agency bundle', src: '/work/wpdeveloper/agency-bundle.webp', ...P },
+      { label: 'Black Friday', src: '/work/wpdeveloper/black-friday.webp', ...P },
     ],
   },
 ];
@@ -92,30 +111,48 @@ interface Highlight {
   kind: string;
   badge?: string;
   name: string;
+  href?: string;
   desc: string;
   tags: string[];
 }
 
-/* Internal / in-progress work — no public link, so these are cards rather than
-   the linked rows above. Kept deliberately short; detail belongs in a CV or a
-   conversation, not the homepage. */
+/* Smaller finished work: cards rather than case study rows. Kept short;
+   detail belongs in a conversation, not the homepage. */
 const highlights: Highlight[] = [
   {
     kind: 'Internal tool',
     badge: '1st place · Startise AI Automation Competition',
     name: 'Plugin Pilot',
-    desc: 'A WordPress automation tool I built to streamline repetitive maintenance across Templately’s multisite template pack environments. It started with plugin installs and updates and has since grown past that.',
-    tags: ['WordPress', 'Multisite', 'Automation', 'PHP'],
+    desc: 'Deploys WordPress plugins to many sites at once from a dashboard or from Slack, with site credentials encrypted at rest and Google Workspace sign in.',
+    tags: ['Node', 'Slack', 'WordPress', 'Automation'],
   },
   {
-    kind: 'In progress',
-    name: 'WordPress → Astro migration',
-    desc: 'Contributing to production WordPress to Astro migrations on the team, including the ongoing migration of easy.jobs, rebuilding WordPress front ends as static Astro sites.',
-    tags: ['Astro', 'WordPress', 'Migration', 'Frontend'],
+    kind: 'Astro theme',
+    badge: 'Official Astro themes directory',
+    name: 'Saasar',
+    href: 'https://astro.build/themes/details/saasar-ai-saas-project-management-astro-theme/',
+    desc: 'A paid theme for AI SaaS and project management products, with 18 page templates. Built with Build2Next.',
+    tags: ['Astro', 'Theme', 'SaaS'],
+  },
+  {
+    kind: 'This site',
+    name: 'A sky that scores 99',
+    desc: 'The live WebGL weather above scored 42 on mobile PageSpeed. The code was fine; the test machine has no GPU. Now it scores 99, and it serves Markdown to AI agents.',
+    tags: ['Astro', 'WebGL', 'Performance'],
+  },
+  {
+    kind: 'Live',
+    name: 'Prostuti',
+    href: 'https://visaprep.sharfuzzaman.com/',
+    desc: 'A Bengali site that helps people in Bangladesh prepare Indian visa applications, with a photo checker that runs in the browser.',
+    tags: ['Astro', 'Cloudflare', 'Bengali'],
   },
 ];
 
 const moreLibrary = [
+  { href: 'https://templately.com/pack/saastrive-elementor-saas-template', name: 'SaaStrive', cat: 'SaaS · Elementor' },
+  { href: 'https://templately.com/pack/mindxtend-business-consultancy-template-gutenberg', name: 'MindXtend', cat: 'Consultancy · Gutenberg' },
+  { href: 'https://templately.com/pack/bookanair-elementor-flight-booking-website', name: 'BookAnAir', cat: 'Flight booking · Elementor' },
   { href: 'https://templately.com/pack/naturexplo-gutenberg-travel-eco-tourism-template', name: 'NaturExplo', cat: 'Travel · Gutenberg' },
   { href: 'https://templately.com/pack/flexidropper-elementor-dropshipping-agency-template', name: 'FlexiDropper', cat: 'Dropshipping · Elementor' },
   { href: 'https://templately.com/pack/snapcatch-gutenberg-photography-template', name: 'SnapCatch', cat: 'Photography · Gutenberg' },
@@ -123,15 +160,14 @@ const moreLibrary = [
   { href: 'https://templately.com/pack/noocodehub-gutenberg-no-code-community', name: 'NooCodeHub', cat: 'Community · Gutenberg' },
   { href: 'https://templately.com/pack/hiringfinds-elementor-job-board-template', name: 'HiringFinds', cat: 'Job board · Elementor' },
   { href: 'https://templately.com/pack/d-care-gutenberg-dentist-clinic-template', name: 'D-Care', cat: 'Dental clinic · Gutenberg' },
-  { href: 'https://templately.com/pack/naturetreat-gutenberg-ecotourism-template', name: 'NatureTreat', cat: 'Ecotourism · Gutenberg' },
 ];
 ---
 <section class="[ region ] [ border-top-line ]" id="work">
   <div class="[ wrapper ]">
     <SectionHead
       eyebrow="Selected work"
-      title="A few things I've shipped"
-      sub="Production template packs I personally built for the Templately library: Elementor and Gutenberg, live and in use by hundreds of thousands of WordPress makers."
+      title="Things I've shipped"
+      sub="Four products that are live right now, from a store I run to a plugin on 10,000+ sites. Each one started with a real problem."
     />
 
     {works.map((w) => (
@@ -149,7 +185,7 @@ const moreLibrary = [
           </div>
           <a class="wr-link" href={w.href} target="_blank" rel="noopener">
             <span class="wr-live" aria-hidden="true">●</span>
-            View on Templately <span class="ar" aria-hidden="true">↗</span>
+            {w.linkLabel} <span class="ar" aria-hidden="true">↗</span>
           </a>
         </div>
 
@@ -157,15 +193,16 @@ const moreLibrary = [
           class="wr-rail"
           tabindex="0"
           role="group"
-          aria-label={`${w.name} page previews, scroll horizontally`}
+          aria-label={`${w.name} screenshots, scroll horizontally`}
         >
           {w.rail.map((s, i) => (
             <figure class="wr-shot">
               <img
                 src={s.src}
-                alt={`${w.name} ${s.label.toLowerCase()} page design`}
-                width="900"
-                height="1030"
+                alt={`${w.name}: ${s.label}`}
+                width={s.w}
+                height={s.h}
+                style={`aspect-ratio: ${s.w} / ${s.h}`}
                 loading="lazy"
                 decoding="async"
                 fetchpriority={i === 0 ? 'auto' : 'low'}
@@ -180,7 +217,7 @@ const moreLibrary = [
     <div class="[ hl-block ] [ border-top-line ] [ reveal ]">
       <div class="[ mt-head ] [ repel ]">
         <div class="mt-title">Also built</div>
-        <div class="mt-note">Beyond the template library</div>
+        <div class="mt-note">Smaller, finished, and in use</div>
       </div>
       <div class="[ hl-grid ] [ grid ]">
         {highlights.map((h) => (
@@ -189,7 +226,7 @@ const moreLibrary = [
               <span class="hl-kind">{h.kind}</span>
               {h.badge && <span class="hl-badge">{h.badge}</span>}
             </div>
-            <h3 class="hl-name">{h.name}</h3>
+            <h3 class="hl-name">{h.href ? <a href={h.href} target="_blank" rel="noopener">{h.name} <span class="ar" aria-hidden="true">↗</span></a> : h.name}</h3>
             <p class="hl-desc">{h.desc}</p>
             <div class="[ hl-tags ] [ cluster ]">{h.tags.map((t) => <span>{t}</span>)}</div>
           </article>
@@ -199,8 +236,8 @@ const moreLibrary = [
 
     <div class="[ more-tpl ] [ border-top-line ] [ reveal ]">
       <div class="[ mt-head ] [ repel ]">
-        <div class="mt-title">More from the library</div>
-        <div class="mt-note">8 more of 40+ I have developed, all live on templately.com</div>
+        <div class="mt-title">From the template library</div>
+        <div class="mt-note">10 of the 40+ packs I have developed, all live on templately.com</div>
       </div>
       <div class="[ mt-grid ] [ grid ]">
         {moreLibrary.map((m) => (
@@ -303,7 +340,6 @@ const moreLibrary = [
   .wr-shot img {
     width: auto;
     height: clamp(260px, 34vw, 400px);
-    aspect-ratio: 900 / 1030;
     object-fit: cover;
     object-position: top center;
     border-radius: var(--r-md);
@@ -367,6 +403,10 @@ const moreLibrary = [
     background: var(--accent-soft); color: var(--accent);
   }
   .hl-name { font-family: var(--display); font-size: 22px; font-weight: 600; letter-spacing: -.01em; margin: 0; }
+  .hl-name a { color: inherit; }
+  .hl-name a .ar { font-size: .7em; color: var(--ink-3); transition: transform .25s, color .25s; display: inline-block; }
+  .hl-name a:hover { color: var(--accent); }
+  .hl-name a:hover .ar { color: var(--accent); transform: translate(2px, -2px); }
   .hl-desc { font-size: 14.5px; line-height: 1.6; color: var(--ink-2); margin: 0; }
   .hl-tags { --cluster-space: 7px; margin-top: auto; padding-top: 6px; }
   .hl-tags span {
